@@ -1,5 +1,1 @@
-<div class="row expanded">
-    <div class="large-12 columns">
-        <{{ tag }}>{{ text }}</{{ tag }}>
-    </div>
-</div>
+<{{ tag }}{% if tag == 'h1' %} class="govuk-heading-xl"{% endif %}>{{ text }}</{{ tag }}>
