@@ -1,7 +1,7 @@
 from typing import NamedTuple
 
 from django.utils.safestring import mark_safe
-from django_components import component, types as t, Component
+from django_components import types as t, Component, register
 
 
 class RadioSelectionOptionEntry(NamedTuple):
@@ -10,7 +10,7 @@ class RadioSelectionOptionEntry(NamedTuple):
     value: str | None = None
 
 
-@component.register("_radio_selection")
+@register("_radio_selection")
 class _RadioSelectionImpl(Component):
     template_name = "radio_selection.html"
 
@@ -44,7 +44,7 @@ class _RadioSelectionImpl(Component):
 # user input provided as nested components. But after the input is
 # processed, it delegates to an internal "implementation" component
 # that actually renders the content.
-@component.register("radio_selection")
+@register("radio_selection")
 class RadioSelection(Component):
     template: t.django_html = """
     {% load component_tags %}
@@ -105,7 +105,7 @@ class RadioSelection(Component):
 """
 Use this component to define individual radio selection option inside the default slot inside the `radio selection` component.
 """
-@component.register("radio_selection_option")
+@register("radio_selection_option")
 class RadioSelectionOption(Component):
     template: t.django_html = """
     {% load component_tags %}

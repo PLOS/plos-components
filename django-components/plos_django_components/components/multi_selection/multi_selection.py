@@ -1,7 +1,7 @@
 from typing import NamedTuple
 
 from django.utils.safestring import mark_safe
-from django_components import component, types as t, Component
+from django_components import types as t, Component, register
 
 
 class MultiSelectionOptionEntry(NamedTuple):
@@ -10,7 +10,7 @@ class MultiSelectionOptionEntry(NamedTuple):
     value: str | None = None
 
 
-@component.register("_multi_selection")
+@register("_multi_selection")
 class _MultiSelectionImpl(Component):
     template_name = "multi_selection.html"
 
@@ -44,7 +44,7 @@ class _MultiSelectionImpl(Component):
 # user input provided as nested components. But after the input is
 # processed, it delegates to an internal "implementation" component
 # that actually renders the content.
-@component.register("multi_selection")
+@register("multi_selection")
 class MultiSelection(Component):
     template: t.django_html = """
     {% load component_tags %}
@@ -107,7 +107,7 @@ Use this component to define individual multi selection option inside the defaul
 """
 
 
-@component.register("multi_selection_option")
+@register("multi_selection_option")
 class MultiSelectionOption(Component):
     template: t.django_html = """
     {% load component_tags %}

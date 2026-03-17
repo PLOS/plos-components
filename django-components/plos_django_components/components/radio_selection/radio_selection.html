@@ -28,22 +28,13 @@
         {% for option in radio_selection_options %}
         <div class="govuk-radios" data-module="govuk-radios">
             <input class="govuk-radios__input"
-                   id="{{ name }}
-                     {% if not forloop.first %}
-                       -{{ forloop.counter }}
-                     {% endif %}"
+                   id="{{ name }}{% if not forloop.first %}-{{ forloop.counter }}{% endif %}"
                    name="{{ name }}"
                    type="radio"
                    value="{{ option.value }}"
-                   {% if option.checked %}
-                   checked
-                   {% endif %}
-                   {% if option.errors %}class="error" {% endif %}>
+                   {% if option.checked %} checked{% endif %}>
             <label class="govuk-label govuk-radios__label"
-                   for="{{ name }}
-                      {% if not forloop.first %}
-                        -{{ forloop.counter }}
-                      {% endif %}">
+                   for="{{ name }}{% if not forloop.first %}-{{ forloop.counter }}{% endif %}">
                 {{ option.content }}
             </label>
         </div>

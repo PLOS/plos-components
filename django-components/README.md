@@ -23,7 +23,7 @@ INSTALLED_APPS = [
 ]
 ```
 
-Ensure `django_components.template_loader.Loader` is in your `TEMPLATES` loaders as follows:
+Ensure `django_components.template_loader.Loader` is in your `TEMPLATES` loaders as follows (remove `'APP_DIRS': True`):
 
 ```python
 TEMPLATES = [

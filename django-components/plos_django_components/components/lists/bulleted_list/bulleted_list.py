@@ -1,7 +1,7 @@
 from typing import NamedTuple
 
 from django.utils.safestring import mark_safe
-from django_components import component, types as t, Component
+from django_components import types as t, Component, register
 
 
 class BulletedListOptionEntry(NamedTuple):
@@ -9,7 +9,7 @@ class BulletedListOptionEntry(NamedTuple):
     field_id: str | None = None
 
 
-@component.register("_bulleted_list")
+@register("_bulleted_list")
 class _BulletedListImpl(Component):
     template_name = "bulleted_list.html"
 
@@ -37,7 +37,7 @@ class _BulletedListImpl(Component):
 # user input provided as nested components. But after the input is
 # processed, it delegates to an internal "implementation" component
 # that actually renders the content.
-@component.register("bulleted_list")
+@register("bulleted_list")
 class BulletedList(Component):
     template: t.django_html = """
     {% load component_tags %}
@@ -85,7 +85,7 @@ class BulletedList(Component):
 """
 Use this component to define individual component option inside the default slot inside the component.
 """
-@component.register("bulleted_list_option")
+@register("bulleted_list_option")
 class BulletedListOption(Component):
     template: t.django_html = """
     {% load component_tags %}

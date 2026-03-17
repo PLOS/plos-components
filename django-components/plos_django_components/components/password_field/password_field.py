@@ -1,14 +1,12 @@
-from typing import List
-
 from django_components import Component, register
 
 
 @register("password_field")
 class PasswordField(Component):
-    template_name = "components/password_field/password_field.html"
+    template_name = "password_field.html"
 
     def get_context_data(self, label, name, value: str = "", placeholder: str = "", required: bool = False,
-                         help_text: str = "", errors: List[str] | None = None,
+                         help_text: str = "", errors: list[str] | None = None,
                          field_id: str | None = None, disabled: bool = False, maxlength: int | None = None,
                          minlength: int | None = None, ):
         return {

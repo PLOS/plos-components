@@ -3,7 +3,7 @@ from django_components import Component, register
 
 @register("textarea")
 class Textarea(Component):
-    template_name = "components/textarea/textarea.html"
+    template_name = "textarea.html"
 
     def get_context_data(
         self,
