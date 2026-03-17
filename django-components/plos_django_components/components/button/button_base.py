@@ -14,7 +14,7 @@ class TextBox(Component):
                          text: str | None = "Submit",
                          disabled: bool = False,
                          action: Literal["primary", "secondary", "warning"] = "primary",
-                         type: str = "submit",
+                         type: str = Literal["button", "reset", "submit"] = "button",
                          icon: str | None = None,
                          icon_position: Literal["right", "left"] = "right",
     ):
