@@ -19,7 +19,7 @@
         {% if prefix %}
         <div class="govuk-input__prefix" aria-hidden="true">{{ prefix }}</div>
         {% endif %}
-        <input type="text"
+        <input type="{{ input_type }}"
                id="{{ id }}"
                name="{{ name }}"
                class="govuk-input{% if errors %} govuk-input--error{% endif %}"
