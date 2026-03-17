@@ -1,7 +1,9 @@
 from typing import NamedTuple
 
 from django.utils.safestring import mark_safe
-from django_components import types as t, Component, register
+from django_components import types as t, register
+
+from ...base.base_component import PLOSBaseComponent
 
 
 class BulletedListOptionEntry(NamedTuple):
@@ -10,7 +12,7 @@ class BulletedListOptionEntry(NamedTuple):
 
 
 @register("_bulleted_list")
-class _BulletedListImpl(Component):
+class _BulletedListImpl(PLOSBaseComponent):
     template_name = "bulleted_list.html"
 
     def get_context_data(
@@ -20,7 +22,6 @@ class _BulletedListImpl(Component):
             options: list[BulletedListOptionEntry],
             # Unique name to identify this component instance.
             name: str | None = None,
-            label: str | None = None,
             attrs: dict | None = None,
             content_attrs: dict | None = None,
     ):
@@ -29,7 +30,6 @@ class _BulletedListImpl(Component):
             "name": name,
             "options": options,
             "content_attrs": content_attrs,
-            "label": label,
         }
 
 
@@ -38,7 +38,7 @@ class _BulletedListImpl(Component):
 # processed, it delegates to an internal "implementation" component
 # that actually renders the content.
 @register("bulleted_list")
-class BulletedList(Component):
+class BulletedList(PLOSBaseComponent):
     template: t.django_html = """
     {% load component_tags %}
         {% provide "_bulleted_list" options=options enabled=True %}
@@ -51,7 +51,6 @@ class BulletedList(Component):
             /,
             *,
             name: str | None = None,
-            label: str | None = None,
             attrs: dict | None = None,
             content_attrs: dict | None = None,
     ):
@@ -60,7 +59,6 @@ class BulletedList(Component):
             "name": name,
             "attrs": attrs,
             "content_attrs": content_attrs,
-            "label": label,
         }
 
     def on_render_after(self, context, template, rendered) -> str:
@@ -75,7 +73,6 @@ class BulletedList(Component):
                     "options": options,
                     "name": context["name"],
                     "attrs": context["attrs"],
-                    "label": context["label"],
                     "content_attrs": context["content_attrs"],
                 },
                 render_dependencies=False,
@@ -86,7 +83,7 @@ class BulletedList(Component):
 Use this component to define individual component option inside the default slot inside the component.
 """
 @register("bulleted_list_option")
-class BulletedListOption(Component):
+class BulletedListOption(PLOSBaseComponent):
     template: t.django_html = """
     {% load component_tags %}
         {% provide "_bulleted_list_option" options=empty_options enabled=False %}

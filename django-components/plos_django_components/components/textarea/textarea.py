@@ -1,8 +1,10 @@
-from django_components import Component, register
+from django_components import register
+
+from ..base.base_component import PLOSBaseComponent
 
 
 @register("textarea")
-class Textarea(Component):
+class Textarea(PLOSBaseComponent):
     template_name = "textarea.html"
 
     def get_context_data(

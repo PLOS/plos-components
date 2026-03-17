@@ -1,11 +1,12 @@
 from typing import Literal
 
-from django.utils.safestring import mark_safe
-from django_components import Component, register
+from django_components import register
+
+from ..base.base_component import PLOSBaseComponent
 
 
 @register("plos_button")
-class TextBox(Component):
+class TextBox(PLOSBaseComponent):
     template_name = "button_base.html"
 
     def get_context_data(self,

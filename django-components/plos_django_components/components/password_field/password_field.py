@@ -1,8 +1,10 @@
-from django_components import Component, register
+from django_components import register
+
+from ..base.base_component import PLOSBaseComponent
 
 
 @register("password_field")
-class PasswordField(Component):
+class PasswordField(PLOSBaseComponent):
     template_name = "password_field.html"
 
     def get_context_data(self, label, name, value: str = "", placeholder: str = "", required: bool = False,

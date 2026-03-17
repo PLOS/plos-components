@@ -1,8 +1,10 @@
-from django_components import Component, register
+from django_components import register
+
+from ..base.base_component import PLOSBaseComponent
 
 
 @register("header_box")
-class HeaderBox(Component):
+class HeaderBox(PLOSBaseComponent):
     """
     Renders a full-width header.
 
