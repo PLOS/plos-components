@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import NamedTuple, Literal
 
 from django.utils.safestring import mark_safe
 from django_components import types as t, register
@@ -24,6 +24,7 @@ class _RadioSelectionImpl(PLOSBaseComponent):
             # Unique name to identify this radio selection instance.
             name: str | None = "radio_selection",
             legend: str | None = None,
+            legend_size: Literal["large", "medium", "small"] = "small",
             hint: str | None = None,
             errors: list[str] | None = None,
             attrs: dict | None = None,
@@ -37,6 +38,7 @@ class _RadioSelectionImpl(PLOSBaseComponent):
             "radio_selection_options": radio_selection_options,
             "content_attrs": content_attrs,
             "legend": legend,
+            "legend_size": legend_size,
             "hint": hint,
             "errors": errors,
         }
@@ -61,6 +63,7 @@ class RadioSelection(PLOSBaseComponent):
             *,
             name: str | None = None,
             legend: str | None = None,
+            legend_size: Literal["large", "medium", "small"] = "small",
             hint: str | None = None,
             errors: list[str] | None = None,
             attrs: dict | None = None,
@@ -78,6 +81,7 @@ class RadioSelection(PLOSBaseComponent):
             "attrs": attrs,
             "content_attrs": content_attrs,
             "legend": legend,
+            "legend_size": legend_size,
             "hint": hint,
             "errors": errors,
         }

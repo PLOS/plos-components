@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import NamedTuple, Literal
 
 from django.utils.safestring import mark_safe
 from django_components import types as t, register
@@ -6,25 +6,25 @@ from django_components import types as t, register
 from ..base.base_component import PLOSBaseComponent
 
 
-class MultiSelectionOptionEntry(NamedTuple):
+class CheckboxesEntry(NamedTuple):
     content: str
     checked: bool = False
     value: str | None = None
 
 
-@register("_multi_selection")
-class _MultiSelectionImpl(PLOSBaseComponent):
-    template_name = "multi_selection.html"
+@register("_plos_checkboxes")
+class _CheckboxesImpl(PLOSBaseComponent):
+    template_name = "checkboxes.html"
 
     def get_context_data(
             self,
             /,
             *,
-            multi_selection_options: list[MultiSelectionOptionEntry],
-            # Unique name to identify this multi selection instance.
+            item_options: list[CheckboxesEntry],
             name: str | None = None,
-            label: str | None = None,
-            help_text: str | None = None,
+            legend: str | None = None,
+            legend_size: Literal["large", "medium", "small"] = "small",
+            hint: str | None = None,
             errors: list[str] | None = None,
             attrs: dict | None = None,
             content_attrs: dict | None = None,
@@ -34,10 +34,11 @@ class _MultiSelectionImpl(PLOSBaseComponent):
         return {
             "attrs": attrs,
             "name": name,
-            "multi_selection_options": multi_selection_options,
+            "item_options": item_options,
             "content_attrs": content_attrs,
-            "label": label,
-            "help_text": help_text,
+            "legend": legend,
+            "legend_size": legend_size,
+            "hint": hint,
             "errors": errors,
         }
 
@@ -46,11 +47,11 @@ class _MultiSelectionImpl(PLOSBaseComponent):
 # user input provided as nested components. But after the input is
 # processed, it delegates to an internal "implementation" component
 # that actually renders the content.
-@register("multi_selection")
-class MultiSelection(PLOSBaseComponent):
+@register("plos_checkboxes")
+class Checkboxes(PLOSBaseComponent):
     template: t.django_html = """
     {% load component_tags %}
-        {% provide "_multi_selection" multi_selection_options=multi_selection_options errors=errors enabled=True %}
+        {% provide "_plos_checkboxes" item_options=item_options errors=errors enabled=True %}
             {% slot "content" default %}{% endslot %}
         {% endprovide %}
     """
@@ -60,43 +61,46 @@ class MultiSelection(PLOSBaseComponent):
             /,
             *,
             name: str | None = None,
-            label: str | None = None,
-            help_text: str | None = None,
+            legend: str | None = None,
+            legend_size: Literal["large", "medium", "small"] = "small",
+            hint: str | None = None,
             errors: list[str] | None = None,
             attrs: dict | None = None,
             content_attrs: dict | None = None,
     ):
         if not name:
             raise RuntimeError(
-                    f"You must give the MultiSelection component a name unique to this MultiSelection Component."
+                    f"You must give the Checkbox component a name unique to this Checkbox Component."
             )
         if not errors:
             errors = []
         return {
-            "multi_selection_options": [],
+            "item_options": [],
             "name": name,
             "attrs": attrs,
             "content_attrs": content_attrs,
-            "label": label,
-            "help_text": help_text,
+            "legend": legend,
+            "legend_size": legend_size,
+            "hint": hint,
             "errors": errors,
         }
 
     def on_render_after(self, context, template, rendered) -> str:
-        """Render the multi selection set.
+        """Render the checkbox set.
 
-        By the time we get here, all child multi selection components should have been rendered,
-        and they should've populated the multi selection. You must have the context called here to get the population.
+        By the time we get here, all child checkbox components should have been rendered,
+        and they should've populated the checkbox. You must have the context called here to get the population.
         """
-        multi_selection_options: list[MultiSelectionOptionEntry] = context["multi_selection_options"]
+        item_options: list[CheckboxesEntry] = context["item_options"]
         errors: list[str] = context["errors"]
-        return _MultiSelectionImpl.render(
+        return _CheckboxesImpl.render(
                 kwargs={
-                    "multi_selection_options": multi_selection_options,
+                    "item_options": item_options,
                     "name": context["name"],
                     "attrs": context["attrs"],
-                    "label": context["label"],
-                    "help_text": context["help_text"],
+                    "legend": context["legend"],
+                    "hint": context["hint"],
+                    "legend_size": context["legend_size"],
                     "errors": errors,
                     "content_attrs": context["content_attrs"],
                 },
@@ -105,15 +109,13 @@ class MultiSelection(PLOSBaseComponent):
 
 
 """
-Use this component to define individual multi selection option inside the default slot inside the `multi selection` component.
+Use this component to define individual checkboxes option inside the default slot inside the `checkboxes` component.
 """
-
-
-@register("multi_selection_option")
-class MultiSelectionOption(PLOSBaseComponent):
+@register("plos_checkboxes_option")
+class CheckboxesOption(PLOSBaseComponent):
     template: t.django_html = """
     {% load component_tags %}
-        {% provide "_multi_selection_option" multi_selection_options=empty_multi_selection_options errors=empty_errors enabled=False %}
+        {% provide "_plos_checkboxes_option" item_options=empty_item_options errors=empty_errors enabled=False %}
             {% slot "content" default %}{% endslot %}
         {% endprovide %}
     """
@@ -127,14 +129,14 @@ class MultiSelectionOption(PLOSBaseComponent):
             checked: bool = False,
     ):
         # Access the list of options registered for parent options component
-        # This raises if we're not nested inside the MultiSelection component.
-        multi_selection_ctx = self.inject("_multi_selection")
+        # This raises if we're not nested inside the Checkboxes component.
+        parent_ctx = self.inject("_plos_checkboxes")
 
-        # We accessed the _multi_selection context, but we're inside ANOTHER multi_selection_option
-        if not multi_selection_ctx.enabled:
+        # We accessed the _item_options context, but we're inside ANOTHER item_options_option
+        if not parent_ctx.enabled:
             raise RuntimeError(
-                    f"Component '{self.name}' was called with no parent MultiSelection component. "
-                    f"Either wrap '{self.name}' in MultiSelection component, or check if the component "
+                    f"Component '{self.name}' was called with no parent Checkboxes component. "
+                    f"Either wrap '{self.name}' in Checkboxes component, or check if the component "
                     f"is not a descendant of another instance of '{self.name}'"
             )
 
@@ -142,23 +144,23 @@ class MultiSelectionOption(PLOSBaseComponent):
             errors = []
 
         # Do this here to make sure it's added to the parent context.
-        parent_multi_selection_errors: list[str] = multi_selection_ctx.errors
+        parent_errors: list[str] = parent_ctx.errors
         for error in errors:
-            parent_multi_selection_errors.append(error)
+            parent_errors.append(error)
 
         return {
-            "empty_multi_selection_options": [],
+            "empty_item_options": [],
             "empty_errors": [],
-            "parent_multi_selection_options": multi_selection_ctx.multi_selection_options,
-            "parent_multi_selection_errors": parent_multi_selection_errors,
+            "parent_options": parent_ctx.item_options,
+            "parent_errors": parent_errors,
             "errors": errors,
             "checked": checked,
             "value": value,
         }
 
     def on_render_after(self, context, template, content):
-        parent_multi_selection_options: list[dict] = context["parent_multi_selection_options"]
-        parent_multi_selection_options.append({
+        parent_options: list[dict] = context["parent_options"]
+        parent_options.append({
             "checked": context["checked"],
             "value": context["value"],
             "content": mark_safe(content.strip()),

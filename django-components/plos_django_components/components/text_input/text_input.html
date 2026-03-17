@@ -27,7 +27,9 @@
                {% if value %}value="{{ value }}" {% endif %}
                {% if placeholder %}placeholder="{{ placeholder }}" {% endif %}
                {% if required %}required{% endif %}
-               {% if hint %}aria-describedby="{{id}}-hint" {% endif %}
+               {% if hint or errors %}
+               aria-describedby="{% if hint %}{{ name }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ name }}-error{% endif %}"
+               {% endif %}
                {% if maxlength %}maxlength={{ maxlength }}{% endif %}
                {% if minlength %}minlength={{ minlength }}{% endif %}>
         {% if suffix %}
