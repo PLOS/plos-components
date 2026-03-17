@@ -16,7 +16,7 @@ class TextBox(Component):
                          action: Literal["primary", "secondary", "warning"] = "primary",
                          type: str = "submit",
                          icon: str | None = None,
-                         icon_position: Literal["right", "left", "center"] = "right",
+                         icon_position: Literal["right", "left"] = "right",
     ):
         return {
             "text": text,
