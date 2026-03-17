@@ -1,0 +1,24 @@
+<div class="row expanded{% if errors %} error{% endif %}">
+    <div class="large-12 columns">
+        <label for="{{ id }}">
+            {{ label }}
+            {% if required %}<span class="red">*</span>{% endif %}
+        </label>
+        <textarea id="{{ id }}"
+                  name="{{ name }}"
+                  {% if disabled %}disabled{% endif %}
+                  {% if value %}value="{{ value }}"{% endif %}
+                  {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+                  {% if required %}required{% endif %}
+                  {% if maxlength %}maxlength={{ maxlength }}{% endif %}
+                  {% if minlength %}minlength={{ minlength }}{% endif %}
+                  {% if rows %}rows={{ rows }}{% endif %}
+                  {% if cols %}cols={{ cols }}{% endif %}>{% if value %}{{ value }}{% endif %}</textarea>
+        {% if help_text %}
+            <p class="help-text">{{ help_text }}</p>
+        {% endif %}
+        {% for error in errors %}
+            <small class="error">{{ error|escape }}</small>
+        {% endfor %}
+    </div>
+</div>

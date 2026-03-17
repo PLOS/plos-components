@@ -1,0 +1,18 @@
+{% load component_tags %}
+<div {% html_attrs attrs %}>
+    <div class="bulleted-list-header-container">
+        {% if label %}
+            <p class="bulleted-list-label">{{ label }}</p>
+        {% endif %}
+    </div>
+    <ul>
+        {% for option in options %}
+            <li
+                    {% if option.field_id %}id="{{ option.field_id }}"
+                    {% else %}id="id_{{ name }}_{{ forloop.counter }}"{% endif %}
+                    class="bulleted-list-option">
+                {{ option.content }}
+            </li>
+        {% endfor %}
+    </ul>
+</div>

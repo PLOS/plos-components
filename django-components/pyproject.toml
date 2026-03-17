@@ -1,0 +1,39 @@
+[project]
+name = "plos-django-components"
+version = "0.1.0"
+description = "A collection of PLOS components for django-components."
+readme = "README.md"
+authors = [{ name = "PLOS", email = "oss@plos.org" }]
+license = "MIT"
+requires-python = ">=3.10"
+keywords = ["django", "django-components", "plos"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "django-components",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["plos_django_components"]
+
+[tool.hatch.envs.default]
+type = "virtual"
+path = ".venv"

@@ -1,0 +1,29 @@
+{% load component_tags %}
+<div class="govuk-form-group{% if maxlength %} govuk-character-count{% endif %}"{% if maxlength %} data-module="govuk-character-count" data-maxlength="{{ maxlength }}"{% endif %}>
+  <h1 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--l" for="{{ id }}">
+      {{ label }}
+    </label>
+  </h1>
+  {% if hint %}
+    <div id="{{ id }}-hint" class="govuk-hint">
+      {{ hint }}
+    </div>
+  {% endif %}
+  <textarea class="govuk-textarea{% if maxlength %} govuk-js-character-count{% endif %}{% if errors %} govuk-textarea--error{% endif %}"
+            id="{{ id }}"
+            name="{{ name }}"
+            rows="{{ rows }}"
+            {% if maxlength or hint %}aria-describedby="{% if maxlength %}{{ id }}-info {% endif %}{% if hint %}{{ id }}-hint{% endif %}"{% endif %}>{{ value }}</textarea>
+  {% if maxlength %}
+    <div id="{{ id }}-info" class="govuk-hint govuk-character-count__message"></div>
+  {% endif %}
+  {% if errors %}
+    {% for error in errors %}
+      <p class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span>
+        {{ error }}
+      </p>
+    {% endfor %}
+  {% endif %}
+</div>
