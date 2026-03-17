@@ -1,0 +1,38 @@
+<div class="govuk-form-group{% if errors %} govuk-form-group--error{% endif %}">
+    <label class="govuk-label govuk-label--l" for="{{ id }}">
+        {{ label }}{% if required %}<span class="red">*</span>{% endif %}
+    </label>
+    {% if hint %}
+    <div class="govuk-hint" id="{{id}}-hint">{{ hint }}</div>
+    {% endif %}
+    {% if errors %}
+    <div class="govuk-error-message" id="{{id}}-error">
+        {% for error in errors %}
+        <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span> {{ error }}
+        </p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="govuk-input__wrapper">
+        {% if prefix %}
+        <div class="govuk-input__prefix" aria-hidden="true">{{ prefix }}</div>
+        {% endif %}
+        <input type="text"
+               id="{{ id }}"
+               name="{{ name }}"
+               class="govuk-input{% if errors %} govuk-input--error{% endif %}"
+               {% if disabled %}disabled{% endif %}
+               {% if value %}value="{{ value }}" {% endif %}
+               {% if placeholder %}placeholder="{{ placeholder }}" {% endif %}
+               {% if required %}required{% endif %}
+               {% if hint %}aria-describedby="{{id}}-hint" {% endif %}
+               {% if maxlength %}maxlength={{ maxlength }}{% endif %}
+               {% if minlength %}minlength={{ minlength }}{% endif %}>
+        {% if suffix %}
+        <div class="govuk-input__suffix" aria-hidden="true">{{ suffix }}</div>
+        {% endif %}
+    </div>
+
+</div>
