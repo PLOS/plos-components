@@ -73,8 +73,8 @@ The following demonstrates an example using the `Button` component.
 ```python
 from django.shortcuts import render
 
-def button_base_example(request):
-    template = "components/examples/simple_example/button_base_example.html"
+def button_example(request):
+    template = "example.html"
     context = {}
 
     return render(request, template, context)
@@ -85,9 +85,9 @@ Then the HTML file will be as follows:
 ```html
 {% load component_tags %}
 
-<div class="large-12 columns">
-    The button:
-    {% component "plos_button" text="Next" type="button" %}
+<div>
+    {% component "plos_button" %}
+    Next
     {% endcomponent %}
 </div>
 ```
