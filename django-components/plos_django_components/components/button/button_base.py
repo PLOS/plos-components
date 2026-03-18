@@ -15,7 +15,7 @@ class TextBox(PLOSBaseComponent):
                          text: str | None = "Submit",
                          disabled: bool = False,
                          action: Literal["primary", "secondary", "warning"] = "primary",
-                         type: str = Literal["button", "reset", "submit"] = "button",
+                         button_type: Literal["button", "reset", "submit"] = "button",
                          icon: str | None = None,
                          icon_position: Literal["right", "left"] = "right",
     ):
@@ -23,7 +23,7 @@ class TextBox(PLOSBaseComponent):
             "text": text,
             "disabled": disabled,
             "action": action,
-            "type": type,
+            "button_type": button_type,
             "icon": icon,
             "icon_position": icon_position,
         }
