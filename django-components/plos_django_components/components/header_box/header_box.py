@@ -13,6 +13,7 @@ class HeaderBox(PLOSBaseComponent):
         level (int, optional): Header level, 1-4, corresponding to HTML <h1> to <h4>.
                                Defaults to 1. Levels outside this range raise an error.
     """
+
     template_name = "header_box.html"
 
     def get_context_data(self, level: int = 1):

@@ -8,5 +8,4 @@ class TextBox(PLOSBaseComponent):
     template_name = "text_box.html"
 
     def get_context_data(self):
-        return {
-        }
+        return {}

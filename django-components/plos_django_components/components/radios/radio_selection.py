@@ -1,7 +1,8 @@
-from typing import NamedTuple, Literal
+from typing import Literal, NamedTuple
 
 from django.utils.safestring import mark_safe
-from django_components import types as t, register
+from django_components import register
+from django_components import types as t
 
 from ..base.base_component import PLOSBaseComponent
 
@@ -71,7 +72,7 @@ class RadioSelection(PLOSBaseComponent):
     ):
         if not name:
             raise RuntimeError(
-                    f"You must give the RadioSelection component a name unique to this RadioSelection Component."
+                    "You must give the RadioSelection component a name unique to this RadioSelection Component."
             )
         if not errors:
             errors = []

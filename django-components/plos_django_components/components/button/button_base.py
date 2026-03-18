@@ -9,14 +9,15 @@ from ..base.base_component import PLOSBaseComponent
 class TextBox(PLOSBaseComponent):
     template_name = "button_base.html"
 
-    def get_context_data(self,
-                         /,
-                         *,
-                         disabled: bool = False,
-                         action: Literal["primary", "secondary", "warning"] = "primary",
-                         button_type: Literal["button", "reset", "submit"] = "button",
-                         icon: str | None = None,
-                         icon_position: Literal["right", "left"] = "right",
+    def get_context_data(
+        self,
+        /,
+        *,
+        disabled: bool = False,
+        action: Literal["primary", "secondary", "warning"] = "primary",
+        button_type: Literal["button", "reset", "submit"] = "button",
+        icon: str | None = None,
+        icon_position: Literal["right", "left"] = "right",
     ):
         return {
             "disabled": disabled,

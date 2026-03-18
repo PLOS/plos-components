@@ -1,7 +1,8 @@
-from typing import NamedTuple, Literal
+from typing import Literal, NamedTuple
 
 from django.utils.safestring import mark_safe
-from django_components import types as t, register
+from django_components import register
+from django_components import types as t
 
 from ..base.base_component import PLOSBaseComponent
 
@@ -17,17 +18,17 @@ class _CheckboxesImpl(PLOSBaseComponent):
     template_name = "checkboxes.html"
 
     def get_context_data(
-            self,
-            /,
-            *,
-            item_options: list[CheckboxesEntry],
-            name: str | None = None,
-            legend: str | None = None,
-            legend_size: Literal["large", "medium", "small"] = "small",
-            hint: str | None = None,
-            errors: list[str] | None = None,
-            attrs: dict | None = None,
-            content_attrs: dict | None = None,
+        self,
+        /,
+        *,
+        item_options: list[CheckboxesEntry],
+        name: str | None = None,
+        legend: str | None = None,
+        legend_size: Literal["large", "medium", "small"] = "small",
+        hint: str | None = None,
+        errors: list[str] | None = None,
+        attrs: dict | None = None,
+        content_attrs: dict | None = None,
     ):
         if not errors:
             errors = []
@@ -57,20 +58,20 @@ class Checkboxes(PLOSBaseComponent):
     """
 
     def get_context_data(
-            self,
-            /,
-            *,
-            name: str | None = None,
-            legend: str | None = None,
-            legend_size: Literal["large", "medium", "small"] = "small",
-            hint: str | None = None,
-            errors: list[str] | None = None,
-            attrs: dict | None = None,
-            content_attrs: dict | None = None,
+        self,
+        /,
+        *,
+        name: str | None = None,
+        legend: str | None = None,
+        legend_size: Literal["large", "medium", "small"] = "small",
+        hint: str | None = None,
+        errors: list[str] | None = None,
+        attrs: dict | None = None,
+        content_attrs: dict | None = None,
     ):
         if not name:
             raise RuntimeError(
-                    f"You must give the Checkbox component a name unique to this Checkbox Component."
+                "You must give the Checkbox component a name unique to this Checkbox Component."
             )
         if not errors:
             errors = []
@@ -94,23 +95,25 @@ class Checkboxes(PLOSBaseComponent):
         item_options: list[CheckboxesEntry] = context["item_options"]
         errors: list[str] = context["errors"]
         return _CheckboxesImpl.render(
-                kwargs={
-                    "item_options": item_options,
-                    "name": context["name"],
-                    "attrs": context["attrs"],
-                    "legend": context["legend"],
-                    "hint": context["hint"],
-                    "legend_size": context["legend_size"],
-                    "errors": errors,
-                    "content_attrs": context["content_attrs"],
-                },
-                render_dependencies=False,
+            kwargs={
+                "item_options": item_options,
+                "name": context["name"],
+                "attrs": context["attrs"],
+                "legend": context["legend"],
+                "hint": context["hint"],
+                "legend_size": context["legend_size"],
+                "errors": errors,
+                "content_attrs": context["content_attrs"],
+            },
+            render_dependencies=False,
         )
 
 
 """
 Use this component to define individual checkboxes option inside the default slot inside the `checkboxes` component.
 """
+
+
 @register("plos_checkboxes_option")
 class CheckboxesOption(PLOSBaseComponent):
     template: t.django_html = """
@@ -121,12 +124,12 @@ class CheckboxesOption(PLOSBaseComponent):
     """
 
     def get_context_data(
-            self,
-            /,
-            *,
-            value: str | None = None,
-            errors: list[str] | None = None,
-            checked: bool = False,
+        self,
+        /,
+        *,
+        value: str | None = None,
+        errors: list[str] | None = None,
+        checked: bool = False,
     ):
         # Access the list of options registered for parent options component
         # This raises if we're not nested inside the Checkboxes component.
@@ -135,9 +138,9 @@ class CheckboxesOption(PLOSBaseComponent):
         # We accessed the _item_options context, but we're inside ANOTHER item_options_option
         if not parent_ctx.enabled:
             raise RuntimeError(
-                    f"Component '{self.name}' was called with no parent Checkboxes component. "
-                    f"Either wrap '{self.name}' in Checkboxes component, or check if the component "
-                    f"is not a descendant of another instance of '{self.name}'"
+                f"Component '{self.name}' was called with no parent Checkboxes component. "
+                f"Either wrap '{self.name}' in Checkboxes component, or check if the component "
+                f"is not a descendant of another instance of '{self.name}'"
             )
 
         if not errors:
@@ -160,9 +163,11 @@ class CheckboxesOption(PLOSBaseComponent):
 
     def on_render_after(self, context, template, content):
         parent_options: list[dict] = context["parent_options"]
-        parent_options.append({
-            "checked": context["checked"],
-            "value": context["value"],
-            "content": mark_safe(content.strip()),
-            "errors": context["errors"],
-        })
+        parent_options.append(
+            {
+                "checked": context["checked"],
+                "value": context["value"],
+                "content": mark_safe(content.strip()),
+                "errors": context["errors"],
+            }
+        )

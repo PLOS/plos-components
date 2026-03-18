@@ -1,7 +1,8 @@
 from typing import NamedTuple
 
 from django.utils.safestring import mark_safe
-from django_components import types as t, register
+from django_components import register
+from django_components import types as t
 
 from ...base.base_component import PLOSBaseComponent
 
@@ -16,14 +17,14 @@ class _BulletedListImpl(PLOSBaseComponent):
     template_name = "bulleted_list.html"
 
     def get_context_data(
-            self,
-            /,
-            *,
-            options: list[BulletedListOptionEntry],
-            # Unique name to identify this component instance.
-            name: str | None = None,
-            attrs: dict | None = None,
-            content_attrs: dict | None = None,
+        self,
+        /,
+        *,
+        options: list[BulletedListOptionEntry],
+        # Unique name to identify this component instance.
+        name: str | None = None,
+        attrs: dict | None = None,
+        content_attrs: dict | None = None,
     ):
         return {
             "attrs": attrs,
@@ -47,12 +48,12 @@ class BulletedList(PLOSBaseComponent):
     """
 
     def get_context_data(
-            self,
-            /,
-            *,
-            name: str | None = None,
-            attrs: dict | None = None,
-            content_attrs: dict | None = None,
+        self,
+        /,
+        *,
+        name: str | None = None,
+        attrs: dict | None = None,
+        content_attrs: dict | None = None,
     ):
         return {
             "options": [],
@@ -69,19 +70,21 @@ class BulletedList(PLOSBaseComponent):
         """
         options: list[BulletedListOptionEntry] = context["options"]
         return _BulletedListImpl.render(
-                kwargs={
-                    "options": options,
-                    "name": context["name"],
-                    "attrs": context["attrs"],
-                    "content_attrs": context["content_attrs"],
-                },
-                render_dependencies=False,
+            kwargs={
+                "options": options,
+                "name": context["name"],
+                "attrs": context["attrs"],
+                "content_attrs": context["content_attrs"],
+            },
+            render_dependencies=False,
         )
 
 
 """
 Use this component to define individual component option inside the default slot inside the component.
 """
+
+
 @register("plos_bulleted_list_option")
 class BulletedListOption(PLOSBaseComponent):
     template: t.django_html = """
@@ -92,10 +95,10 @@ class BulletedListOption(PLOSBaseComponent):
     """
 
     def get_context_data(
-            self,
-            /,
-            *,
-            field_id: str | None = None,
+        self,
+        /,
+        *,
+        field_id: str | None = None,
     ):
         # Access the list of options registered for parent options component
         # This raises if we're not nested inside the parent component.
@@ -104,9 +107,9 @@ class BulletedListOption(PLOSBaseComponent):
         # We accessed the _plos_bulleted_list context, but we're inside ANOTHER plos_bulleted_list_option
         if not parent_ctx.enabled:
             raise RuntimeError(
-                    f"Component '{self.name}' was called with no parent BulletedList component. "
-                    f"Either wrap '{self.name}' in BulletedList component, or check if the component "
-                    f"is not a descendant of another instance of '{self.name}'"
+                f"Component '{self.name}' was called with no parent BulletedList component. "
+                f"Either wrap '{self.name}' in BulletedList component, or check if the component "
+                f"is not a descendant of another instance of '{self.name}'"
             )
 
         return {
@@ -117,7 +120,9 @@ class BulletedListOption(PLOSBaseComponent):
 
     def on_render_after(self, context, template, content):
         parent_options: list[dict] = context["parent_options"]
-        parent_options.append({
-            "field_id": context["field_id"],
-            "content": mark_safe(content.strip()),
-        })
+        parent_options.append(
+            {
+                "field_id": context["field_id"],
+                "content": mark_safe(content.strip()),
+            }
+        )
