@@ -18,18 +18,18 @@ class _RadioSelectionImpl(PLOSBaseComponent):
     template_name = "radio_selection.html"
 
     def get_context_data(
-            self,
-            /,
-            *,
-            radio_selection_options: list[RadioSelectionOptionEntry],
-            # Unique name to identify this radio selection instance.
-            name: str | None = "plos_radio_selection",
-            legend: str | None = None,
-            legend_size: Literal["large", "medium", "small"] = "small",
-            hint: str | None = None,
-            errors: list[str] | None = None,
-            attrs: dict | None = None,
-            content_attrs: dict | None = None,
+        self,
+        /,
+        *,
+        radio_selection_options: list[RadioSelectionOptionEntry],
+        # Unique name to identify this radio selection instance.
+        name: str | None = "plos_radio_selection",
+        legend: str | None = None,
+        legend_size: Literal["large", "medium", "small"] = "small",
+        hint: str | None = None,
+        errors: list[str] | None = None,
+        attrs: dict | None = None,
+        content_attrs: dict | None = None,
     ):
         if not errors:
             errors = []
@@ -59,20 +59,20 @@ class RadioSelection(PLOSBaseComponent):
     """
 
     def get_context_data(
-            self,
-            /,
-            *,
-            name: str | None = None,
-            legend: str | None = None,
-            legend_size: Literal["large", "medium", "small"] = "small",
-            hint: str | None = None,
-            errors: list[str] | None = None,
-            attrs: dict | None = None,
-            content_attrs: dict | None = None,
+        self,
+        /,
+        *,
+        name: str | None = None,
+        legend: str | None = None,
+        legend_size: Literal["large", "medium", "small"] = "small",
+        hint: str | None = None,
+        errors: list[str] | None = None,
+        attrs: dict | None = None,
+        content_attrs: dict | None = None,
     ):
         if not name:
             raise RuntimeError(
-                    "You must give the RadioSelection component a name unique to this RadioSelection Component."
+                "You must give the RadioSelection component a name unique to this RadioSelection Component."
             )
         if not errors:
             errors = []
@@ -93,25 +93,29 @@ class RadioSelection(PLOSBaseComponent):
         By the time we get here, all child radio selection components should have been rendered,
         and they should've populated the radio selection. You must have the context called here to get the population.
         """
-        radio_selection_options: list[RadioSelectionOptionEntry] = context["radio_selection_options"]
+        radio_selection_options: list[RadioSelectionOptionEntry] = context[
+            "radio_selection_options"
+        ]
         errors: list[str] = context["errors"]
         return _RadioSelectionImpl.render(
-                kwargs={
-                    "radio_selection_options": radio_selection_options,
-                    "name": context["name"],
-                    "attrs": context["attrs"],
-                    "legend": context["legend"],
-                    "hint": context["hint"],
-                    "errors": errors,
-                    "content_attrs": context["content_attrs"],
-                },
-                render_dependencies=False,
+            kwargs={
+                "radio_selection_options": radio_selection_options,
+                "name": context["name"],
+                "attrs": context["attrs"],
+                "legend": context["legend"],
+                "hint": context["hint"],
+                "errors": errors,
+                "content_attrs": context["content_attrs"],
+            },
+            render_dependencies=False,
         )
 
 
 """
 Use this component to define individual radio selection option inside the default slot inside the `radio selection` component.
 """
+
+
 @register("plos_radio_selection_option")
 class RadioSelectionOption(PLOSBaseComponent):
     template: t.django_html = """
@@ -122,12 +126,12 @@ class RadioSelectionOption(PLOSBaseComponent):
     """
 
     def get_context_data(
-            self,
-            /,
-            *,
-            value: str | None = None,
-            errors: list[str] | None = None,
-            checked: bool = False,
+        self,
+        /,
+        *,
+        value: str | None = None,
+        errors: list[str] | None = None,
+        checked: bool = False,
     ):
         # Access the list of options registered for parent options component
         # This raises if we're not nested inside the RadioSelection component.
@@ -136,9 +140,9 @@ class RadioSelectionOption(PLOSBaseComponent):
         # We accessed the _plos_radio_selection context, but we're inside ANOTHER plos_radio_selection_option
         if not radio_selection_ctx.enabled:
             raise RuntimeError(
-                    f"Component '{self.name}' was called with no parent RadioSelection component. "
-                    f"Either wrap '{self.name}' in RadioSelection component, or check if the component "
-                    f"is not a descendant of another instance of '{self.name}'"
+                f"Component '{self.name}' was called with no parent RadioSelection component. "
+                f"Either wrap '{self.name}' in RadioSelection component, or check if the component "
+                f"is not a descendant of another instance of '{self.name}'"
             )
 
         if not errors:
@@ -160,11 +164,14 @@ class RadioSelectionOption(PLOSBaseComponent):
         }
 
     def on_render_after(self, context, template, content):
-        parent_radio_selection_options: list[dict] = context["parent_radio_selection_options"]
-        parent_radio_selection_options.append({
-            "checked": context["checked"],
-            "value": context["value"],
-            "content": mark_safe(content.strip()),
-            "errors": context["errors"],
-        })
-
+        parent_radio_selection_options: list[dict] = context[
+            "parent_radio_selection_options"
+        ]
+        parent_radio_selection_options.append(
+            {
+                "checked": context["checked"],
+                "value": context["value"],
+                "content": mark_safe(content.strip()),
+                "errors": context["errors"],
+            }
+        )
