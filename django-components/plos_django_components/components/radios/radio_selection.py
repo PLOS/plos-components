@@ -12,7 +12,7 @@ class RadioSelectionOptionEntry(NamedTuple):
     value: str | None = None
 
 
-@register("_radio_selection")
+@register("_plos_radio_selection")
 class _RadioSelectionImpl(PLOSBaseComponent):
     template_name = "radio_selection.html"
 
@@ -22,7 +22,7 @@ class _RadioSelectionImpl(PLOSBaseComponent):
             *,
             radio_selection_options: list[RadioSelectionOptionEntry],
             # Unique name to identify this radio selection instance.
-            name: str | None = "radio_selection",
+            name: str | None = "plos_radio_selection",
             legend: str | None = None,
             legend_size: Literal["large", "medium", "small"] = "small",
             hint: str | None = None,
@@ -48,11 +48,11 @@ class _RadioSelectionImpl(PLOSBaseComponent):
 # user input provided as nested components. But after the input is
 # processed, it delegates to an internal "implementation" component
 # that actually renders the content.
-@register("radio_selection")
+@register("plos_radio_selection")
 class RadioSelection(PLOSBaseComponent):
     template: t.django_html = """
     {% load component_tags %}
-        {% provide "_radio_selection" radio_selection_options=radio_selection_options errors=errors enabled=True %}
+        {% provide "_plos_radio_selection" radio_selection_options=radio_selection_options errors=errors enabled=True %}
             {% slot "content" default %}{% endslot %}
         {% endprovide %}
     """
@@ -111,7 +111,7 @@ class RadioSelection(PLOSBaseComponent):
 """
 Use this component to define individual radio selection option inside the default slot inside the `radio selection` component.
 """
-@register("radio_selection_option")
+@register("plos_radio_selection_option")
 class RadioSelectionOption(PLOSBaseComponent):
     template: t.django_html = """
     {% load component_tags %}
@@ -130,9 +130,9 @@ class RadioSelectionOption(PLOSBaseComponent):
     ):
         # Access the list of options registered for parent options component
         # This raises if we're not nested inside the RadioSelection component.
-        radio_selection_ctx = self.inject("_radio_selection")
+        radio_selection_ctx = self.inject("_plos_radio_selection")
 
-        # We accessed the _radio_selection context, but we're inside ANOTHER radio_selection_option
+        # We accessed the _plos_radio_selection context, but we're inside ANOTHER plos_radio_selection_option
         if not radio_selection_ctx.enabled:
             raise RuntimeError(
                     f"Component '{self.name}' was called with no parent RadioSelection component. "

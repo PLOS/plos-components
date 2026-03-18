@@ -12,7 +12,6 @@ class TextBox(PLOSBaseComponent):
     def get_context_data(self,
                          /,
                          *,
-                         text: str | None = "Submit",
                          disabled: bool = False,
                          action: Literal["primary", "secondary", "warning"] = "primary",
                          button_type: Literal["button", "reset", "submit"] = "button",
@@ -20,7 +19,6 @@ class TextBox(PLOSBaseComponent):
                          icon_position: Literal["right", "left"] = "right",
     ):
         return {
-            "text": text,
             "disabled": disabled,
             "action": action,
             "button_type": button_type,

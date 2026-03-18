@@ -3,7 +3,7 @@ from django_components import register
 from ..base.base_component import PLOSBaseComponent
 
 
-@register("header_box")
+@register("plos_header_box")
 class HeaderBox(PLOSBaseComponent):
     """
     Renders a full-width header.
@@ -15,12 +15,11 @@ class HeaderBox(PLOSBaseComponent):
     """
     template_name = "header_box.html"
 
-    def get_context_data(self, text: str, level: int = 1):
+    def get_context_data(self, level: int = 1):
         # Validate header level
         if not 1 <= level <= 4:
             raise ValueError(f"Invalid header level {level}: must be between 1 and 4")
 
         return {
-            "text": text,
             "tag": f"h{level}",
         }

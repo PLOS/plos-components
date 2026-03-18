@@ -11,7 +11,7 @@ class BulletedListOptionEntry(NamedTuple):
     field_id: str | None = None
 
 
-@register("_bulleted_list")
+@register("_plos_bulleted_list")
 class _BulletedListImpl(PLOSBaseComponent):
     template_name = "bulleted_list.html"
 
@@ -37,11 +37,11 @@ class _BulletedListImpl(PLOSBaseComponent):
 # user input provided as nested components. But after the input is
 # processed, it delegates to an internal "implementation" component
 # that actually renders the content.
-@register("bulleted_list")
+@register("plos_bulleted_list")
 class BulletedList(PLOSBaseComponent):
     template: t.django_html = """
     {% load component_tags %}
-        {% provide "_bulleted_list" options=options enabled=True %}
+        {% provide "_plos_bulleted_list" options=options enabled=True %}
             {% slot "content" default %}{% endslot %}
         {% endprovide %}
     """
@@ -82,11 +82,11 @@ class BulletedList(PLOSBaseComponent):
 """
 Use this component to define individual component option inside the default slot inside the component.
 """
-@register("bulleted_list_option")
+@register("plos_bulleted_list_option")
 class BulletedListOption(PLOSBaseComponent):
     template: t.django_html = """
     {% load component_tags %}
-        {% provide "_bulleted_list_option" options=empty_options enabled=False %}
+        {% provide "_plos_bulleted_list_option" options=empty_options enabled=False %}
             {% slot "content" default %}{% endslot %}
         {% endprovide %}
     """
@@ -99,9 +99,9 @@ class BulletedListOption(PLOSBaseComponent):
     ):
         # Access the list of options registered for parent options component
         # This raises if we're not nested inside the parent component.
-        parent_ctx = self.inject("_bulleted_list")
+        parent_ctx = self.inject("_plos_bulleted_list")
 
-        # We accessed the _bulleted_list context, but we're inside ANOTHER bulleted_list_option
+        # We accessed the _plos_bulleted_list context, but we're inside ANOTHER plos_bulleted_list_option
         if not parent_ctx.enabled:
             raise RuntimeError(
                     f"Component '{self.name}' was called with no parent BulletedList component. "
