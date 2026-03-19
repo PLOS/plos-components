@@ -1,5 +1,5 @@
 {% load component_tags %}
-<ul {% html_attrs attrs %}>
+<ul {% html_attrs attrs %} class="govuk-list govuk-list--bullet">
     {% for option in options %}
     <li {% if option.field_id %}id="{{ option.field_id }}" {% else %}id="id_{{ name }}_{{ forloop.counter }}" {% endif %}>
         {{ option.content }}

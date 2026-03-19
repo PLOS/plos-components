@@ -1,3 +1,11 @@
+"""
+A component function which provides the ability to select options using checkboxes.
+
+This module provides:
+- A parent checkboxes selection component.
+- A checkbox selection option entry.
+"""
+
 from typing import Literal, NamedTuple
 
 from django.utils.safestring import mark_safe
@@ -8,6 +16,10 @@ from ..base.base_component import PLOSBaseComponent
 
 
 class CheckboxesEntry(NamedTuple):
+    """
+    Tuples to save content about each entry in the options.
+    """
+
     content: str
     checked: bool = False
     value: str | None = None
@@ -15,6 +27,10 @@ class CheckboxesEntry(NamedTuple):
 
 @register("_plos_checkboxes")
 class _CheckboxesImpl(PLOSBaseComponent):
+    """
+    The hidden parent component for displaying a list of checkboxes.
+    """
+
     template_name = "checkboxes.html"
 
     def get_context_data(
@@ -44,12 +60,14 @@ class _CheckboxesImpl(PLOSBaseComponent):
         }
 
 
-# This is an "API" component, meaning that it's designed to process
-# user input provided as nested components. But after the input is
-# processed, it delegates to an internal "implementation" component
-# that actually renders the content.
 @register("plos_checkboxes")
 class Checkboxes(PLOSBaseComponent):
+    """
+    An "API" component, meaning that it's designed to process user input provided as nested components.
+
+    But after the input is processed, it delegates to an internal "implementation" component that actually renders the content.
+    """
+
     template: t.django_html = """
     {% load component_tags %}
         {% provide "_plos_checkboxes" item_options=item_options errors=errors enabled=True %}
@@ -57,7 +75,7 @@ class Checkboxes(PLOSBaseComponent):
         {% endprovide %}
     """
 
-    def get_context_data(
+    def get_context_data(  # noqa: D102
         self,
         /,
         *,
@@ -86,12 +104,7 @@ class Checkboxes(PLOSBaseComponent):
             "errors": errors,
         }
 
-    def on_render_after(self, context, template, rendered) -> str:
-        """Render the checkbox set.
-
-        By the time we get here, all child checkbox components should have been rendered,
-        and they should've populated the checkbox. You must have the context called here to get the population.
-        """
+    def on_render_after(self, context, template, rendered) -> str:  # noqa: D102
         item_options: list[CheckboxesEntry] = context["item_options"]
         errors: list[str] = context["errors"]
         return _CheckboxesImpl.render(
@@ -109,13 +122,12 @@ class Checkboxes(PLOSBaseComponent):
         )
 
 
-"""
-Use this component to define individual checkboxes option inside the default slot inside the `checkboxes` component.
-"""
-
-
 @register("plos_checkboxes_option")
 class CheckboxesOption(PLOSBaseComponent):
+    """
+    Use this component to define individual checkboxes option inside the default slot inside the `checkboxes` component.
+    """
+
     template: t.django_html = """
     {% load component_tags %}
         {% provide "_plos_checkboxes_option" item_options=empty_item_options errors=empty_errors enabled=False %}
@@ -123,7 +135,7 @@ class CheckboxesOption(PLOSBaseComponent):
         {% endprovide %}
     """
 
-    def get_context_data(
+    def get_context_data(  # noqa: D102
         self,
         /,
         *,
@@ -161,7 +173,7 @@ class CheckboxesOption(PLOSBaseComponent):
             "value": value,
         }
 
-    def on_render_after(self, context, template, content):
+    def on_render_after(self, context, template, content):  # noqa: D102
         parent_options: list[dict] = context["parent_options"]
         parent_options.append(
             {

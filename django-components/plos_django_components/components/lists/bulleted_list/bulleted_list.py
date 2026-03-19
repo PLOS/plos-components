@@ -1,3 +1,11 @@
+"""
+A component function which provides the ability to create an unordered, bulleted list.
+
+This module provides:
+- A parent holding the list entries.
+- A child element for each entry.
+"""
+
 from typing import NamedTuple
 
 from django.utils.safestring import mark_safe
@@ -8,6 +16,10 @@ from ...base.base_component import PLOSBaseComponent
 
 
 class BulletedListOptionEntry(NamedTuple):
+    """
+    Tuples to save content about each entry in the options.
+    """
+
     content: str
     field_id: str | None = None
 
@@ -34,12 +46,14 @@ class _BulletedListImpl(PLOSBaseComponent):
         }
 
 
-# This is an "API" component, meaning that it's designed to process
-# user input provided as nested components. But after the input is
-# processed, it delegates to an internal "implementation" component
-# that actually renders the content.
 @register("plos_bulleted_list")
 class BulletedList(PLOSBaseComponent):
+    """
+    An "API" component, meaning that it's designed to process user input provided as nested components.
+
+    But after the input is processed, it delegates to an internal "implementation" component that actually renders the content.
+    """
+
     template: t.django_html = """
     {% load component_tags %}
         {% provide "_plos_bulleted_list" options=options enabled=True %}
@@ -47,7 +61,7 @@ class BulletedList(PLOSBaseComponent):
         {% endprovide %}
     """
 
-    def get_context_data(
+    def get_context_data(  # noqa: D102
         self,
         /,
         *,
@@ -62,12 +76,7 @@ class BulletedList(PLOSBaseComponent):
             "content_attrs": content_attrs,
         }
 
-    def on_render_after(self, context, template, rendered) -> str:
-        """Render the bulleted list set.
-
-        By the time we get here, all child bulleted list components should have been rendered,
-        and they should've populated the bulleted list. You must have the context called here to get the population.
-        """
+    def on_render_after(self, context, template, rendered) -> str:  # noqa: D102
         options: list[BulletedListOptionEntry] = context["options"]
         return _BulletedListImpl.render(
             kwargs={
@@ -80,13 +89,12 @@ class BulletedList(PLOSBaseComponent):
         )
 
 
-"""
-Use this component to define individual component option inside the default slot inside the component.
-"""
-
-
 @register("plos_bulleted_list_option")
 class BulletedListOption(PLOSBaseComponent):
+    """
+    Use this component to define individual component option inside the default slot inside the component.
+    """
+
     template: t.django_html = """
     {% load component_tags %}
         {% provide "_plos_bulleted_list_option" options=empty_options enabled=False %}
@@ -94,7 +102,7 @@ class BulletedListOption(PLOSBaseComponent):
         {% endprovide %}
     """
 
-    def get_context_data(
+    def get_context_data(  # noqa: D102
         self,
         /,
         *,
@@ -118,7 +126,7 @@ class BulletedListOption(PLOSBaseComponent):
             "field_id": field_id,
         }
 
-    def on_render_after(self, context, template, content):
+    def on_render_after(self, context, template, content):  # noqa: D102
         parent_options: list[dict] = context["parent_options"]
         parent_options.append(
             {
