@@ -92,4 +92,7 @@ select = [
 ]
 ignore = [
     "E501",  # line-too-long
+    "D401",
+    "D200",
+    "D212",
 ]

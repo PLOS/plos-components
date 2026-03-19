@@ -3,18 +3,18 @@
      {% if maxlength %}data-module="govuk-character-count" data-maxlength="{{ maxlength }}"{% endif %}>
     {% if label %}
     <label class="govuk-label {% if label_size == 'large' %} govuk-label--l{% endif %}{% if label_size == 'medium' %} govuk-label--m{% endif %}{% if label_size == 'small' %} govuk-label--s{% endif %}"
-           for="{{ id }}">
+           for="{{ field_id }}">
         {{ label }}
     </label>
     {% endif %}
     {% if hint %}
-    <div id="{{ id }}-hint" class="govuk-hint">
+    <div id="{{ field_id }}-hint" class="govuk-hint">
         {{ hint }}
     </div>
     {% endif %}
     <textarea
             class="govuk-textarea{% if maxlength %} govuk-js-character-count{% endif %}{% if errors %} govuk-textarea--error{% endif %}"
-            id="{{ id }}"
+            id="{{ field_id }}"
             name="{{ name }}"
             rows="{{ rows }}"
             {% if cols %}cols={{ cols }}{% endif %}
@@ -22,11 +22,11 @@
             {% if required %}required{% endif %}
             {% if maxlength %}maxlength={{ maxlength }}{% endif %}
             {% if minlength %}minlength={{ minlength }}{% endif %}
-            {% if maxlength or hint %}aria-describedby="{% if maxlength %}{{ id }}-info {% endif %}{% if hint %}{{ id }}-hint{% endif %}" {% endif %}>
+            {% if maxlength or hint %}aria-describedby="{% if maxlength %}{{ field_id }}-info {% endif %}{% if hint %}{{ field_id }}-hint{% endif %}" {% endif %}>
         {% if value %}{{ value }}{% endif %}
     </textarea>
     {% if maxlength %}
-    <div id="{{ id }}-info" class="govuk-hint govuk-character-count__message"></div>
+    <div id="{{ field_id }}-info" class="govuk-hint govuk-character-count__message"></div>
     {% endif %}
     {% if errors %}
     {% for error in errors %}

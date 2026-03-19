@@ -1,5 +1,14 @@
+"""
+A component function which provides the ability to select options using radios.
+
+This module provides:
+- A parent radio selection component.
+- A radio selection option entry.
+"""
+
 from typing import Literal, NamedTuple
 
+from django.template import Context, Template
 from django.utils.safestring import mark_safe
 from django_components import register
 from django_components import types as t
@@ -8,6 +17,10 @@ from ..base.base_component import PLOSBaseComponent
 
 
 class RadioSelectionOptionEntry(NamedTuple):
+    """
+    Tuples to save content about each entry in the radio selection options.
+    """
+
     content: str
     checked: bool = False
     value: str | None = None
@@ -51,6 +64,10 @@ class _RadioSelectionImpl(PLOSBaseComponent):
 # that actually renders the content.
 @register("plos_radio_selection")
 class RadioSelection(PLOSBaseComponent):
+    """
+    The radio selection parent component.
+    """
+
     template: t.django_html = """
     {% load component_tags %}
         {% provide "_plos_radio_selection" radio_selection_options=radio_selection_options errors=errors enabled=True %}
@@ -58,7 +75,7 @@ class RadioSelection(PLOSBaseComponent):
         {% endprovide %}
     """
 
-    def get_context_data(
+    def get_context_data(  # noqa: D102
         self,
         /,
         *,
@@ -87,11 +104,18 @@ class RadioSelection(PLOSBaseComponent):
             "errors": errors,
         }
 
-    def on_render_after(self, context, template, rendered) -> str:
-        """Render the radio selection set.
+    def on_render_after(
+        self, context: Context, template: Template | None, rendered
+    ) -> str:
+        """
+        Render the radio selection set.
 
         By the time we get here, all child radio selection components should have been rendered,
         and they should've populated the radio selection. You must have the context called here to get the population.
+
+        :param rendered: The elements already rendered.
+        :param context: The context of the rendering.
+        :param template: The template to render.
         """
         radio_selection_options: list[RadioSelectionOptionEntry] = context[
             "radio_selection_options"
@@ -111,13 +135,12 @@ class RadioSelection(PLOSBaseComponent):
         )
 
 
-"""
-Use this component to define individual radio selection option inside the default slot inside the `radio selection` component.
-"""
-
-
 @register("plos_radio_selection_option")
 class RadioSelectionOption(PLOSBaseComponent):
+    """
+    Use this component to define individual radio selection option inside the default slot inside the `radio selection` component.
+    """
+
     template: t.django_html = """
     {% load component_tags %}
         {% provide "_radio_selection_option" radio_selection_options=empty_radio_selection_options errors=empty_errors enabled=False %}
@@ -125,7 +148,7 @@ class RadioSelectionOption(PLOSBaseComponent):
         {% endprovide %}
     """
 
-    def get_context_data(
+    def get_context_data(  # noqa: D102
         self,
         /,
         *,
@@ -163,7 +186,7 @@ class RadioSelectionOption(PLOSBaseComponent):
             "value": value,
         }
 
-    def on_render_after(self, context, template, content):
+    def on_render_after(self, context, template, content):  # noqa: D102
         parent_radio_selection_options: list[dict] = context[
             "parent_radio_selection_options"
         ]
