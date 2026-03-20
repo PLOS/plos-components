@@ -27,18 +27,21 @@ Ensure `django_components.template_loader.Loader` is in your `TEMPLATES` loaders
 
 ```python
 TEMPLATES = [
-        {
-            "OPTIONS":
-                {
-                    "loaders": (
-                        'django.template.loaders.cached.Loader', [
-                        'django.template.loaders.filesystem.Loader',
-                        'django.template.loaders.app_directories.Loader',
-                        'django_components.template_loader.Loader',
-                    ])
-                }
-        }
-    ]
+    {
+        "OPTIONS":
+            {
+                "loaders": (
+                    'django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                    'django_components.template_loader.Loader',
+                ]),
+                "builtins": [
+                    "django_components.templatetags.component_tags",
+                ],
+            }
+    }
+]
 ```
 
 ### Janeway
@@ -52,6 +55,10 @@ import core.janeway_global_settings as global_settings
 
 global_settings.INSTALLED_APPS.append('django_components')
 global_settings.INSTALLED_APPS.append('plos_django_components')
+
+global_settings.TEMPLATES[0]["OPTIONS"]["builtins"].append(
+        "django_components.templatetags.component_tags",
+)
 
 global_settings.TEMPLATES[0]["OPTIONS"]["loaders"].append((
     'django.template.loaders.cached.Loader', [
