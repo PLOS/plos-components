@@ -30,6 +30,7 @@ class Button(PLOSBaseComponent):
         icon: str | None = None,
         icon_position: Literal["right", "left"] = "right",
         value: str | None = None,
+        field_id: str | None = None,
     ):
         return {
             "disabled": disabled,
@@ -38,4 +39,5 @@ class Button(PLOSBaseComponent):
             "icon": icon,
             "icon_position": icon_position,
             "value": value,
+            "field_id": field_id,
         }

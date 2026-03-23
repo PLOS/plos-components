@@ -45,9 +45,14 @@ class _CheckboxesImpl(PLOSBaseComponent):
         errors: list[str] | None = None,
         attrs: dict | None = None,
         content_attrs: dict | None = None,
+        field_id: str | None = None,
     ):
         if not errors:
             errors = []
+
+        if not field_id:
+            field_id = name
+
         return {
             "attrs": attrs,
             "name": name,
@@ -57,6 +62,7 @@ class _CheckboxesImpl(PLOSBaseComponent):
             "legend_size": legend_size,
             "hint": hint,
             "errors": errors,
+            "field_id": field_id,
         }
 
 
@@ -86,13 +92,19 @@ class Checkboxes(PLOSBaseComponent):
         errors: list[str] | None = None,
         attrs: dict | None = None,
         content_attrs: dict | None = None,
+        field_id: str | None = None,
     ):
         if not name:
             raise RuntimeError(
                 "You must give the Checkbox component a name unique to this Checkbox Component."
             )
+
         if not errors:
             errors = []
+
+        if not field_id:
+            field_id = name
+
         return {
             "item_options": [],
             "name": name,
@@ -102,6 +114,7 @@ class Checkboxes(PLOSBaseComponent):
             "legend_size": legend_size,
             "hint": hint,
             "errors": errors,
+            "field_id": field_id,
         }
 
     def on_render_after(self, context, template, rendered) -> str:  # noqa: D102
@@ -117,6 +130,7 @@ class Checkboxes(PLOSBaseComponent):
                 "legend_size": context["legend_size"],
                 "errors": errors,
                 "content_attrs": context["content_attrs"],
+                "field_id": context["field_id"],
             },
             render_dependencies=False,
         )

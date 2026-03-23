@@ -1,20 +1,23 @@
-<div class="govuk-form-group{% if errors %} govuk-form-group--error{% endif %}">
-    <fieldset {% html_attrs attrs %} class="govuk-fieldset"
+<div id="{{ field_id }}-form-group"
+     class="govuk-form-group{% if errors %} govuk-form-group--error{% endif %}">
+    <fieldset id="{{ field_id }}-fieldset"
+              {% html_attrs attrs %} class="govuk-fieldset"
               {% if hint or errors %}
-              aria-describedby="{% if hint %}{{ name }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ name }}-error{% endif %}"
+              aria-describedby="{% if hint %}{{ field_id }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ field_id }}-error{% endif %}"
               {% endif %}>
         {% if legend %}
-        <legend class="govuk-fieldset__legend{% if legend_size == 'large' %} govuk-fieldset__legend--l{% endif %}{% if legend_size == 'medium' %} govuk-fieldset__legend--m{% endif %}{% if legend_size == 'small' %} govuk-fieldset__legend--s{% endif %}">
+        <legend id="{{ field_id }}-legend"
+                class="govuk-fieldset__legend{% if legend_size == 'large' %} govuk-fieldset__legend--l{% endif %}{% if legend_size == 'medium' %} govuk-fieldset__legend--m{% endif %}{% if legend_size == 'small' %} govuk-fieldset__legend--s{% endif %}">
             {{ legend|escape }}
         </legend>
         {% endif %}
         {% if hint %}
-        <div id="{{ name }}-hint" class="govuk-hint">
+        <div id="{{ field_id }}-hint" class="govuk-hint">
             {{ hint|escape }}
         </div>
         {% endif %}
         {% if errors %}
-        <p id="{{ name }}-error" class="govuk-error-message">
+        <p id="{{ field_id }}-error" class="govuk-error-message">
             {% for error in errors %}
             {{ error|escape }}<br>
             {% endfor %}
@@ -24,13 +27,14 @@
             {% for option in item_options %}
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input"
-                       id="{{ name }}{% if not forloop.first %}-{{ forloop.counter }}{% endif %}"
+                       id="{{ field_id }}{% if not forloop.first %}-{{ forloop.counter }}{% endif %}"
                        name="{{ name }}"
                        type="checkbox"
                        value="{{ option.value }}"
                        {% if option.checked %} checked{% endif %}>
                 <label class="govuk-label govuk-checkboxes__label"
-                       for="{{ name }}{% if not forloop.first %}-{{ forloop.counter }}{% endif %}">
+                       id="{{ field_id }}{% if not forloop.first %}-{{ forloop.counter }}{% endif %}-label"
+                       for="{{ field_id }}{% if not forloop.first %}-{{ forloop.counter }}{% endif %}">
                     {{ option.content }}
                 </label>
             </div>

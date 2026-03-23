@@ -16,7 +16,7 @@ class HeaderBox(PLOSBaseComponent):
 
     template_name = "header_box.html"
 
-    def get_context_data(self, level: int = 1):  # noqa: D102
+    def get_context_data(self, level: int = 1, field_id: str | None = None):  # noqa: D102
         # Validate header level
         if not 1 <= level <= 4:
             raise ValueError(f"Invalid header level {level}: must be between 1 and 4")
