@@ -1,4 +1,5 @@
 <button type="{{ button_type }}"
+        {% if value %} value="{{ value }}"{% endif %}
         data-module="govuk-button"
         class="govuk-button{% if action == 'secondary' %} govuk-button--secondary{% endif %}{% if action == 'warning' %} govuk-button--warning{% endif %}"
         {% if disabled %} disabled aria-disabled="true"{% endif %}>
