@@ -27,18 +27,21 @@ Ensure `django_components.template_loader.Loader` is in your `TEMPLATES` loaders
 
 ```python
 TEMPLATES = [
-        {
-            "OPTIONS":
-                {
-                    "loaders": (
-                        'django.template.loaders.cached.Loader', [
-                        'django.template.loaders.filesystem.Loader',
-                        'django.template.loaders.app_directories.Loader',
-                        'django_components.template_loader.Loader',
-                    ])
-                }
-        }
-    ]
+    {
+        "OPTIONS":
+            {
+                "loaders": (
+                    'django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                    'django_components.template_loader.Loader',
+                ]),
+                "builtins": [
+                    "django_components.templatetags.component_tags",
+                ],
+            }
+    }
+]
 ```
 
 ### Janeway
@@ -52,6 +55,10 @@ import core.janeway_global_settings as global_settings
 
 global_settings.INSTALLED_APPS.append('django_components')
 global_settings.INSTALLED_APPS.append('plos_django_components')
+
+global_settings.TEMPLATES[0]["OPTIONS"]["builtins"].append(
+        "django_components.templatetags.component_tags",
+)
 
 global_settings.TEMPLATES[0]["OPTIONS"]["loaders"].append((
     'django.template.loaders.cached.Loader', [
@@ -73,8 +80,8 @@ The following demonstrates an example using the `Button` component.
 ```python
 from django.shortcuts import render
 
-def button_base_example(request):
-    template = "components/examples/simple_example/button_base_example.html"
+def button_example(request):
+    template = "example.html"
     context = {}
 
     return render(request, template, context)
@@ -85,9 +92,9 @@ Then the HTML file will be as follows:
 ```html
 {% load component_tags %}
 
-<div class="large-12 columns">
-    The button:
-    {% component "plos_button" text="Next" type="button" %}
+<div>
+    {% component "plos_button" %}
+    Next
     {% endcomponent %}
 </div>
 ```

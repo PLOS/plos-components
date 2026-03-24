@@ -1,6 +1,10 @@
-<button type="{{ type }}"
+<button type="{{ button_type }}"
+        {% if value %} value="{{ value }}"{% endif %}
+        {% if field_id %} id="{{ field_id }}"{% endif %}
         data-module="govuk-button"
         class="govuk-button{% if action == 'secondary' %} govuk-button--secondary{% endif %}{% if action == 'warning' %} govuk-button--warning{% endif %}"
         {% if disabled %} disabled aria-disabled="true"{% endif %}>
-    {{ text }}
+    {% slot "default" default %}
+    Submit
+    {% endslot %}
 </button>
