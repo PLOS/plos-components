@@ -1,0 +1,28 @@
+<div class="govuk-form-group{% if errors %} govuk-form-group--error{% endif %}">
+  <label class="govuk-label" for="{{ field_id }}">
+    {{ label }}
+  </label>
+  {% if hint %}
+    <div id="{{ field_id }}-hint" class="govuk-hint">
+      {{ hint }}
+    </div>
+  {% endif %}
+  {% if errors %}
+    {% for error in errors %}
+      <p class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span>
+        {{ error }}
+      </p>
+    {% endfor %}
+  {% endif %}
+  <div class="govuk-drop-zone" data-module="govuk-file-upload" data-i18n.choose-files-button="Choose files">
+    <input class="govuk-file-upload{% if errors %} govuk-file-upload--error{% endif %}"
+           id="{{ field_id }}"
+           name="{{ name }}"
+           type="file"
+           {% if multiple %}multiple{% endif %}
+           {% if accept %}accept="{{ accept }}"{% endif %}
+           {% if disabled %}disabled{% endif %}
+           {% if hint %}aria-describedby="{{ field_id }}-hint"{% endif %}>
+  </div>
+</div>
