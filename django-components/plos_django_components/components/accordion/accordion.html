@@ -1,0 +1,16 @@
+<div class="govuk-accordion" data-module="govuk-accordion"{% if field_id %} id="{{ field_id }}"{% endif %}>
+  {% for section in sections %}
+    <div class="govuk-accordion__section{% if section.expanded %} govuk-accordion__section--expanded{% endif %}">
+      <div class="govuk-accordion__section-header">
+        <h2 class="govuk-accordion__section-heading">
+          <span class="govuk-accordion__section-button"{% if field_id %} id="{{ field_id }}-heading-{{ section.index }}"{% endif %}>
+            {{ section.heading }}
+          </span>
+        </h2>
+      </div>
+      <div{% if field_id %} id="{{ field_id }}-content-{{ section.index }}"{% endif %} class="govuk-accordion__section-content">
+        {{ section.content|safe }}
+      </div>
+    </div>
+  {% endfor %}
+</div>
