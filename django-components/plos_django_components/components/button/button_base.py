@@ -21,16 +21,17 @@ class Button(PLOSBaseComponent):
     template_name = "button_base.html"
 
     def get_context_data(  # noqa: D102
-        self,
-        /,
-        *,
-        disabled: bool = False,
-        action: Literal["primary", "secondary", "warning"] = "primary",
-        button_type: Literal["button", "reset", "submit"] = "button",
-        icon: str | None = None,
-        icon_position: Literal["right", "left"] = "right",
-        value: str | None = None,
-        field_id: str | None = None,
+            self,
+            /,
+            *,
+            disabled: bool = False,
+            action: Literal["primary", "secondary", "warning"] = "primary",
+            button_type: Literal["button", "reset", "submit"] = "button",
+            icon: str | None = None,
+            icon_position: Literal["right", "left"] = "right",
+            value: str | None = None,
+            field_id: str | None = None,
+            field_name: str | None = None,
     ):
         return {
             "disabled": disabled,
@@ -40,4 +41,5 @@ class Button(PLOSBaseComponent):
             "icon_position": icon_position,
             "value": value,
             "field_id": field_id,
+            "field_name": field_name,
         }
