@@ -24,3 +24,7 @@ TEMPLATES = [
         },
     }
 ]
+
+GOV_UK_TEMPLATE_PRIMARY_CSS = "url"
+GOV_UK_TEMPLATE_SECONDARY_CSS = ["url"]
+GOV_UK_TEMPLATE_PRIMARY_JS = "url"

@@ -52,6 +52,13 @@ TEMPLATES = [
 
 Make sure that `'APP_DIRS': True` has been removed, since `APP_DIRS` is incompatible with `loaders`.
 
+Now, make sure you add your static assets somewhere accessible. The CSS and JS files are loaded with the following settings:
+```python
+GOV_UK_TEMPLATE_PRIMARY_CSS = "url"
+GOV_UK_TEMPLATE_SECONDARY_CSS = ["url"]
+GOV_UK_TEMPLATE_PRIMARY_JS = "url"
+```
+
 ### Janeway
 
 This project was originally designed for use with [Janeway Systems](https://github.com/openlibhums/janeway), an open-source publication system. 
@@ -74,7 +81,13 @@ global_settings.TEMPLATES[0]['OPTIONS']['loaders'].append((
 global_settings.TEMPLATES[0]['OPTIONS']['builtins'].append((
     'django_components.templatetags.component_tags',
 ]))
+
+GOV_UK_TEMPLATE_PRIMARY_CSS = "url"
+GOV_UK_TEMPLATE_SECONDARY_CSS = ["url"]
+GOV_UK_TEMPLATE_PRIMARY_JS = "url"
 ```
+
+For developers at PLOS, view the Janeway Deployment repository to find the URLs for our internal assets. 
 
 ## Usage
 
