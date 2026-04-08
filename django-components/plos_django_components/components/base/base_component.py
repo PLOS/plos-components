@@ -7,8 +7,8 @@ from django.utils.safestring import SafeString, mark_safe
 from django_components import Component
 
 primary_css: str | None = getattr(settings, "GOV_UK_TEMPLATE_PRIMARY_CSS", None)
-secondary_css: list[str] | str | None = getattr(
-    settings, "GOV_UK_TEMPLATE_SECONDARY_CSS", None
+override_css: list[str] | str | None = getattr(
+    settings, "GOV_UK_TEMPLATE_OVERRIDE_CSS", None
 )
 primary_js: str | None = getattr(settings, "GOV_UK_TEMPLATE_PRIMARY_JS", None)
 
@@ -23,11 +23,11 @@ def get_css() -> list[str | SafeString]:
 
     templates.append(primary_css)
 
-    if secondary_css is not None:
-        if secondary_css is str:
-            templates.append(secondary_css)
+    if override_css is not None:
+        if override_css is str:
+            templates.append(override_css)
         else:
-            for template in secondary_css:
+            for template in override_css:
                 templates.append(template)
 
     return templates

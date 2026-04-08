@@ -55,7 +55,7 @@ Make sure that `'APP_DIRS': True` has been removed, since `APP_DIRS` is incompat
 Now, make sure you add your static assets somewhere accessible. The CSS and JS files are loaded with the following settings:
 ```python
 GOV_UK_TEMPLATE_PRIMARY_CSS = "url"
-GOV_UK_TEMPLATE_SECONDARY_CSS = ["url"]
+GOV_UK_TEMPLATE_OVERRIDE_CSS = ["url"]
 GOV_UK_TEMPLATE_PRIMARY_JS = "url"
 ```
 
@@ -83,7 +83,7 @@ global_settings.TEMPLATES[0]['OPTIONS']['builtins'].append((
 ]))
 
 GOV_UK_TEMPLATE_PRIMARY_CSS = "url"
-GOV_UK_TEMPLATE_SECONDARY_CSS = ["url"]
+GOV_UK_TEMPLATE_OVERRIDE_CSS = ["url"]
 GOV_UK_TEMPLATE_PRIMARY_JS = "url"
 ```
 
