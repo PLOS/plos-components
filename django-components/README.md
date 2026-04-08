@@ -52,6 +52,13 @@ TEMPLATES = [
 
 Make sure that `'APP_DIRS': True` has been removed, since `APP_DIRS` is incompatible with `loaders`.
 
+Now, make sure you add your static assets somewhere accessible. The CSS and JS files are loaded with the following settings:
+```python
+GOV_UK_TEMPLATE_PRIMARY_CSS = "https://YOUR_SOURCE_OR_CDN_URI/stylesheets/govuk-frontend-<VERSION-NUMBER>.min.css"
+GOV_UK_TEMPLATE_OVERRIDE_CSS = ["https://YOUR_SOURCE_OR_CDN_URI/stylesheets/override-<VERSION-NUMBER>.min.css"]
+GOV_UK_TEMPLATE_PRIMARY_JS = "https://YOUR_SOURCE_OR_CDN_URI/assets/v3/scripts/gov-uk-frontend-<VERSION-NUMBER>.min.js"
+```
+
 ### Janeway
 
 This project was originally designed for use with [Janeway Systems](https://github.com/openlibhums/janeway), an open-source publication system. 
@@ -74,6 +81,10 @@ global_settings.TEMPLATES[0]['OPTIONS']['loaders'].append((
 global_settings.TEMPLATES[0]['OPTIONS']['builtins'].append((
     'django_components.templatetags.component_tags',
 ]))
+
+GOV_UK_TEMPLATE_PRIMARY_CSS = "https://YOUR_SOURCE_OR_CDN_URI/stylesheets/govuk-frontend-<VERSION-NUMBER>.min.css"
+GOV_UK_TEMPLATE_OVERRIDE_CSS = ["https://YOUR_SOURCE_OR_CDN_URI/stylesheets/override-<VERSION-NUMBER>.min.css"]
+GOV_UK_TEMPLATE_PRIMARY_JS = "https://YOUR_SOURCE_OR_CDN_URI/assets/v3/scripts/gov-uk-frontend-<VERSION-NUMBER>.min.js"
 ```
 
 ## Usage

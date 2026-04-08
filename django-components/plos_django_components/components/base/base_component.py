@@ -2,8 +2,72 @@
 A base component which provides the CSS and JS for all components.
 """
 
-from django.utils.safestring import mark_safe
+from django.conf import settings
+from django.utils.safestring import SafeString, mark_safe
 from django_components import Component
+
+primary_css: str | None = getattr(settings, "GOV_UK_TEMPLATE_PRIMARY_CSS", None)
+override_css: list[str] | str | None = getattr(
+    settings, "GOV_UK_TEMPLATE_OVERRIDE_CSS", None
+)
+primary_js: str | None = getattr(settings, "GOV_UK_TEMPLATE_PRIMARY_JS", None)
+
+
+def get_css() -> list[str | SafeString]:
+    """
+    Gets the CSS items for the base components.
+    """
+    templates: list[str | SafeString] = []
+    if primary_css is None:
+        return templates
+
+    templates.append(primary_css)
+
+    if override_css is not None:
+        if override_css is str:
+            templates.append(override_css)
+        else:
+            for template in override_css:
+                templates.append(template)
+
+    return templates
+
+
+def get_js() -> list[str | SafeString]:
+    """
+    Gets the JS items for the base components.
+    """
+    templates: list[str | SafeString] = []
+    if primary_js is None:
+        return templates
+
+    # Required to make this function appropriately.
+    templates.append(
+        mark_safe(
+            """
+                    <script>
+      document.body.className +=
+        " js-enabled" +
+        ("noModule" in HTMLScriptElement.prototype
+          ? " govuk-frontend-supported"
+          : "");
+    </script>
+                    """
+        )
+    )
+
+    templates.append(
+        mark_safe(
+            f"""
+<script type="module">
+      import {{ initAll }} from "{primary_js}";
+      initAll();
+    </script>
+                    """
+        )
+    )
+
+    return templates
 
 
 class PLOSBaseComponent(Component):
@@ -16,28 +80,5 @@ class PLOSBaseComponent(Component):
         The media for this component.
         """
 
-        css = [
-            "https://ux.plos.org/assets/v3/styles/gov-uk-frontend-v6.min.css",
-            "https://ux.plos.org/assets/v3/styles/plos-overrides.min.css",
-        ]
-        js = [
-            mark_safe(
-                """
-                    <script>
-      document.body.className +=
-        " js-enabled" +
-        ("noModule" in HTMLScriptElement.prototype
-          ? " govuk-frontend-supported"
-          : "");
-    </script>
-                    """
-            ),
-            mark_safe(
-                """
-<script type="module">
-      import { initAll } from "https://ux.plos.org/assets/v3/scripts/gov-uk-frontend-v6.min.js";
-      initAll();
-    </script>
-                    """
-            ),
-        ]
+        css = get_css()
+        js = get_js()
