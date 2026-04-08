@@ -25,6 +25,10 @@ TEMPLATES = [
     }
 ]
 
-GOV_UK_TEMPLATE_PRIMARY_CSS = "url"
-GOV_UK_TEMPLATE_OVERRIDE_CSS = ["url"]
-GOV_UK_TEMPLATE_PRIMARY_JS = "url"
+GOV_UK_TEMPLATE_PRIMARY_CSS = (
+    "https://YOUR_SOURCE_OR_CDN_URI/stylesheets/govuk-frontend-<VERSION-NUMBER>.min.css"
+)
+GOV_UK_TEMPLATE_OVERRIDE_CSS = [
+    "https://YOUR_SOURCE_OR_CDN_URI/stylesheets/override-<VERSION-NUMBER>.min.css"
+]
+GOV_UK_TEMPLATE_PRIMARY_JS = "https://YOUR_SOURCE_OR_CDN_URI/assets/v3/scripts/gov-uk-frontend-<VERSION-NUMBER>.min.js"
