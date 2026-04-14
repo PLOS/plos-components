@@ -1,0 +1,11 @@
+<div 
+        {% if field_name %} name="{{ field_name }}"{% endif %}
+        {% if field_id %} id="{{ field_id }}"{% endif %}
+        data-module="plos-banner"
+        class="plos-banner{% if severity == 'info' %} plos-banner--info{% endif %}{% if severity == 'warning' %} plos-banner--warning{% endif %}{% if severity == 'problem' %} plos-banner--problem{% endif %}{% if severity == 'success' %} plos-banner--success{% endif %}"
+        {% if disabled %} disabled aria-disabled="true"{% endif %}>
+    {% if severity == 'success' %}{% component "plos_icon_circle_check" %}{% endcomponent %}{% endif %}
+    {% slot "default" default %}
+    Information
+    {% endslot %}
+</div>
