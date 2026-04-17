@@ -135,3 +135,11 @@ Then the HTML file will be as follows:
 ```
 
 This will render a simple button which says "Next".
+
+# Advanced Settings
+This section covers more advanced settings.
+
+## Font Icon Overrides
+There are a number of preset icons for easy integration. Any, all or none of these can all be overridden through the settings. 
+
+A `TypedDict` is given to show which icons can be overridden with examples in the `bootstrap` class. 

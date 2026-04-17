@@ -9,10 +9,9 @@
         {% if severity == 'info' %}{% component "plos_icon_info_circle" %}{% endcomponent %}{% endif %}
         {% if severity == 'warning' || severity == 'problem' %}{% component "plos_icon_exclamation_circle" %}{% endcomponent %}{% endif %}
     </div>
-<div class="plos-banner--content">
+    <div class="plos-banner--content">
         {% slot "default" default %}
-    Information
-    {% endslot %}
-</div>
-
+        Information
+        {% endslot %}
+    </div>
 </div>

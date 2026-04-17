@@ -1,4 +1,5 @@
 import os
+from .components.base.icon_fonts.abstract_icon_font_defaults import IconFontDictionary
 
 INSTALLED_APPS = [
     "django_components",
@@ -25,20 +26,15 @@ TEMPLATES = [
     }
 ]
 
-GOV_UK_TEMPLATE_PRIMARY_CSS = (
-    "https://YOUR_SOURCE_OR_CDN_URI/stylesheets/govuk-frontend-<VERSION-NUMBER>.min.css"
-)
-GOV_UK_TEMPLATE_OVERRIDE_CSS = [
-    "https://YOUR_SOURCE_OR_CDN_URI/stylesheets/override-<VERSION-NUMBER>.min.css"
-]
+GOV_UK_TEMPLATE_PRIMARY_CSS = "https://YOUR_SOURCE_OR_CDN_URI/stylesheets/govuk-frontend-<VERSION-NUMBER>.min.css"
+GOV_UK_TEMPLATE_OVERRIDE_CSS = ["https://YOUR_SOURCE_OR_CDN_URI/stylesheets/override-<VERSION-NUMBER>.min.css"]
 GOV_UK_TEMPLATE_PRIMARY_JS = "https://YOUR_SOURCE_OR_CDN_URI/assets/v3/scripts/gov-uk-frontend-<VERSION-NUMBER>.min.js"
 
 # Information about the icons to use.
 ICON_FONT = "bootstrap"
-ICON_FONT_URL = None
-ICON_FONT_INTEGRITY = None
 
 # Icon overrides
-ICON_OVERRIDE_CHECK_CIRCLE = None
-ICON_OVERRIDE_INFO_CIRCLE = None
-ICON_OVERRIDE_EXCLAMATION_CIRCLE = None
+ICON_FONT_OVERRIDE_DICTIONARY: IconFontDictionary = dict(
+    icon_font_url=None,
+    icon_font_integrity=None,
+)

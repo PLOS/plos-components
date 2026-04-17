@@ -5,6 +5,7 @@ A functional class for processing and providing information about icons.
 from django.conf import settings
 from django.utils.safestring import SafeString, mark_safe
 
+from .abstract_icon_font_defaults import IconFontDefaultSettings, IconFontDictionary
 from .bootstrap_defaults import bootstrap
 
 
@@ -16,9 +17,7 @@ class IconFontSetting:
     _instance = None
 
     _icon_font: str | None = getattr(settings, "ICON_FONT", "bootstrap")
-    _icon_font_url: str | None = getattr(settings, "ICON_FONT_URL", None)
-    _icon_font_integrity: str | None = getattr(settings, "ICON_FONT_URL", None)
-    _dictionary: dict[str, str | None] = None
+    _dictionary: IconFontDefaultSettings = None
 
     def __new__(cls, *args, **kwargs):
         """
@@ -39,14 +38,10 @@ class IconFontSetting:
             if self._icon_font is None:
                 self._icon_font = "bootstrap"
 
+            override_dictionary: IconFontDictionary | None = getattr(settings, "ICON_FONT_OVERRIDE_DICTIONARY", None)
+
             if self._icon_font == "bootstrap":
-                self._dictionary = bootstrap()
-
-            if self._icon_font_url is not None:
-                return
-
-            self._icon_font_url = self._dictionary["ICON_FONT_URL"]
-            self._icon_font_integrity = self._dictionary["ICON_FONT_INTEGRITY"]
+                self._dictionary = bootstrap(override_dictionary)
 
             self._initialized = True
 
@@ -56,27 +51,26 @@ class IconFontSetting:
 
         :return: A stylesheet for the icon font.
         """
+        icon_font_url: str | None = self._dictionary.fetch_icon("icon_font_url")
+        icon_font_integrity: str | None = self._dictionary.fetch_icon("icon_font_integrity")
+
         return mark_safe(
             f"""
             <link rel="stylesheet"
-                href="{self._icon_font_url}"
-                {f'integrity="{self._icon_font_integrity}"' if self._icon_font_integrity else ""}
+                href="{icon_font_url}"
+                {f'integrity="{icon_font_integrity}"' if icon_font_integrity else ""}
                 crossorigin="anonymous"
                 referrerpolicy="no-referrer" />"""
         )
 
-    def _fetch_icon(self, icon_override_setting: str, default_const: str) -> str:
+    def _fetch_icon(self, icon_name: str) -> str | None:
         """
-        Fetches the string of the class from bootstrap.
+        Fetch the icon from the icon font.
 
-        :return: The string of the icon's class from bootstrap.
+        :param icon_name: The name of the icon to fetch.
+        :return: The icon from the icon font.
         """
-        icon_override: str | None = getattr(settings, icon_override_setting, None)
-        if icon_override is None:
-            return self._dictionary[default_const]
-        return icon_override
-
-    _check_circle_icon: str | None = None
+        return self._dictionary.fetch_icon(icon_name)
 
     @staticmethod
     def get_check_circle_icon() -> str:
@@ -85,13 +79,7 @@ class IconFontSetting:
 
         :return: Returns the icon class for the circle checked icon.
         """
-        if IconFontSetting()._check_circle_icon is None:
-            IconFontSetting()._check_circle_icon = IconFontSetting()._fetch_icon(
-                "ICON_OVERRIDE_CHECK_CIRCLE", "CHECK_CIRCLE"
-            )
-        return IconFontSetting()._check_circle_icon
-
-    _info_circle_icon: str | None = None
+        return IconFontSetting()._fetch_icon("check_circle")
 
     @staticmethod
     def get_info_circle_icon() -> str:
@@ -100,13 +88,7 @@ class IconFontSetting:
 
         :return: Returns the icon class for the circle information icon.
         """
-        if IconFontSetting()._info_circle_icon is None:
-            IconFontSetting()._info_circle_icon = IconFontSetting()._fetch_icon(
-                "ICON_OVERRIDE_INFO_CIRCLE", "INFO_CIRCLE"
-            )
-        return IconFontSetting()._info_circle_icon
-
-    _exclamation_circle_icon: str | None = None
+        return IconFontSetting()._fetch_icon("info_circle")
 
     @staticmethod
     def get_exclamation_circle_icon() -> str:
@@ -115,8 +97,4 @@ class IconFontSetting:
 
         :return: Returns the icon class for the circle information icon.
         """
-        if IconFontSetting()._exclamation_circle_icon is None:
-            IconFontSetting()._exclamation_circle_icon = IconFontSetting()._fetch_icon(
-                "ICON_OVERRIDE_EXCLAMATION_CIRCLE", "EXCLAMATION_CIRCLE"
-            )
-        return IconFontSetting()._exclamation_circle_icon
+        return IconFontSetting()._fetch_icon("exclamation_circle")
