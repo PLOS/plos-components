@@ -7,7 +7,7 @@
     <div class="plos-banner--icon-container">
         {% if severity == 'success' %}{% component "plos_icon_check_circle" %}{% endcomponent %}{% endif %}
         {% if severity == 'info' %}{% component "plos_icon_info_circle" %}{% endcomponent %}{% endif %}
-        {% if severity == 'warning' || severity == 'problem' %}{% component "plos_icon_exclamation_circle" %}{% endcomponent %}{% endif %}
+        {% if severity == 'warning' or severity == 'problem' %}{% component "plos_icon_exclamation_circle" %}{% endcomponent %}{% endif %}
     </div>
     <div class="plos-banner--content">
         {% slot "default" default %}
