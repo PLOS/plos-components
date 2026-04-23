@@ -6,6 +6,8 @@ from django.conf import settings
 from django.utils.safestring import SafeString, mark_safe
 from django_components import Component
 
+from .icon_fonts.base_icon import IconFontSetting
+
 primary_css: str | None = getattr(settings, "GOV_UK_TEMPLATE_PRIMARY_CSS", None)
 override_css: list[str] | str | None = getattr(
     settings, "GOV_UK_TEMPLATE_OVERRIDE_CSS", None
@@ -17,7 +19,8 @@ def get_css() -> list[str | SafeString]:
     """
     Gets the CSS items for the base components.
     """
-    templates: list[str | SafeString] = []
+    templates: list[str | SafeString] = [IconFontSetting().fetch_icon_font_stylesheet()]
+
     if primary_css is None:
         return templates
 
