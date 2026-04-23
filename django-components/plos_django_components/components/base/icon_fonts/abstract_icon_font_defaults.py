@@ -33,12 +33,10 @@ class IconFontDefaultSettings:
     ) -> None:
         """
         Creates a new object for tracking the settings and overrides for given dictionary.
-        :param icon_font_dictionary:
-        :param icon_font_override_dictionary:
+        :param icon_font_dictionary: The font dictionary to pull from with default settings.
+        :param icon_font_override_dictionary: The font dictionary to override with optional settings.
         """
-        if icon_font_override_dictionary is not None:
-            self._icon_font_dictionary = icon_font_dictionary
-
+        self._icon_font_override_dictionary = icon_font_override_dictionary
         self._icon_font_dictionary = icon_font_dictionary
 
     def fetch_icon(self, icon_name: str) -> str | None:

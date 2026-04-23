@@ -84,7 +84,7 @@ class IconFontSetting:
     @staticmethod
     def get_info_circle_icon() -> str:
         """
-        Gets the icon class for a info inside a circle icon.
+        Gets the icon class for an info inside a circle icon.
 
         :return: Returns the icon class for the circle information icon.
         """
@@ -93,8 +93,8 @@ class IconFontSetting:
     @staticmethod
     def get_exclamation_circle_icon() -> str:
         """
-        Gets the icon class for a info inside a circle icon.
+        Gets the icon class for an exclamation inside a circle icon.
 
-        :return: Returns the icon class for the circle information icon.
+        :return: Returns the icon class for the circle exclamation icon.
         """
         return IconFontSetting()._fetch_icon("exclamation_circle")
