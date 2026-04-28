@@ -20,7 +20,7 @@ class Banner(PLOSBaseComponent):
     based on the 'severity' field
     """
 
-    template_name = "components/banner/banner.html"
+    template_name = "banner.html"
 
     def get_context_data(
         self,
