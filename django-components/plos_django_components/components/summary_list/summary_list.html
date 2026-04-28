@@ -1,0 +1,28 @@
+<dl class="govuk-summary-list">
+    {% for option in item_options %}
+        <div class="govuk-summary-list__row{% if not option.actions %} govuk-summary-list__row--no-actions{% endif %}">
+            <dt class="govuk-summary-list__key">
+                {% if option.key %}{{ option.key }}{% endif %}
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {{ option.content }}
+            </dd>
+
+            {% if option.actions %}
+                <dd class="govuk-summary-list__actions">
+                    {% if option.actions|length > 1 %}
+                        <ul class="govuk-summary-list__actions-list">
+                            {% for action in option.actions %}
+                                <li class="govuk-summary-list__actions-list-item">
+                                    <a class="govuk-link" href="{{ action.url }}">{{ action.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <a class="govuk-link" href="{{ option.actions.0.url }}">{{ option.actions.0.name }}</a>
+                    {% endif %}
+                </dd>
+            {% endif %}
+        </div>
+    {% endfor %}
+</dl>
