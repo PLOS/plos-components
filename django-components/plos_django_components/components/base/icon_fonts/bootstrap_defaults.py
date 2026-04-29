@@ -12,6 +12,8 @@ def _create_bootstrap_dictionary() -> IconFontDictionary:
         check_circle="bi bi-check-circle-fill",
         exclamation_circle="bi bi-exclamation-circle-fill",
         info_circle="bi bi-info-circle-fill",
+        add_item="bi bi-plus-lg",
+        delete_item="bi bi-trash3",
     )
 
 
