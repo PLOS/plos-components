@@ -98,3 +98,21 @@ class IconFontSetting:
         :return: Returns the icon class for the circle exclamation icon.
         """
         return IconFontSetting()._fetch_icon("exclamation_circle")
+
+    @staticmethod
+    def get_add_item_icon() -> str | None:
+        """
+        Gets the icon class for the add item button.
+
+        :return: Returns the icon class for the add item button.
+        """
+        return IconFontSetting()._fetch_icon("add_item")
+
+    @staticmethod
+    def get_delete_item_icon() -> str | None:
+        """
+        Gets the icon class for the delete item button.
+
+        :return: Returns the icon class for the delete item button.
+        """
+        return IconFontSetting()._fetch_icon("delete_item")

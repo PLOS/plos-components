@@ -3,6 +3,7 @@ A component function which provides the ability to create a button on any web pa
 
 This module provides:
 - A button that can be displayed on any web page.
+- HTMX options for partial page updates without a full page reload.
 """
 
 from typing import Literal
@@ -16,6 +17,30 @@ from ..base.base_component import PLOSBaseComponent
 class Button(PLOSBaseComponent):
     """
     A button that can be displayed on any web page.
+
+    When the HTMX parameters are provided they are rendered as `hx-post`,
+    `hx-target`, `hx-swap`, and `hx-include` attributes on the `<button>`
+    element, enabling partial page updates without a full page reload. Omit
+    all four for a plain form submit button.
+
+    Example usage::
+
+        {# Plain form submit #}
+        {% component "plos_button" button_type="submit" action="primary" %}
+          {% fill "default" %}Save{% endfill %}
+        {% endcomponent %}
+
+        {# An HTMX partial update posts to the URL and swaps only the target container #}
+        {% component "plos_button"
+          button_type="submit"
+          action="secondary"
+          hx_post="/my-url/"
+          hx_target="#my-container"
+          hx_swap="outerHTML"
+          hx_include="#my-container"
+        %}
+          {% fill "default" %}Add another{% endfill %}
+        {% endcomponent %}
     """
 
     template_name = "button_base.html"
@@ -32,6 +57,10 @@ class Button(PLOSBaseComponent):
         value: str | None = None,
         field_id: str | None = None,
         field_name: str | None = None,
+        hx_post: str | None = None,
+        hx_target: str | None = None,
+        hx_swap: str | None = None,
+        hx_include: str | None = None,
     ):
         return {
             "disabled": disabled,
@@ -42,4 +71,8 @@ class Button(PLOSBaseComponent):
             "value": value,
             "field_id": field_id,
             "field_name": field_name,
+            "hx_post": hx_post,
+            "hx_target": hx_target,
+            "hx_swap": hx_swap,
+            "hx_include": hx_include,
         }

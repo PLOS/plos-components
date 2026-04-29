@@ -21,6 +21,10 @@ class IconFontDictionary(TypedDict):
 
     info_circle: NotRequired[str | None]
 
+    add_item: NotRequired[str | None]
+
+    delete_item: NotRequired[str | None]
+
 
 class IconFontDefaultSettings:
     _icon_font_dictionary: IconFontDictionary
