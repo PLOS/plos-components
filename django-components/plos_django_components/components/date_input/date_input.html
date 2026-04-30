@@ -1,0 +1,62 @@
+<div class="govuk-form-group{% if errors %} govuk-form-group--error{% endif %}">
+    <fieldset class="govuk-fieldset" role="group"
+            {% if hint or errors %}
+              aria-describedby="{% if hint %}{{ field_id }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ field_id }}-error{% endif %}"
+            {% endif %}>
+        <legend class="govuk-fieldset__legend {% if legend_size == 'large' %} govuk-fieldset__legend--l{% endif %}{% if legend_size == 'medium' %} govuk-fieldset__legend--m{% endif %}{% if legend_size == 'small' %} govuk-fieldset__legend--s{% endif %}">
+            {{ legend|escape }}
+        </legend>
+        {% if hint %}
+            <div id="{{ field_id }}-hint" class="govuk-hint">
+                {{ hint }}
+            </div>
+        {% endif %}
+        <div class="govuk-date-input" id="{{ field_id }}">
+            {% if day %}
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-date-input__label" for="{{ field_id }}-day">
+                            {{ day_name|escape }}
+                        </label>
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2"
+                               id="{{ field_id }}-day"
+                               name="{{ field_id }}-day"
+                               type="text"
+                               inputmode="numeric"
+                               {% if value and value.day %}value="{{ value.day }}"{% endif %}>
+                    </div>
+                </div>
+            {% endif %}
+            {% if month %}
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-date-input__label" for="{{ field_id }}-month">
+                            {{ month_name|escape }}
+                        </label>
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-2"
+                               id="{{ field_id }}-month"
+                               name="{{ field_id }}-month"
+                               type="text"
+                               inputmode="numeric"
+                               {% if value and value.month %}value="{{ value.month }}"{% endif %}>
+                    </div>
+                </div>
+            {% endif %}
+            {% if year %}
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-date-input__label" for="{{ field_id }}-year">
+                            {{ year_name|escape }}
+                        </label>
+                        <input class="govuk-input govuk-date-input__input govuk-input--width-4"
+                               id="{{ field_id }}-year"
+                               name="{{ field_id }}-year"
+                               type="text"
+                               inputmode="numeric"
+                               {% if value and value.year %}value="{{ value.year }}"{% endif %}>
+                    </div>
+                </div>
+                </div>
+            {% endif %}
+    </fieldset>
+</div>
