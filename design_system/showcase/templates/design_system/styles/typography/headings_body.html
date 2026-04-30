@@ -1,0 +1,170 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}
+  Headings and Body – PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+  <style>
+    .col-shaded { background-color: #f3f2f1; }
+  </style>
+
+  <h1 class="govuk-heading-xl">
+    Headings and Body
+  </h1>
+
+  <h2 class="govuk-heading-l">
+    Headings
+  </h2>
+  <p class="govuk-body-s">
+    GOV.UK v6 font-sizes are taken from source (rem, converted to px at 16px base). GOV.UK's line-heights are approximate and computed from unitless ratios. PLOS values are from <code>plos-overrides.min.css</code>. Font-sizes and line-heights are defined in rem, with px equivalents shown for convenience.
+  </p>
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" rowspan="2">Class</th>
+        <th class="govuk-table__header" rowspan="2">Figma label</th>
+        <th class="govuk-table__header col-shaded" colspan="2">GOV.UK mobile</th>
+        <th class="govuk-table__header" colspan="2">GOV.UK desktop</th>
+        <th class="govuk-table__header col-shaded" colspan="2">PLOS mobile</th>
+        <th class="govuk-table__header" colspan="2">PLOS desktop</th>
+        <th class="govuk-table__header" rowspan="2">Example</th>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header col-shaded">font-size</th>
+        <th class="govuk-table__header col-shaded">line-height</th>
+        <th class="govuk-table__header">font-size</th>
+        <th class="govuk-table__header">line-height</th>
+        <th class="govuk-table__header col-shaded">font-size</th>
+        <th class="govuk-table__header col-shaded">line-height</th>
+        <th class="govuk-table__header">font-size</th>
+        <th class="govuk-table__header">line-height</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-body-s"><code>govuk-heading-xl</code></td>
+        <td class="govuk-table__cell govuk-body-s">H1</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">2rem / 32px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">35px</td>
+        <td class="govuk-table__cell govuk-body-s">3rem / 48px</td>
+        <td class="govuk-table__cell govuk-body-s">~50px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">2rem / 32px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">2.5rem / 40px</td>
+        <td class="govuk-table__cell govuk-body-s">2.625rem / 42px</td>
+        <td class="govuk-table__cell govuk-body-s">3rem / 48px</td>
+        <td class="govuk-table__cell"><div class="govuk-heading-xl">The quick brown fox</div></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-body-s"><code>govuk-heading-l</code></td>
+        <td class="govuk-table__cell govuk-body-s">H2</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.6875rem / 27px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">~30px</td>
+        <td class="govuk-table__cell govuk-body-s">2.25rem / 36px</td>
+        <td class="govuk-table__cell govuk-body-s">~40px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.3125rem / 21px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.75rem / 28px</td>
+        <td class="govuk-table__cell govuk-body-s">1.75rem / 28px</td>
+        <td class="govuk-table__cell govuk-body-s">2.25rem / 36px</td>
+        <td class="govuk-table__cell"><div class="govuk-heading-l">The quick brown fox</div></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-body-s"><code>govuk-heading-m</code></td>
+        <td class="govuk-table__cell govuk-body-s">H3</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.3125rem / 21px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">~25px</td>
+        <td class="govuk-table__cell govuk-body-s">1.5rem / 24px</td>
+        <td class="govuk-table__cell govuk-body-s">30px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.25rem / 20px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.75rem / 28px</td>
+        <td class="govuk-table__cell govuk-body-s">1.3125rem / 21px</td>
+        <td class="govuk-table__cell govuk-body-s">1.75rem / 28px</td>
+        <td class="govuk-table__cell"><div class="govuk-heading-m">The quick brown fox</div></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-body-s"><code>govuk-heading-s</code></td>
+        <td class="govuk-table__cell govuk-body-s">H4</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.1875rem / 19px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">~25px</td>
+        <td class="govuk-table__cell govuk-body-s">1.1875rem / 19px</td>
+        <td class="govuk-table__cell govuk-body-s">~25px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.125rem / 18px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.5rem / 24px</td>
+        <td class="govuk-table__cell govuk-body-s">1.125rem / 18px</td>
+        <td class="govuk-table__cell govuk-body-s">1.75rem / 28px</td>
+        <td class="govuk-table__cell"><div class="govuk-heading-s">The quick brown fox</div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="govuk-heading-l">
+    Body
+  </h2>
+  <p class="govuk-body-s">
+    GOV.UK v6 font-sizes are taken from source (rem, converted to px at 16px base). GOV.UK's line-heights are approximate and computed from unitless ratios. PLOS values are from <code>plos-overrides.min.css</code>. Font-sizes and line-heights are defined in rem, with px equivalents shown for convenience.
+  </p>
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" rowspan="2">Class</th>
+        <th class="govuk-table__header" rowspan="2">Figma label</th>
+        <th class="govuk-table__header col-shaded" colspan="2">GOV.UK mobile</th>
+        <th class="govuk-table__header" colspan="2">GOV.UK desktop</th>
+        <th class="govuk-table__header col-shaded" colspan="2">PLOS mobile</th>
+        <th class="govuk-table__header" colspan="2">PLOS desktop</th>
+        <th class="govuk-table__header" rowspan="2">Example</th>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header col-shaded">font-size</th>
+        <th class="govuk-table__header col-shaded">line-height</th>
+        <th class="govuk-table__header">font-size</th>
+        <th class="govuk-table__header">line-height</th>
+        <th class="govuk-table__header col-shaded">font-size</th>
+        <th class="govuk-table__header col-shaded">line-height</th>
+        <th class="govuk-table__header">font-size</th>
+        <th class="govuk-table__header">line-height</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-body-s"><code>govuk-body-l</code> / <code>govuk-body-lead</code></td>
+        <td class="govuk-table__cell govuk-body-s">Body large</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.3125rem / 21px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">~25px</td>
+        <td class="govuk-table__cell govuk-body-s">1.5rem / 24px</td>
+        <td class="govuk-table__cell govuk-body-s">30px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.125rem / 18px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.75rem / 28px</td>
+        <td class="govuk-table__cell govuk-body-s">1.125rem / 18px</td>
+        <td class="govuk-table__cell govuk-body-s">1.75rem / 28px</td>
+        <td class="govuk-table__cell"><p class="govuk-body-l">The quick brown fox jumps over the lazy dog.</p></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-body-s"><code>govuk-body</code> / <code>govuk-body-m</code></td>
+        <td class="govuk-table__cell govuk-body-s">Body</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.1875rem / 19px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">~25px</td>
+        <td class="govuk-table__cell govuk-body-s">1.1875rem / 19px</td>
+        <td class="govuk-table__cell govuk-body-s">~25px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1rem / 16px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.5rem / 24px</td>
+        <td class="govuk-table__cell govuk-body-s">1rem / 16px</td>
+        <td class="govuk-table__cell govuk-body-s">1.5rem / 24px</td>
+        <td class="govuk-table__cell"><p class="govuk-body">The quick brown fox jumps over the lazy dog.</p></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-body-s"><code>govuk-body-s</code></td>
+        <td class="govuk-table__cell govuk-body-s">Body small</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1rem / 16px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">20px</td>
+        <td class="govuk-table__cell govuk-body-s">1rem / 16px</td>
+        <td class="govuk-table__cell govuk-body-s">20px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">0.875rem / 14px</td>
+        <td class="govuk-table__cell govuk-body-s col-shaded">1.5rem / 24px</td>
+        <td class="govuk-table__cell govuk-body-s">0.875rem / 14px</td>
+        <td class="govuk-table__cell govuk-body-s">1.5rem / 24px</td>
+        <td class="govuk-table__cell"><p class="govuk-body-s">The quick brown fox jumps over the lazy dog.</p></td>
+      </tr>
+    </tbody>
+  </table>
+{% endblock ds_content %}

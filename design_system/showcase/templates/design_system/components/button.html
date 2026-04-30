@@ -1,0 +1,43 @@
+{% extends "design_system/base.html" %}
+{% load component_tags %}
+
+{% block ds_title %}
+    Button – PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+    {% component "plos_heading" level=1 %}
+        Primary Button
+    {% endcomponent %}
+    <div>
+        {% component "plos_button" %}
+            Primary
+        {% endcomponent %}
+        {% component "plos_button" disabled=True %}
+            Primary - Disabled
+        {% endcomponent %}
+    </div>
+
+    {% component "plos_heading" level=1 %}
+        Secondary Button
+    {% endcomponent %}
+    <div>
+        {% component "plos_button" action="secondary" %}
+            Secondary
+        {% endcomponent %}
+        {% component "plos_button" action="secondary" disabled=True %}
+            Secondary - Disabled
+        {% endcomponent %}
+    </div>
+    {% component "plos_heading" level=1 %}
+        Warning Button
+    {% endcomponent %}
+    <div>
+        {% component "plos_button" action="warning" %}
+            Warning
+        {% endcomponent %}
+        {% component "plos_button" action="warning" disabled=True %}
+            Warning - Disabled
+        {% endcomponent %}
+    </div>
+{% endblock ds_content %}

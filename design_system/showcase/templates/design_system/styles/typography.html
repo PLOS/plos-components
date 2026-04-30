@@ -1,0 +1,25 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}
+  Typography – PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+  <h1 class="govuk-heading-xl">
+    Typography
+  </h1>
+  <ul class="govuk-list">
+    <li>
+      <a href="{% url 'design_system_typography' 'headings-body' %}"
+         class="govuk-link govuk-body-l">
+        Headings and body
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'design_system_typography' 'functional-text' %}"
+         class="govuk-link govuk-body-l">
+        Functional text
+      </a>
+    </li>
+  </ul>
+{% endblock ds_content %}

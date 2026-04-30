@@ -1,0 +1,15 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}Banner – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+    {% component "plos_heading" level=1 %}
+        Informational Banner
+    {% endcomponent %}
+    {% component "plos_banner" %}{% endcomponent %}
+
+    {% component "plos_heading" level=1 %}
+        Success Banner
+    {% endcomponent %}
+    {% component "plos_banner" severity="success" %}Successful submission{% endcomponent %}
+{% endblock ds_content %}

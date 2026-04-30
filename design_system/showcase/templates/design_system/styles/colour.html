@@ -1,0 +1,397 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}
+  Colour – PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+  <h1 class="govuk-heading-xl" id="colour-heading">
+    Colour
+  </h1>
+
+  {% with border="border:1px solid #b1b4b6; border-radius:2px;" dims="width:60px; height:40px;" %}
+
+    <h2 class="govuk-heading-l">
+      Primitives
+    </h2>
+    <p class="govuk-body" id="primitives-description">
+      Primitives are the raw colour values for the PLOS design system.
+      Each primitive is a named constant for a specific hex value. <strong>Primitives should
+      not be referenced directly in component styles or templates.</strong> Rather, semantic tokens
+      should be used instead.
+    </p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" style="width:80px">Swatch</th>
+          <th class="govuk-table__header">Definition</th>
+          <th class="govuk-table__header">Hex</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#01156b"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-primary-blue</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#01156b</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#ffffff"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-white</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#ffffff</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#1a1a1a"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-black</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#1a1a1a</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#037165"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-secondary-green</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#037165</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#f03f10"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-secondary-red</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#f03f10</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#0c4cbd"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-secondary-blue</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#0c4cbd</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#d7df23"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-secondary-lime</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#d7df23</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#f5f5f5"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-extra-light</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#f5f5f5</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#ebebeb"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-light</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#ebebeb</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#b8b8b8"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-medium</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#b8b8b8</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#8e8e8e"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-dark</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#8e8e8e</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#5e5e5e"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-extra-dark</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#5e5e5e</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#1a7032"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-green</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#1a7032</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#d32205"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-red</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#d32205</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#01156b"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-focus</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#01156b</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="govuk-heading-l">
+      Semantic tokens
+    </h2>
+    <p class="govuk-body">
+      Semantic tokens have meaningful names tied to their purpose, not their
+      appearance. Each token references a primitive and describes
+      <em>where</em> and <em>why</em> a color is used. Consuming the semantic
+      layer means that if a primitive value changes, every component that uses
+      the corresponding semantic token updates automatically.
+    </p>
+    <p class="govuk-body">
+      <strong>Always use semantic tokens in <code>plos-overrides.min.css</code> and in any
+      component or template styles.</strong> The "Maps to" column shows which primitive each token
+      resolves through.
+    </p>
+
+    <h3 class="govuk-heading-m">Brand</h3>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" style="width:80px">Swatch</th>
+          <th class="govuk-table__header">Token</th>
+          <th class="govuk-table__header">Maps to</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#01156b"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-brand-dark-blue</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-primary-blue</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#ffffff"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-brand-white</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-white</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#1a1a1a"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-brand-black</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-black</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#0c4cbd"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-brand-blue</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-secondary-blue</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#d7df23"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-brand-lime</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-secondary-lime</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#f03f10"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-brand-red</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-secondary-red</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#037165"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-brand-green</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-secondary-green</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="govuk-heading-m">Text</h3>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" style="width:80px">Swatch</th>
+          <th class="govuk-table__header">Token</th>
+          <th class="govuk-table__header">Maps to</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#1a1a1a"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-text-primary-light</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-black</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#ffffff"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-text-primary-dark</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-white</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#5e5e5e"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-text-secondary-light</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-extra-dark</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#01156b"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-text-link-default</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-primary-blue</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="govuk-heading-m">Surface</h3>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" style="width:80px">Swatch</th>
+          <th class="govuk-table__header">Token</th>
+          <th class="govuk-table__header">Maps to</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#f5f5f5"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-surface-background-primary</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-extra-light</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#ebebeb"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-surface-background-secondary</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-light</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#b8b8b8"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-surface-background-tertiary</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-medium</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="govuk-heading-m">Border</h3>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" style="width:80px">Swatch</th>
+          <th class="govuk-table__header">Token</th>
+          <th class="govuk-table__header">Maps to</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#b8b8b8"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-border-default</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-medium</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#8e8e8e"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-border-text-input</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-grey-dark</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="govuk-heading-m">Messaging</h3>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" style="width:80px">Swatch</th>
+          <th class="govuk-table__header">Token</th>
+          <th class="govuk-table__header">Maps to</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#01156b"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-messaging-focus</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-focus</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#1a7032"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-messaging-positive</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-green</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#d32205"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-messaging-negative</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-red</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="govuk-heading-l">Journals</h2>
+    <p class="govuk-body">
+      Journal colors are an exception to the primitive/semantic color system and map directly to a hex value. They do not have a corresponding primitive.
+    </p>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header" style="width:80px">Swatch</th>
+          <th class="govuk-table__header">Token</th>
+          <th class="govuk-table__header">Hex</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#cc00a6"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-one</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#cc00a6</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#0523a2"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-biology</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#0523a2</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#520043"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-medicine</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#520043</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#320b92"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-pathogens</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#320b92</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#1b73c5"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-computational-biology</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#1b73c5</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#0a613b"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-genetics</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#0a613b</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#1b8372"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-neglected-tropical-diseases</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#1b8372</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#d14905"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-digital-health</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#d14905</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#038236"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-climate</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#038236</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#1640f8"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-water</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#1640f8</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#707c03"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-sustainability</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#707c03</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#145886"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-complex-systems</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#145886</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#9249cf"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-mental-health</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#9249cf</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#7f1092"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-aging-and-health</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#7f1092</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#7e6d2d"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-ecosystems</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#7e6d2d</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><div style="{{ dims }} {{ border }} background:#cf3030"></div></td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">--plos-color-journal-global-public-health</td>
+          <td class="govuk-table__cell govuk-body-s" style="font-family:monospace">#cf3030</td>
+        </tr>
+      </tbody>
+    </table>
+
+  {% endwith %}
+
+  <script>
+    (function () {
+      if (navigator.language === 'en-US') {
+        document.title = document.title.replace('Colour', 'Color');
+        var heading = document.getElementById('colour-heading');
+        if (heading) heading.textContent = 'Color';
+        var sidebarLink = document.querySelector('a[href*="colour"]');
+        if (sidebarLink) sidebarLink.textContent = 'Color';
+        var primitivesPara = document.getElementById('primitives-description');
+        if (primitivesPara) primitivesPara.innerHTML = primitivesPara.innerHTML.replace('colour', 'color');
+      }
+    })();
+  </script>
+{% endblock ds_content %}
