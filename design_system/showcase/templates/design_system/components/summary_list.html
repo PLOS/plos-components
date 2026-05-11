@@ -1,0 +1,26 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}Summary List – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+    {% component "plos_heading" level=1 %}
+        Summary List
+    {% endcomponent %}
+
+    {% component "plos_summary_list" %}
+        {% component "plos_summary_list_option" key="Name" %}
+            Sarah Philips
+        {% endcomponent %}
+        {% component "plos_summary_list_option" key="Date of birth" actions=[{'name': "Change",'url': "#"}] %}
+            5 January 1978
+        {% endcomponent %}
+        {% component "plos_summary_list_option" key="Contact details" actions=[{'name': "Add",'url': "#"},{'name': "Change",'url': "#"}] %}
+            {% component "plos_text_box" %}
+                07700 900457
+            {% endcomponent %}
+            {% component "plos_text_box" %}
+                sarah.phillips@example.com
+            {% endcomponent %}
+        {% endcomponent %}
+    {% endcomponent %}
+{% endblock ds_content %}

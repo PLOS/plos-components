@@ -1,0 +1,14 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}Components – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+  <h1 class="govuk-heading-xl">Components</h1>
+  <ul class="govuk-list">
+    {% for component in components %}
+      <li>
+        <a href="{{ component.slug }}/" class="govuk-link govuk-body-l">{{ component.label }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock ds_content %}
