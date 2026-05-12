@@ -1,0 +1,50 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}Date Input – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+  {% component "plos_heading" level=1 %}
+        Date Selector with Label and Hint
+    {% endcomponent %}
+
+    {% component "plos_date_input"
+            legend="When was your passport issued?"
+            hint="For example, 27 3 2007"
+            legend_size="large" %}
+    {% endcomponent %}
+
+    {% component "plos_heading" level=1 %}
+        Date Selector with Label, Hint and Existing Values
+    {% endcomponent %}
+
+    {% component "plos_date_input"
+            legend="When was your passport issued?"
+            hint="For example, 27 3 2007"
+            legend_size="large"
+            value={"day": 27, "month": 3, "year": 2007} %}
+    {% endcomponent %}
+
+    {% component "plos_heading" level=1 %}
+        Date Selector, Complex Examples
+    {% endcomponent %}
+
+    {% component "plos_heading" level=2 %}
+        Values of Zero and No Day
+    {% endcomponent %}
+
+    {% component "plos_date_input"
+            legend="When was your passport issued?"
+            hint="For example, 3 2007"
+            legend_size="small"
+            day=False
+            value={"month": 0, "year": 2007} %}
+    {% endcomponent %}
+
+    {% component "plos_date_input"
+            legend="When was your passport issued?"
+            hint="For example, 3 2007"
+            legend_size="small"
+            date_settings={"day": {"label": "D"}, "year": {"label": "Y"}}
+            value={"day": 0, "month": 5, "year": 2016} %}
+    {% endcomponent %}
+{% endblock ds_content %}

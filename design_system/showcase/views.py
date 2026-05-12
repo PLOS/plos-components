@@ -2,6 +2,8 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from .utils.page_title import fetch_design_system_title_from_slug
+
 STYLES = {"column-grid", "colour", "spacing", "typography"}
 
 COMPONENTS = {
@@ -17,6 +19,10 @@ COMPONENTS = {
     "banner",
     "item-list",
     "summary-list",
+    "date_input",
+}
+
+PATTERNS = {
     "check_answers",
 }
 
@@ -37,10 +43,34 @@ def _parse_delete_idx(action):
         return None
 
 
-def _nav_context(request, active_section=None, active_slug=None, active_subslug=None):
+def _nav_context_components(
+    request, active_section=None, active_slug=None, active_subslug=None
+):
+    return _nav_context(
+        request, active_section, active_slug, active_subslug, COMPONENTS
+    )
+
+
+def _nav_context_patterns(
+    request, active_section=None, active_slug=None, active_subslug=None
+):
+    return _nav_context(request, active_section, active_slug, active_subslug, PATTERNS)
+
+
+def _nav_context(
+    request,
+    active_section=None,
+    active_slug=None,
+    active_subslug=None,
+    library: set[str] | None = None,
+):
     nav_styles = []
     for s in sorted(STYLES):
-        item = {"slug": s, "label": s.replace("-", " ").title(), "children": []}
+        item = {
+            "slug": s,
+            "label": fetch_design_system_title_from_slug(s),
+            "children": [],
+        }
         if s == "typography":
             item["children"] = TYPOGRAPHY_SUBPAGES
         nav_styles.append(item)
@@ -48,8 +78,8 @@ def _nav_context(request, active_section=None, active_slug=None, active_subslug=
     return {
         "nav_styles": nav_styles,
         "nav_components": [
-            {"slug": c, "label": c.replace("-", " ").title()}
-            for c in sorted(COMPONENTS)
+            {"slug": c, "label": fetch_design_system_title_from_slug(c)}
+            for c in sorted(library)
         ],
         "active_section": active_section,
         "active_slug": active_slug,
@@ -87,9 +117,15 @@ def design_system_styles_index(request):
 
 
 def design_system_components_index(request):
-    ctx = _nav_context(request, active_section="components")
+    ctx = _nav_context_components(request, active_section="components")
     ctx["components"] = ctx["nav_components"]
     return render(request, "design_system/components/index.html", ctx)
+
+
+def design_system_patterns_index(request):
+    ctx = _nav_context_patterns(request, active_section="patterns")
+    ctx["components"] = ctx["nav_components"]
+    return render(request, "design_system/patterns/index.html", ctx)
 
 
 def design_system_typography(request, page):
@@ -217,5 +253,16 @@ def design_system_component(request, component):
     return render(
         request,
         f"design_system/components/{slug}.html",
-        _nav_context(request, active_section="components", active_slug=component),
+        _nav_context_components(
+            request, active_section="components", active_slug=component
+        ),
+    )
+
+
+def design_system_pattern(request, pattern):
+    slug = pattern.replace("-", "_")
+    return render(
+        request,
+        f"design_system/patterns/{slug}.html",
+        _nav_context_patterns(request, active_section="patterns", active_slug=pattern),
     )
