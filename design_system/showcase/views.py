@@ -75,12 +75,16 @@ def _nav_context(
             item["children"] = TYPOGRAPHY_SUBPAGES
         nav_styles.append(item)
 
-    return {
-        "nav_styles": nav_styles,
-        "nav_components": [
+    nav_components = None
+    if library is not None:
+        nav_components = [
             {"slug": c, "label": fetch_design_system_title_from_slug(c)}
             for c in sorted(library)
-        ],
+        ]
+
+    return {
+        "nav_styles": nav_styles,
+        "nav_components": nav_components,
         "active_section": active_section,
         "active_slug": active_slug,
         "active_subslug": active_subslug,
@@ -96,7 +100,9 @@ def _build_page_context(request, patents_values=None, patents_errors=None):
             request.session[SESSION_KEY_ITEM_LIST_HTMX] = saved
         patents_values = saved
 
-    ctx = _nav_context(request, active_section="components", active_slug="item-list")
+    ctx = _nav_context_components(
+        request, active_section="components", active_slug="item-list"
+    )
     ctx["count"] = len(patents_values)
     ctx["patent_values"] = patents_values
     ctx["htmx_url"] = reverse("item_list_htmx_update", kwargs={"list_name": "patents"})
