@@ -1,6 +1,6 @@
 from typing import NotRequired, TypedDict
 
-from ....summary_list.summary_list import SummaryListActionTuple
+from ....components.summary_list.summary_list import SummaryListActionTuple
 
 
 class CheckAnswersAnswer(TypedDict):

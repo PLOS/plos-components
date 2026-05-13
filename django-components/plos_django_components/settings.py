@@ -1,5 +1,6 @@
 import os
-from .components.base.icon_fonts.abstract_icon_font_defaults import IconFontDictionary
+
+from .components.components.base.icon_fonts.abstract_icon_font_defaults import IconFontDictionary
 
 INSTALLED_APPS = [
     "django_components",

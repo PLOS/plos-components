@@ -104,9 +104,7 @@ class RadioSelection(PLOSBaseComponent):
             "errors": errors,
         }
 
-    def on_render_after(
-        self, context: Context, template: Template | None, rendered
-    ) -> str:
+    def on_render_after(self, context: Context, template: Template | None, rendered) -> str:
         """
         Render the radio selection set.
 
@@ -117,9 +115,7 @@ class RadioSelection(PLOSBaseComponent):
         :param context: The context of the rendering.
         :param template: The template to render.
         """
-        radio_selection_options: list[RadioSelectionOptionEntry] = context[
-            "radio_selection_options"
-        ]
+        radio_selection_options: list[RadioSelectionOptionEntry] = context["radio_selection_options"]
         errors: list[str] = context["errors"]
         return _RadioSelectionImpl.render(
             kwargs={
@@ -138,12 +134,14 @@ class RadioSelection(PLOSBaseComponent):
 @register("plos_radio_selection_option")
 class RadioSelectionOption(PLOSBaseComponent):
     """
-    Use this component to define individual radio selection option inside the default slot inside the `radio selection` component.
+    Use this component to define individual radio selection option inside the default slot inside the `radio selection`
+    component.
     """
 
     template: t.django_html = """
     {% load component_tags %}
-        {% provide "_radio_selection_option" radio_selection_options=empty_radio_selection_options errors=empty_errors enabled=False %}
+        {% provide "_radio_selection_option" radio_selection_options=empty_radio_selection_options errors=empty_errors
+        enabled=False %}
             {% slot "content" default %}{% endslot %}
         {% endprovide %}
     """
@@ -187,9 +185,7 @@ class RadioSelectionOption(PLOSBaseComponent):
         }
 
     def on_render_after(self, context, template, content):  # noqa: D102
-        parent_radio_selection_options: list[dict] = context[
-            "parent_radio_selection_options"
-        ]
+        parent_radio_selection_options: list[dict] = context["parent_radio_selection_options"]
         parent_radio_selection_options.append(
             {
                 "checked": context["checked"],
