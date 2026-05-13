@@ -20,6 +20,63 @@ class CheckAnswers(PLOSBaseComponent):
     A page for displaying answers to check and a button to submit all those answers.
 
     Example usage::
+
+        {% component "plos_check_answers"
+        legend="Examples"
+        sections=[
+            {
+                "label": "Personal details",
+                "label_level": 3,
+                "answers": [
+                    {
+                        "label": "Name",
+                        "answers": ["Sarah Philips"]
+                    },
+                    {
+                        "label": "Date of birth",
+                        "answers": ["5 January 1978"],
+                        "actions": [{'name': "Change",'url': "#"}]
+                    },
+                    {
+                        "label": "Customer reference",
+                        "answers": ["Not provided"],
+                        "actions": [{'name': "Change",'url': "#"}]
+                    },
+                    {
+                        "label": "Address",
+                        "answers": ["72 Guild Street", "London", "SE23 6FH"],
+                        "actions": [{'name': "Change",'url': "#"}]
+                    },
+                    {
+                        "label": "Contact details",
+                        "answers": ["07700 900457", "sarah.phillips@example.com"],
+                        "actions": [{'name': "Change",'url': "#"}, {'name': "Add",'url': "#"}]
+                    },
+                ]
+            },
+            {
+                "label": "Application details",
+                "label_level": 3,
+                "answers": [
+                    {
+                        "label": "Previous application number",
+                        "answers": ["502135326"],
+                        "actions": [{'name': "Change",'url': "#"}]
+                    },
+                    {
+                        "label": "Licence type",
+                        "answers": ["For personal use"],
+                        "actions": [{'name': "Change",'url': "#"}]
+                    },
+                    {
+                        "label": "Home address",
+                        "answers": ["72 Guild Street", "London", "SE23 6FH"],
+                        "actions": [{'name': "Change",'url': "#"}]
+                    },
+                ],
+            }
+        ] %}
+        {% endcomponent %}
     """
 
     template_name = "check_answers.html"
@@ -42,6 +99,12 @@ class CheckAnswers(PLOSBaseComponent):
         button_label: str = "Accept and submit",
         sections: list[CheckAnswersSection] | None = None,
     ):
+
+        # Double check the label level.
+        if sections is not None:
+            for section in sections:
+                if section.get("label_level", None) is None:
+                    section["label_level"] = 3
 
         return {
             "legend": legend,
