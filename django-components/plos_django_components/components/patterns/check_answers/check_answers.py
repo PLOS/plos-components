@@ -24,8 +24,6 @@ class CheckAnswers(PLOSBaseComponent):
 
     template_name = "check_answers.html"
 
-    test_section: list[CheckAnswersSection] | None = None
-
     def get_context_data(  # noqa: D102
         self,
         /,
