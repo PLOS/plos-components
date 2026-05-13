@@ -3,108 +3,130 @@
 {% load static %}
 
 {% block title %}
-  {% block ds_title %}
-    PLOS Design System
-  {% endblock ds_title %}
+    {% block ds_title %}
+        PLOS Design System
+    {% endblock ds_title %}
 {% endblock title %}
 
 {% block extra_head %}
-  <link rel="stylesheet"
-        href="{% static 'design_system/navigation.css' %}" />
+    <link rel="stylesheet"
+          href="{% static 'design_system/navigation.css' %}" />
 {% endblock extra_head %}
 
 {% block pre_content %}
-  <div class="ds-header">
-    <a href="{% url 'design_system_index' %}"
-       class="govuk-body-l ds-header__title">
-      <img src="https://ux.plos.org/assets/v3/brand/logo.svg"
-           alt=""
-           class="ds-header__logo" />
-      Design System
-    </a>
-  </div>
+    <div class="ds-header">
+        <a href="{% url 'design_system_index' %}"
+           class="govuk-body-l ds-header__title">
+            <img src="https://ux.plos.org/assets/v3/brand/logo.svg"
+                 alt=""
+                 class="ds-header__logo" />
+            Design System
+        </a>
+    </div>
 {% endblock pre_content %}
 
 {% block content %}
-  <nav class="ds-section-nav" aria-label="Design system sections">
-    <a href="{% url 'design_system_styles_index' %}"
-       class="ds-section-nav__link
+    <nav class="ds-section-nav" aria-label="Design system sections">
+        <a href="{% url 'design_system_styles_index' %}"
+           class="ds-section-nav__link
               {% if active_section == 'styles' %}
                 ds-section-nav__link--active
               {% endif %}">
-      Styles
-    </a>
-    <a href="{% url 'design_system_components_index' %}"
-       class="ds-section-nav__link
+            Styles
+        </a>
+        <a href="{% url 'design_system_components_index' %}"
+           class="ds-section-nav__link
               {% if active_section == 'components' %}
                 ds-section-nav__link--active
               {% endif %}">
-      Components
-    </a>
-  </nav>
+            Components
+        </a>
+        <a href="{% url 'design_system_patterns_index' %}"
+           class="ds-section-nav__link
+              {% if active_section == 'patterns' %}
+                ds-section-nav__link--active
+              {% endif %}">
+            Patterns
+        </a>
+    </nav>
 
-  <div class="govuk-grid-row">
-    {% if active_section %}
-      <div class="govuk-grid-column-one-quarter">
-        <nav aria-label="Section navigation">
-          <ul class="govuk-list">
-            {% if active_section == 'styles' %}
-              {% for item in nav_styles %}
-                <li class="ds-sidebar__item
+    <div class="govuk-grid-row">
+        {% if active_section %}
+            <div class="govuk-grid-column-one-quarter">
+                <nav aria-label="Section navigation">
+                    <ul class="govuk-list">
+                        {% if active_section == 'styles' %}
+                            {% for item in nav_styles %}
+                                <li class="ds-sidebar__item
                            {% if item.slug == active_slug %}
                              ds-sidebar__item--active
                            {% endif %}">
-                  <a href="{% url 'design_system_style' item.slug %}"
-                     class="govuk-link govuk-link--no-visited-state govuk-body-s ds-sidebar__link
+                                    <a href="{% url 'design_system_style' item.slug %}"
+                                       class="govuk-link govuk-link--no-visited-state govuk-body-s ds-sidebar__link
                             {% if item.slug == active_slug and not active_subslug %}
                               ds-sidebar__link--active
                             {% endif %}">
-                    {{ item.label }}
-                  </a>
-                  {% if item.children %}
-                    <ul class="govuk-list ds-sidebar__subnav">
-                      {% for child in item.children %}
-                        <li class="ds-sidebar__subitem">
-                          <a href="{% url 'design_system_typography' child.slug %}"
-                             class="govuk-link govuk-link--no-visited-state govuk-body-s ds-sidebar__sublink
+                                        {{ item.label }}
+                                    </a>
+                                    {% if item.children %}
+                                        <ul class="govuk-list ds-sidebar__subnav">
+                                            {% for child in item.children %}
+                                                <li class="ds-sidebar__subitem">
+                                                    <a href="{% url 'design_system_typography' child.slug %}"
+                                                       class="govuk-link govuk-link--no-visited-state govuk-body-s ds-sidebar__sublink
                                     {% if child.slug == active_subslug %}
                                       ds-sidebar__sublink--active
                                     {% endif %}">
-                            {{ child.label }}
-                          </a>
-                        </li>
-                      {% endfor %}
-                    </ul>
-                  {% endif %}
-                </li>
-              {% endfor %}
-            {% elif active_section == 'components' %}
-              {% for item in nav_components %}
-                <li class="ds-sidebar__item
+                                                        {{ child.label }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        {% elif active_section == 'components' %}
+                            {% for item in nav_components %}
+                                <li class="ds-sidebar__item
                            {% if item.slug == active_slug %}
                              ds-sidebar__item--active
                            {% endif %}">
-                  <a href="{% url 'design_system_component' item.slug %}"
-                     class="govuk-link govuk-link--no-visited-state govuk-body-s ds-sidebar__link
+                                    <a href="{% url 'design_system_component' item.slug %}"
+                                       class="govuk-link govuk-link--no-visited-state govuk-body-s ds-sidebar__link
                             {% if item.slug == active_slug %}
                               ds-sidebar__link--active
                             {% endif %}">
-                    {{ item.label }}
-                  </a>
-                </li>
-              {% endfor %}
-            {% endif %}
-          </ul>
-        </nav>
-      </div>
-    {% endif %}
-    <div class="{% if active_section %}
+                                        {{ item.label }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% elif active_section == 'patterns' %}
+                            {% for item in nav_components %}
+                                <li class="ds-sidebar__item
+                           {% if item.slug == active_slug %}
+                             ds-sidebar__item--active
+                           {% endif %}">
+                                    <a href="{% url 'design_system_pattern' item.slug %}"
+                                       class="govuk-link govuk-link--no-visited-state govuk-body-s ds-sidebar__link
+                            {% if item.slug == active_slug %}
+                              ds-sidebar__link--active
+                            {% endif %}">
+                                        {{ item.label }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        {% endif %}
+        <div class="{% if active_section %}
                   govuk-grid-column-three-quarters
                 {% else %}
                   govuk-grid-column-full
                 {% endif %}">
-      {% block ds_content %}
-      {% endblock ds_content %}
+            {% block ds_content %}
+            {% endblock ds_content %}
+        </div>
     </div>
-  </div>
 {% endblock content %}
