@@ -1,9 +1,9 @@
 """
-A component function which provides the ability to create a button on any web page.
+A pattern for displaying answers to check and a button to submit all answers.
 
 This module provides:
-- A button that can be displayed on any web page.
-- HTMX options for partial page updates without a full page reload.
+- A series of summary list components displaying answers given by the user.
+- A submit button.
 """
 
 from typing import Literal
