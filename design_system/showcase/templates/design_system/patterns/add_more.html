@@ -32,7 +32,7 @@
   reload. If you disable JavaScript the form will still work via full POST.
 {% endcomponent %}
 
-<form method="post" action="{% url 'design_system_component' 'add-more' %}" novalidate>
+<form method="post" action="{% url 'design_system_pattern' 'add-more' %}" novalidate>
   {% csrf_token %}
   {% component "plos_add_more" name="patents" item_label="patent" count=count max_items=10 htmx_url=htmx_url errors=errors %}
     {% fill "item" data="slot_data" %}
