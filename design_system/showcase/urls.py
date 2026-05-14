@@ -25,8 +25,8 @@ urlpatterns = [
     ),
     path(
         "update-list/<str:list_name>/",
-        views.item_list_htmx_update,
-        name="item_list_htmx_update",
+        views.add_more_htmx_update,
+        name="add_more_htmx_update",
     ),
     path(
         "components/<str:component>/",
