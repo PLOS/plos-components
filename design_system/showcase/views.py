@@ -17,12 +17,12 @@ COMPONENTS = {
     "radios",
     "checkboxes",
     "banner",
-    "add-more",
     "summary-list",
     "date_input",
 }
 
 PATTERNS = {
+    "add-more",
     "check_answers",
 }
 
@@ -100,8 +100,8 @@ def _build_page_context(request, patents_values=None, patents_errors=None):
             request.session[SESSION_KEY_ADD_MORE_HTMX] = saved
         patents_values = saved
 
-    ctx = _nav_context_components(
-        request, active_section="components", active_slug="add-more"
+    ctx = _nav_context_patterns(
+        request, active_section="patterns", active_slug="add-more"
     )
     ctx["count"] = len(patents_values)
     ctx["patent_values"] = patents_values
@@ -161,7 +161,7 @@ def add_more_htmx_page(request):
     if request.method == "POST" and not request.headers.get("HX-Request"):
         return _handle_patents_post(request)
     return render(
-        request, "design_system/components/add_more.html", _build_page_context(request)
+        request, "design_system/patterns/add_more.html", _build_page_context(request)
     )
 
 
@@ -191,7 +191,7 @@ def _handle_patents_post(request):
             if idx is not None and idx < new_count:
                 anchor = f"#patents-item-{idx}"
         request.session[SESSION_KEY_ADD_MORE_HTMX] = values
-        url = reverse("design_system_component", kwargs={"component": "add-more"})
+        url = reverse("design_system_pattern", kwargs={"pattern": "add-more"})
         return HttpResponseRedirect(f"{url}{anchor}")
 
     errors = [
@@ -204,9 +204,9 @@ def _handle_patents_post(request):
 
     if any(errors):
         ctx = _build_page_context(request, patents_values=values, patents_errors=errors)
-        return render(request, "design_system/components/add_more.html", ctx)
+        return render(request, "design_system/patterns/add_more.html", ctx)
 
-    url = reverse("design_system_component", kwargs={"component": "add-more"})
+    url = reverse("design_system_pattern", kwargs={"pattern": "add-more"})
     return HttpResponseRedirect(f"{url}#patents-list-anchor")
 
 
@@ -239,7 +239,7 @@ def add_more_htmx_update(request, list_name):
 
         return render(
             request,
-            "design_system/components/add_more_htmx_partial.html",
+            "design_system/patterns/add_more_htmx_partial.html",
             {
                 "count": count,
                 "patent_values": values,
@@ -253,8 +253,6 @@ def add_more_htmx_update(request, list_name):
 
 
 def design_system_component(request, component):
-    if component == "add-more":
-        return add_more_htmx_page(request)
     slug = component.replace("-", "_")
     return render(
         request,
@@ -266,6 +264,8 @@ def design_system_component(request, component):
 
 
 def design_system_pattern(request, pattern):
+    if pattern == "add-more":
+        return add_more_htmx_page(request)
     slug = pattern.replace("-", "_")
     return render(
         request,

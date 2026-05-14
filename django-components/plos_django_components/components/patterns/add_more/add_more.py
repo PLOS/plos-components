@@ -7,8 +7,8 @@ This module provides:
 
 from django_components import register
 
-from ..base.base_component import PLOSBaseComponent
-from ..base.icon_fonts.base_icon import IconFontSetting
+from ...components.base.base_component import PLOSBaseComponent
+from ...components.base.icon_fonts.base_icon import IconFontSetting
 
 
 @register("plos_add_more")
