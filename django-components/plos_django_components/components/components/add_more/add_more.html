@@ -1,5 +1,5 @@
-{% with htmx_target="#"|add:name|add:"-item-list" htmx_field_name=name|add:"__action" %}
-<div id="{{ name }}-item-list" class="plos-item-list" data-item-list>
+{% with htmx_target="#"|add:name|add:"-add-more" htmx_field_name=name|add:"__action" %}
+<div id="{{ name }}-add-more" class="plos-add-more" data-add-more>
   {% if has_errors %}
   <div class="govuk-error-summary" data-module="govuk-error-summary">
     <div role="alert">
@@ -19,7 +19,7 @@
   <input type="hidden" aria-hidden="true" name="{{ name }}__max" value="{{ max_items }}">
 
   {% for item in items %}
-    <div class="plos-item-list__item" data-item-index="{{ item.index }}" id="{{ name }}-item-{{ item.index }}">
+    <div class="plos-add-more__item" data-item-index="{{ item.index }}" id="{{ name }}-item-{{ item.index }}">
       {% component "plos_heading" level=heading_level %}{{ item_label|title }} {{ forloop.counter }}{% endcomponent %}
       {% slot "item" index=item.index is_first=item.is_first errors=item.errors %}{% endslot %}
       {% if count > 1 %}

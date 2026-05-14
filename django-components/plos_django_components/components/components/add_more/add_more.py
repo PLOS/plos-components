@@ -4,13 +4,14 @@ A component which renders a dynamic, add/delete list of repeating form items.
 This module provides:
 - A list component with add and delete controls, enhanced with HTMX for partial page updates.
 """
+
 from django_components import register
 
 from ..base.base_component import PLOSBaseComponent
 from ..base.icon_fonts.base_icon import IconFontSetting
 
 
-@register("plos_item_list")
+@register("plos_add_more")
 class ItemList(PLOSBaseComponent):
     """
     A dynamic add/delete item list with HTMX progressive enhancement.
@@ -58,11 +59,11 @@ class ItemList(PLOSBaseComponent):
         add_icon        icon class for the add button; defaults to the global add_item icon setting
         delete_icon     icon class for the delete button; defaults to the global delete_item icon setting
 
-    See the design system page (components/item-list) for a full interactive demo
+    See the design system page (components/add-more) for a full interactive demo
     and implementation guide.
     """
 
-    template_name = "components/item_list/item_list.html"
+    template_name = "add_more.html"
 
     def get_context_data(
         self,

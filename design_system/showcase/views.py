@@ -17,7 +17,7 @@ COMPONENTS = {
     "radios",
     "checkboxes",
     "banner",
-    "item-list",
+    "add-more",
     "summary-list",
     "date_input",
 }
@@ -31,9 +31,9 @@ TYPOGRAPHY_SUBPAGES = [
     {"slug": "functional-text", "label": "Functional Text"},
 ]
 
-SESSION_KEY_ITEM_LIST = "ds_item_list_patents"
-SESSION_KEY_ITEM_LIST_HTMX = "ds_item_list_htmx_patents"
-ITEM_LIST_MAX = 10
+SESSION_KEY_ADD_MORE = "ds_add_more_patents"
+SESSION_KEY_ADD_MORE_HTMX = "ds_add_more_htmx_patents"
+ADD_MORE_MAX = 10
 
 
 def _parse_delete_idx(action):
@@ -94,18 +94,18 @@ def _nav_context(
 
 def _build_page_context(request, patents_values=None, patents_errors=None):
     if patents_values is None:
-        saved = request.session.get(SESSION_KEY_ITEM_LIST_HTMX, None)
+        saved = request.session.get(SESSION_KEY_ADD_MORE_HTMX, None)
         if saved is None:
             saved = [""]
-            request.session[SESSION_KEY_ITEM_LIST_HTMX] = saved
+            request.session[SESSION_KEY_ADD_MORE_HTMX] = saved
         patents_values = saved
 
     ctx = _nav_context_components(
-        request, active_section="components", active_slug="item-list"
+        request, active_section="components", active_slug="add-more"
     )
     ctx["count"] = len(patents_values)
     ctx["patent_values"] = patents_values
-    ctx["htmx_url"] = reverse("item_list_htmx_update", kwargs={"list_name": "patents"})
+    ctx["htmx_url"] = reverse("add_more_htmx_update", kwargs={"list_name": "patents"})
     if patents_errors is not None:
         ctx["errors"] = patents_errors
 
@@ -157,18 +157,18 @@ def design_system_style(request, page):
     )
 
 
-def item_list_htmx_page(request):
+def add_more_htmx_page(request):
     if request.method == "POST" and not request.headers.get("HX-Request"):
         return _handle_patents_post(request)
     return render(
-        request, "design_system/components/item_list.html", _build_page_context(request)
+        request, "design_system/components/add_more.html", _build_page_context(request)
     )
 
 
 def _handle_patents_post(request):
-    saved = request.session.get(SESSION_KEY_ITEM_LIST_HTMX, [""])
+    saved = request.session.get(SESSION_KEY_ADD_MORE_HTMX, [""])
     try:
-        count = min(int(request.POST.get("patents__count", len(saved))), ITEM_LIST_MAX)
+        count = min(int(request.POST.get("patents__count", len(saved))), ADD_MORE_MAX)
     except (ValueError, TypeError):
         count = len(saved)
     values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
@@ -176,7 +176,7 @@ def _handle_patents_post(request):
 
     if action == "add" or action.startswith("delete__"):
         anchor = "#patents-list-anchor"
-        if action == "add" and count < ITEM_LIST_MAX:
+        if action == "add" and count < ADD_MORE_MAX:
             values.append("")
         elif action.startswith("delete__"):
             idx = _parse_delete_idx(action)
@@ -190,8 +190,8 @@ def _handle_patents_post(request):
             new_count = len(values)
             if idx is not None and idx < new_count:
                 anchor = f"#patents-item-{idx}"
-        request.session[SESSION_KEY_ITEM_LIST_HTMX] = values
-        url = reverse("design_system_component", kwargs={"component": "item-list"})
+        request.session[SESSION_KEY_ADD_MORE_HTMX] = values
+        url = reverse("design_system_component", kwargs={"component": "add-more"})
         return HttpResponseRedirect(f"{url}{anchor}")
 
     errors = [
@@ -200,17 +200,17 @@ def _handle_patents_post(request):
         else None
         for v in values
     ]
-    request.session[SESSION_KEY_ITEM_LIST_HTMX] = values
+    request.session[SESSION_KEY_ADD_MORE_HTMX] = values
 
     if any(errors):
         ctx = _build_page_context(request, patents_values=values, patents_errors=errors)
-        return render(request, "design_system/components/item_list.html", ctx)
+        return render(request, "design_system/components/add_more.html", ctx)
 
-    url = reverse("design_system_component", kwargs={"component": "item-list"})
+    url = reverse("design_system_component", kwargs={"component": "add-more"})
     return HttpResponseRedirect(f"{url}#patents-list-anchor")
 
 
-def item_list_htmx_update(request, list_name):
+def add_more_htmx_update(request, list_name):
     if request.method != "POST":
         return HttpResponse(status=405)
 
@@ -222,7 +222,7 @@ def item_list_htmx_update(request, list_name):
         action = request.POST.get("patents__action", "")
         values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
 
-        if action == "add" and count < ITEM_LIST_MAX:
+        if action == "add" and count < ADD_MORE_MAX:
             values.append("")
         elif action.startswith("delete__"):
             idx = _parse_delete_idx(action)
@@ -234,17 +234,17 @@ def item_list_htmx_update(request, list_name):
             if not values:
                 values = [""]
 
-        request.session[SESSION_KEY_ITEM_LIST_HTMX] = values
+        request.session[SESSION_KEY_ADD_MORE_HTMX] = values
         count = len(values)
 
         return render(
             request,
-            "design_system/components/item_list_htmx_partial.html",
+            "design_system/components/add_more_htmx_partial.html",
             {
                 "count": count,
                 "patent_values": values,
                 "htmx_url": reverse(
-                    "item_list_htmx_update", kwargs={"list_name": list_name}
+                    "add_more_htmx_update", kwargs={"list_name": list_name}
                 ),
             },
         )
@@ -253,8 +253,8 @@ def item_list_htmx_update(request, list_name):
 
 
 def design_system_component(request, component):
-    if component == "item-list":
-        return item_list_htmx_page(request)
+    if component == "add-more":
+        return add_more_htmx_page(request)
     slug = component.replace("-", "_")
     return render(
         request,
