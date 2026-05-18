@@ -4,4 +4,86 @@
 
 {% block ds_content %}
   <h1 class="govuk-heading-xl">Error Summary</h1>
+
+  <p class="govuk-body">
+    <code>plos_error_summary</code> renders an error summary box at the top
+    of a form page. It links each error to the affected input field via an anchor.
+    When <code>entries</code> is empty the component renders nothing.
+  </p>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  <h2 class="govuk-heading-l">Example</h2>
+
+  <p class="govuk-body">
+    Click an error link to jump to the corresponding field.
+  </p>
+
+  {% component "plos_error_summary" entries=example_entries %}{% endcomponent %}
+
+  {% component "plos_text_input"
+    label="Full name"
+    name="full_name"
+    field_id="id_full_name"
+    errors=full_name_errors
+  %}{% endcomponent %}
+
+  {% component "plos_text_input"
+    label="Email address"
+    name="email"
+    field_id="id_email"
+    input_type="email"
+    errors=email_errors
+  %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  <h2 class="govuk-heading-l">Custom title</h2>
+
+  <p class="govuk-body">
+    Use the <code>title</code> parameter to override the default heading.
+  </p>
+
+  {% component "plos_error_summary" entries=custom_title_entries title="Three errors prevented your submission" %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  <h2 class="govuk-heading-l">Usage</h2>
+
+  <p class="govuk-body">
+    Build the <code>entries</code> list in your view:
+  </p>
+
+  <code class="ds-code-block">entries = [
+    {
+        "label": "Full name",
+        "message": "Enter your full name",
+        "anchor": "id_full_name",
+    },
+    {
+        "label": "Email address",
+        "message": "Enter an email address in the correct format",
+        "anchor": "id_email",
+    },
+]</code>
+
+  <p class="govuk-body">
+    Then pass it to the component in your template:
+  </p>
+
+  <code class="ds-code-block">{% verbatim %}{% component "plos_error_summary" entries=entries %}{% endcomponent %}{% endverbatim %}</code>
+
+  <p class="govuk-body">
+    Each entry requires three keys:
+  </p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li><code>label</code>: human-readable label shown before the colon (e.g. "Patent 1")</li>
+    <li><code>message</code>: the validation error text</li>
+    <li><code>anchor</code>: the <code>id</code> of the target input, without the leading <code>#</code></li>
+  </ul>
+
+  <p class="govuk-body">
+    An optional <code>title</code> parameter overrides the default heading "There is an issue".
+  </p>
+
 {% endblock ds_content %}
