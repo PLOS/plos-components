@@ -71,7 +71,8 @@ class Checkboxes(PLOSBaseComponent):
     """
     An "API" component, meaning that it's designed to process user input provided as nested components.
 
-    But after the input is processed, it delegates to an internal "implementation" component that actually renders the content.
+    But after the input is processed, it delegates to an internal "implementation" component that actually renders the
+    content.
     """
 
     template: t.django_html = """
@@ -95,9 +96,7 @@ class Checkboxes(PLOSBaseComponent):
         field_id: str | None = None,
     ):
         if not name:
-            raise RuntimeError(
-                "You must give the Checkbox component a name unique to this Checkbox Component."
-            )
+            raise RuntimeError("You must give the Checkbox component a name unique to this Checkbox Component.")
 
         if not errors:
             errors = []

@@ -10,7 +10,7 @@ from typing import Literal
 
 from django_components import register
 
-from ...base.base_component import PLOSBaseComponent
+from ...components.base.base_component import PLOSBaseComponent
 from .typed_dict.check_answers_section import CheckAnswersSection
 
 
