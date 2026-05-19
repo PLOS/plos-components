@@ -10,6 +10,7 @@ from typing import Literal
 from django_components import register
 
 from ..base.base_component import PLOSBaseComponent
+from ....utils.govuk_helper import label_class_from_size
 
 
 @register("plos_textarea")
@@ -40,6 +41,7 @@ class Textarea(PLOSBaseComponent):
             "field_id": field_id,
             "name": name,
             "label": label,
+            "label_class": label_class_from_size(label_size),
             "label_size": label_size,
             "hint": hint,
             "placeholder": placeholder,

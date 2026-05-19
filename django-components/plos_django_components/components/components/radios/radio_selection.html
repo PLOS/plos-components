@@ -4,7 +4,7 @@
               aria-describedby="{% if hint %}{{ name }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ name }}-error{% endif %}"
               {% endif %}>
         {% if legend %}
-        <legend class="govuk-fieldset__legend {% if legend_size == 'large' %} govuk-fieldset__legend--l{% endif %}{% if legend_size == 'medium' %} govuk-fieldset__legend--m{% endif %}{% if legend_size == 'small' %} govuk-fieldset__legend--s{% endif %}">
+        <legend class="{{ legend_class }}">
             {{ legend|escape }}
         </legend>
         {% endif %}

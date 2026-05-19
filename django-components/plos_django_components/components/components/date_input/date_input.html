@@ -3,7 +3,8 @@
             {% if hint or errors %}
               aria-describedby="{% if hint %}{{ field_id }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ field_id }}-error{% endif %}"
             {% endif %}>
-        <legend class="govuk-fieldset__legend {% if legend_size == 'large' %} govuk-fieldset__legend--l{% endif %}{% if legend_size == 'medium' %} govuk-fieldset__legend--m{% endif %}{% if legend_size == 'small' %} govuk-fieldset__legend--s{% endif %}">
+        <legend id="{{ field_id }}-legend"
+                class="{{ legend_class }}">
             {{ legend|escape }}
         </legend>
         {% if hint %}
