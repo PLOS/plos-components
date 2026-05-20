@@ -32,9 +32,22 @@
   reload. If you disable JavaScript the form will still work via full POST.
 {% endcomponent %}
 
-<form method="post" action="{% url 'design_system_pattern' 'add-more' %}" novalidate>
+<form method="post" action="/patterns/add-more/htmx/" novalidate>
   {% csrf_token %}
-  {% component "plos_add_more" name="patents" item_label="patent" count=count max_items=10 htmx_url=htmx_url errors=errors %}
+  {% component "plos_add_more"
+      name="patents"
+      item_label="patent"
+      max_items=10
+      htmx_url="/patterns/add-more/htmx/"
+      heading_level=3
+      min_items=1
+      required=True
+      validation_message="Enter a patent number or application"
+      show_save_button=True
+      save_label="Save patents"
+      show_saved_items=True
+      saved_items_label="Saved patents"
+  %}
     {% fill "item" data="slot_data" %}
       <div class="govuk-form-group{% if slot_data.errors.patent %} govuk-form-group--error{% endif %}">
         <label class="govuk-label" for="patent_{{ slot_data.index }}">Patent number</label>
@@ -48,29 +61,12 @@
           type="text"
           id="patent_{{ slot_data.index }}"
           name="patent_{{ slot_data.index }}"
-          value="{{ patent_values|ds_index:slot_data.index }}"
+          value="{{ slot_data.value }}"
         >
       </div>
     {% endfill %}
   {% endcomponent %}
-
-  <button type="submit" name="patents__action" value="" class="govuk-button" style="margin-top: 1.5rem;">
-    Save patents
-  </button>
 </form>
-
-{% with non_empty=patent_values|ds_filter_nonempty %}
-  {% if non_empty %}
-    <div class="govuk-inset-text" style="margin-top: 1.5rem;">
-      <h3 class="govuk-heading-s">Saved patents</h3>
-      <ul class="govuk-list govuk-list--bullet">
-        {% for patent in non_empty %}
-          <li>{{ patent }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
-{% endwith %}
 {% endblock ds_content %}
 
 {% block js %}

@@ -1,0 +1,87 @@
+{% load component_tags %}
+<div id="{{ name }}-add-more" class="plos-add-more" data-add-more>
+  {% if has_errors %}
+  <div class="govuk-error-summary" data-module="govuk-error-summary">
+    <div role="alert">
+      <h2 class="govuk-error-summary__title">There is an issue</h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          {% for entry in error_summary %}
+            <li><a href="#{{ entry.anchor }}" class="govuk-link">{{ entry.label }}: {{ entry.message }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <input type="hidden" aria-hidden="true" name="{{ name }}__count" value="{{ count }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__max" value="{{ max_items }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__min" value="{{ min_items }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__item_label" value="{{ item_label }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__item_label_plural" value="{{ item_label_plural }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__htmx_url" value="{{ htmx_url }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__add_label" value="{{ add_label }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__delete_label" value="{{ delete_label }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__save_label" value="{{ save_label }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__heading_level" value="{{ heading_level }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__required" value="{{ required }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__validation_message" value="{{ validation_message }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__show_save_button" value="{{ show_save_button }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__show_saved_items" value="{{ show_saved_items }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__saved_items_label" value="{{ saved_items_label }}">
+
+  {% for item in items %}
+    {% component "plos_add_more_item"
+        index=item.index
+        display_index=forloop.counter
+        errors=item.errors
+        name=name
+        item_label=item_label
+        heading_level=heading_level
+        delete_label=delete_label
+        show_delete=show_delete
+        htmx_url=htmx_url
+    %}
+      {% fill "item_content" data="item_data" %}
+        {% slot "item" index=item_data.index errors=item_data.errors value=item.value %}{% endslot %}
+      {% endfill %}
+    {% endcomponent %}
+  {% endfor %}
+
+  <div id="{{ name }}-list-anchor">
+    {% if remaining > 0 %}
+      <div data-add-section>
+        <button type="submit" name="{{ name }}__action" value="add" class="govuk-button govuk-button--secondary"
+                hx-post="{{ htmx_url }}" hx-target="#{{ name }}-add-more" hx-select="#{{ name }}-add-more" hx-swap="outerHTML" hx-include="#{{ name }}-add-more"
+                formaction="{{ htmx_url }}">
+          {{ add_label }} {{ item_label }}
+        </button>
+        {% component "plos_text_box" %}You can add <span data-remaining-count>{{ remaining }}</span> more {{ item_label_plural }}{% endcomponent %}
+      </div>
+    {% endif %}
+
+    {% if show_save_button %}
+      <div style="margin-top: 1.5rem;">
+        <button type="submit" name="{{ name }}__action" value="" class="govuk-button"
+                hx-post="{{ htmx_url }}" hx-target="#{{ name }}-add-more" hx-select="#{{ name }}-add-more" hx-swap="outerHTML" hx-include="#{{ name }}-add-more"
+                formaction="{{ htmx_url }}">
+          {{ save_label }}
+        </button>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if show_saved_items %}
+    {% if non_empty_values %}
+      <div class="govuk-inset-text" style="margin-top: 1.5rem;">
+        <h3 class="govuk-heading-s">{{ saved_items_label }}</h3>
+        <ul class="govuk-list govuk-list--bullet">
+          {% for val in non_empty_values %}
+            <li>{{ val }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>

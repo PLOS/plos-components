@@ -1,0 +1,14 @@
+{% load component_tags %}
+<div class="plos-add-more__item" data-item-index="{{ index }}" id="{{ name }}-item-{{ index }}">
+  {% component "plos_heading" level=heading_level %}{{ item_label|title }} {{ display_index }}{% endcomponent %}
+
+  {% slot "item_content" index=index errors=errors %}{% endslot %}
+
+  {% if show_delete %}
+    <button type="submit" name="{{ name }}__action" value="delete__{{ index }}" class="govuk-button govuk-button--warning"
+            hx-post="{{ htmx_url }}" hx-target="#{{ name }}-add-more" hx-select="#{{ name }}-add-more" hx-swap="outerHTML" hx-include="#{{ name }}-add-more"
+            formaction="{{ htmx_url }}">
+      {{ delete_label }} {{ item_label }} {{ display_index }}
+    </button>
+  {% endif %}
+</div>
