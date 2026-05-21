@@ -1,7 +1,7 @@
 <div class="govuk-form-group{% if maxlength %} govuk-character-count{% endif %}"
      {% if maxlength %}data-module="govuk-character-count" data-maxlength="{{ maxlength }}"{% endif %}>
     {% if label %}
-    <label class="govuk-label {% if label_size == 'large' %} govuk-label--l{% endif %}{% if label_size == 'medium' %} govuk-label--m{% endif %}{% if label_size == 'small' %} govuk-label--s{% endif %}"
+    <label class="{{ label_class }}"
            for="{{ field_id }}">
         {{ label }}
     </label>
