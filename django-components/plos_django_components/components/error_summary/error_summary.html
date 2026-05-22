@@ -1,7 +1,7 @@
 {% if has_entries %}
 <div class="govuk-error-summary" data-module="govuk-error-summary">
   <div role="alert">
-    <h2 class="govuk-error-summary__title">{{ title }}</h2>
+    {% component "plos_heading" level=2 css_class="govuk-error-summary__title" %}{{ title }}{% endcomponent %}
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
         {% for entry in entries %}
