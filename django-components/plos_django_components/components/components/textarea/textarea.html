@@ -1,0 +1,37 @@
+<div class="govuk-form-group{% if maxlength %} govuk-character-count{% endif %}"
+     {% if maxlength %}data-module="govuk-character-count" data-maxlength="{{ maxlength }}"{% endif %}>
+    {% if label %}
+    <label class="{{ label_class }}"
+           for="{{ field_id }}">
+        {{ label }}
+    </label>
+    {% endif %}
+    {% if hint %}
+    <div id="{{ field_id }}-hint" class="govuk-hint">
+        {{ hint }}
+    </div>
+    {% endif %}
+    <textarea
+            class="govuk-textarea{% if maxlength %} govuk-js-character-count{% endif %}{% if errors %} govuk-textarea--error{% endif %}"
+            id="{{ field_id }}"
+            name="{{ name }}"
+            rows="{{ rows }}"
+            {% if cols %}cols={{ cols }}{% endif %}
+            {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+            {% if required %}required{% endif %}
+            {% if maxlength %}maxlength={{ maxlength }}{% endif %}
+            {% if minlength %}minlength={{ minlength }}{% endif %}
+            {% if maxlength or hint %}aria-describedby="{% if maxlength %}{{ field_id }}-info {% endif %}{% if hint %}{{ field_id }}-hint{% endif %}"
+            {% endif %}>{% if value %}{{ value }}{% endif %}</textarea>
+    {% if maxlength %}
+    <div id="{{ field_id }}-info" class="govuk-hint govuk-character-count__message"></div>
+    {% endif %}
+    {% if errors %}
+    {% for error in errors %}
+    <p class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span>
+        {{ error }}
+    </p>
+    {% endfor %}
+    {% endif %}
+</div>

@@ -1,0 +1,37 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}
+  Textarea – PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+  <h1 class="govuk-heading-xl">
+    Textarea
+  </h1>
+
+  <h2 class="govuk-heading-m">
+    Empty state:
+  </h2>
+  {% component "plos_textarea" field_id="coi" name="coi" label="Describe this conflict of interest" hint="Do not include funding details as these will be collected separately in your Funding Statement. Include other financial or non-financial interests here." maxlength=1000 %}{% endcomponent %}
+
+  <hr />
+
+  <h2 class="govuk-heading-m">
+    Prefilled state:
+  </h2>
+  {% component "plos_textarea" field_id="coi-prefilled" name="coi-prefilled" label="Describe this conflict of interest" hint="Do not include funding details as these will be collected separately in your Funding Statement. Include other financial or non-financial interests here." value="I have a conflict because of x, y, and z." maxlength=1000 %}{% endcomponent %}
+
+  <hr />
+
+  <h2 class="govuk-heading-m">
+    Without character count:
+  </h2>
+  {% component "plos_textarea" field_id="coi-no-count" name="coi-no-count" label="Describe this conflict of interest" hint="Do not include funding details as these will be collected separately in your Funding Statement. Include other financial or non-financial interests here." value="I have a conflict because of x, y, and z." %}{% endcomponent %}
+
+  <hr />
+
+  <h2 class="govuk-heading-m">
+    Error state:
+  </h2>
+  {% component "plos_textarea" field_id="coi-error" name="coi-error" label="Describe this conflict of interest" hint="Do not include funding details as these will be collected separately in your Funding Statement. Include other financial or non-financial interests here." maxlength=1000 errors=["Enter a description of this conflict of interest"] %}{% endcomponent %}
+{% endblock ds_content %}

@@ -1,0 +1,40 @@
+<div class="govuk-form-group{% if errors %} govuk-form-group--error{% endif %}">
+    <fieldset class="govuk-fieldset"
+              {% if hint or errors %}
+              aria-describedby="{% if hint %}{{ name }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ name }}-error{% endif %}"
+              {% endif %}>
+        {% if legend %}
+        <legend class="{{ legend_class }}">
+            {{ legend|escape }}
+        </legend>
+        {% endif %}
+        {% if hint %}
+        <div id="{{ name }}-hint" class="govuk-hint">
+            {{ hint|escape }}
+        </div>
+        {% endif %}
+        {% if errors %}
+        <p id="{{ name }}-error" class="govuk-error-message">
+            {% for error in errors %}
+            {{ error|escape }}<br>
+            {% endfor %}
+        </p>
+        {% endif %}
+        <div class="govuk-radios" data-module="govuk-radios">
+            {% for option in radio_selection_options %}
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input"
+                       id="{{ name }}{% if not forloop.first %}-{{ forloop.counter }}{% endif %}"
+                       name="{{ name }}"
+                       type="radio"
+                       value="{{ option.value }}"
+                       {% if option.checked %} checked{% endif %}>
+                <label class="govuk-label govuk-radios__label"
+                       for="{{ name }}{% if not forloop.first %}-{{ forloop.counter }}{% endif %}">
+                    {{ option.content }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+    </fieldset>
+</div>

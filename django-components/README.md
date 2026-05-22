@@ -8,7 +8,7 @@ Currently the best way to use PLOS Components in your Django application is by c
 
 ## Setup
 
-This section provides guidance on setting up a generic Django Application and Janeway. 
+This section provides guidance on setting up a generic Django Application and Janeway.
 
 ### Django applications
 
@@ -61,7 +61,7 @@ GOV_UK_TEMPLATE_PRIMARY_JS = "https://YOUR_SOURCE_OR_CDN_URI/assets/v3/scripts/g
 
 ### Janeway
 
-This project was originally designed for use with [Janeway Systems](https://github.com/openlibhums/janeway), an open-source publication system. 
+This project was originally designed for use with [Janeway Systems](https://github.com/openlibhums/janeway), an open-source publication system.
 
 When using with Janeway, add the following to your `settings.py`:
 
@@ -87,6 +87,22 @@ GOV_UK_TEMPLATE_OVERRIDE_CSS = ["https://YOUR_SOURCE_OR_CDN_URI/stylesheets/over
 GOV_UK_TEMPLATE_PRIMARY_JS = "https://YOUR_SOURCE_OR_CDN_URI/assets/v3/scripts/gov-uk-frontend-<VERSION-NUMBER>.min.js"
 ```
 
+## Linting
+
+This project uses [ruff](https://docs.astral.sh/ruff/) for linting and [pre-commit](https://pre-commit.com/) to run it automatically on staged `.py` files before each commit.
+
+Pre-commit runs on the host machine (not inside Docker), so it must be installed on the host once:
+
+```bash
+pip install pre-commit
+```
+
+Then activate the hooks for this repo:
+
+```bash
+pre-commit install
+```
+
 ## Usage
 
 This package provides components that can be used in your Django templates.
@@ -94,7 +110,7 @@ See the `plos_django_components/components` directory for available components.
 
 ### Button
 
-The following demonstrates an example using the `Button` component. 
+The following demonstrates an example using the `Button` component.
 
 ```python
 from django.shortcuts import render
@@ -119,3 +135,11 @@ Then the HTML file will be as follows:
 ```
 
 This will render a simple button which says "Next".
+
+# Advanced Settings
+This section covers more advanced settings.
+
+## Font Icon Overrides
+There are a number of preset icons for easy integration. Any, all or none of these can all be overridden through the settings. 
+
+A `TypedDict` is given to show which icons can be overridden with examples in the `bootstrap` class. 

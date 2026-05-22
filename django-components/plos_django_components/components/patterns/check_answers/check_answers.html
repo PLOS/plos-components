@@ -1,0 +1,45 @@
+<div class="govuk-grid-row" {% if field_id %}id="{{ field_id }}-grid-row"{% endif %}>
+    <div class="govuk-grid-column-two-thirds-from-desktop" {% if field_id %}id="{{ field_id }}-grid-column"{% endif %}>
+        {% if legend %}
+            {% component "plos_heading" level=legend_level %}
+                {{ legend }}
+            {% endcomponent %}
+        {% endif %}
+        {% for section in sections %}
+            {% if section.label %}
+                {% component "plos_heading" level=section.label_level %}
+                    {{ section.label }}
+                {% endcomponent %}
+            {% endif %}
+            {% component "plos_summary_list" field_id=section.field_id %}
+                {% for section_answer in section.answers %}
+                    {% component "plos_summary_list_option"
+                            key=section_answer.label
+                            actions=section_answer.actions
+                            errors=section_answer.errors %}
+                        {% for answer in section_answer.answers %}
+                            {% component "plos_text_box" %}
+                                {{ answer }}
+                            {% endcomponent %}
+                        {% endfor %}
+                    {% endcomponent %}
+                {% endfor %}
+            {% endcomponent %}
+        {% endfor %}
+        {% if submission_disclosure_label %}
+            {% component "plos_heading" level=submission_disclosure_label_level %}
+                {{ submission_disclosure_label }}
+            {% endcomponent %}
+        {% endif %}
+        {% if submission_disclosure %}
+            {% component "plos_text_box" %}
+                {{ submission_disclosure }}
+            {% endcomponent %}
+        {% endif %}
+        {% component "plos_button_group" %}
+            {% component "plos_button" button_type="submit" field_name=button_name field_id=button_id %}
+                {{ button_label }}
+            {% endcomponent %}
+        {% endcomponent %}
+    </div>
+</div>

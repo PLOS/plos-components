@@ -1,0 +1,9 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}Text Input – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+  <h1 class="govuk-heading-xl">Text Input</h1>
+  {% component "plos_text_input" label="Full name" name="full_name" %}
+  {% endcomponent%}
+{% endblock ds_content %}

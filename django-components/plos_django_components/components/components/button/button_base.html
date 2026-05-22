@@ -1,0 +1,15 @@
+<button type="{{ button_type }}"
+        {% if value %} value="{{ value }}"{% endif %}
+        {% if field_name %} name="{{ field_name }}"{% endif %}
+        {% if field_id %} id="{{ field_id }}"{% endif %}
+        data-module="govuk-button"
+        class="govuk-button{% if action == 'secondary' %} govuk-button--secondary{% endif %}{% if action == 'warning' %} govuk-button--warning{% endif %}"
+        {% if disabled %} disabled aria-disabled="true"{% endif %}
+        {% if hx_post %} hx-post="{{ hx_post }}"{% endif %}
+        {% if hx_target %} hx-target="{{ hx_target }}"{% endif %}
+        {% if hx_swap %} hx-swap="{{ hx_swap }}"{% endif %}
+        {% if hx_include %} hx-include="{{ hx_include }}"{% endif %}>
+    {% slot "default" default %}
+    Submit
+    {% endslot %}
+</button>
