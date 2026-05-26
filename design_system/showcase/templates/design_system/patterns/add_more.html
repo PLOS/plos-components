@@ -10,30 +10,28 @@
         Add More
     {% endcomponent %}
 
-{% component "plos_text_box" %}
-  <code>plos_add_more</code> is built with HTMX to enable
-  progressive enhancement. HTMX is not required. Without it, add and delete
-  buttons submit the surrounding form normally and the page view handles
-  everything. When HTMX.js is loaded, those same buttons instead POST to
-  <code>htmx_url</code> and swap only the list container in place, without a
-  full page reload. The swap target is the component's outer
-  <code>&lt;div id="{name}-add-more"&gt;</code>; the endpoint must return
-  only that element.
-{% endcomponent %}
+    {% component "plos_text_box" %}
+      <code>plos_add_more</code> is built with HTMX to enable
+      progressive enhancement. HTMX is not required. Without it, add and delete
+      buttons submit the surrounding form normally and the page view handles
+      everything. When HTMX.js is loaded, those same buttons instead POST to
+      <code>htmx_url</code> and swap only the list container in place, without a
+      full page reload. The swap target is the component's outer
+      <code>&lt;div id="{name}-add-more"&gt;</code>; the endpoint must return
+      only that element.
+    {% endcomponent %}
 
 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-    {% component "plos_heading" level=2 %}
-        Interactive demo
-    {% endcomponent %}
+  {% component "plos_heading" level=2 %}
+    Interactive demo
+  {% endcomponent %}
 
-{% component "plos_text_box" %}
-  Add and remove patents below. HTMX will swap the list without a full page
-  reload. If you disable JavaScript the form will still work via full POST.
-{% endcomponent %}
+  {% component "plos_text_box" %}
+    Add and remove patents below. HTMX will swap the list without a full page
+    reload. If you disable JavaScript the form will still work via full POST.
+  {% endcomponent %}
 
-<form method="post" action="/patterns/add-more/htmx/" novalidate>
-  {% csrf_token %}
   {% component "plos_add_more"
       name="patents"
       item_label="patent"
@@ -66,7 +64,6 @@
       </div>
     {% endfill %}
   {% endcomponent %}
-</form>
 {% endblock ds_content %}
 
 {% block js %}
