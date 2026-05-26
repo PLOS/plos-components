@@ -59,6 +59,12 @@ GOV_UK_TEMPLATE_OVERRIDE_CSS = ["https://YOUR_SOURCE_OR_CDN_URI/stylesheets/over
 GOV_UK_TEMPLATE_PRIMARY_JS = "https://YOUR_SOURCE_OR_CDN_URI/assets/v3/scripts/gov-uk-frontend-<VERSION-NUMBER>.min.js"
 ```
 
+The urls need to be added to the application urls for the "Add More" component to work as intended. In urls.py add:
+
+```
+urlpatterns.append(path("components/", include("django_components.urls")))
+```
+
 ### Janeway
 
 This project was originally designed for use with [Janeway Systems](https://github.com/openlibhums/janeway), an open-source publication system.
@@ -85,6 +91,12 @@ global_settings.TEMPLATES[0]['OPTIONS']['builtins'].append((
 GOV_UK_TEMPLATE_PRIMARY_CSS = "https://YOUR_SOURCE_OR_CDN_URI/stylesheets/govuk-frontend-<VERSION-NUMBER>.min.css"
 GOV_UK_TEMPLATE_OVERRIDE_CSS = ["https://YOUR_SOURCE_OR_CDN_URI/stylesheets/override-<VERSION-NUMBER>.min.css"]
 GOV_UK_TEMPLATE_PRIMARY_JS = "https://YOUR_SOURCE_OR_CDN_URI/assets/v3/scripts/gov-uk-frontend-<VERSION-NUMBER>.min.js"
+```
+
+The urls need to be added to the application urls for the "Add More" component to work as intended. In your plugin's urls.py add:
+
+```
+urlpatterns.append(path("components/", include("django_components.urls")))
 ```
 
 ## Linting
