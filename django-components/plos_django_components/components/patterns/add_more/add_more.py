@@ -225,16 +225,6 @@ class AddMore(PLOSBaseComponent):
             return HttpResponseRedirect(request.path)
 
 
-@register("plos_add_more_partial")
-class AddMorePartial(AddMore):
-    """
-    A child component that represents the HTMX partial for AddMore.
-    By inheriting from AddMore, it shares the same template and context logic.
-    """
-
-    pass
-
-
 @register("plos_add_more_item")
 class AddMoreItem(PLOSBaseComponent):
     """
