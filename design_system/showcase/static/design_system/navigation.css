@@ -96,3 +96,11 @@
   font-weight: 700;
   color: #01156b;
 }
+
+.ds-code-block {
+  display: block;
+  background: #f3f2f1;
+  padding: 1rem;
+  overflow-x: auto;
+  white-space: pre;
+}

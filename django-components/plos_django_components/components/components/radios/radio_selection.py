@@ -12,6 +12,7 @@ from django.template import Context, Template
 from django.utils.safestring import mark_safe
 from django_components import register
 from django_components import types as t
+from ....utils.govuk_helper import legend_class_from_size
 
 from ..base.base_component import PLOSBaseComponent
 
@@ -99,6 +100,7 @@ class RadioSelection(PLOSBaseComponent):
             "attrs": attrs,
             "content_attrs": content_attrs,
             "legend": legend,
+            "legend_class": legend_class_from_size(legend_size),
             "legend_size": legend_size,
             "hint": hint,
             "errors": errors,

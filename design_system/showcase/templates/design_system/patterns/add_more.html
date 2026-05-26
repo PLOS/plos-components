@@ -63,6 +63,20 @@
       </div>
     {% endfill %}
   {% endcomponent %}
+</form>
+
+{% with non_empty=patent_values|ds_filter_nonempty %}
+  {% if non_empty %}
+    <div class="govuk-inset-text" style="margin-top: 1.5rem;">
+      <h3 class="govuk-heading-s">Saved patents</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        {% for patent in non_empty %}
+          <li>{{ patent }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+{% endwith %}
 {% endblock ds_content %}
 
 {% block js %}

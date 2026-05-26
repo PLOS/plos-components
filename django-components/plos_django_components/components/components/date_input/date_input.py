@@ -9,6 +9,7 @@ from typing import Literal, TypedDict
 
 from django_components import register
 from typing_extensions import NotRequired
+from ....utils.govuk_helper import legend_class_from_size
 
 from ..base.base_component import PLOSBaseComponent
 
@@ -71,6 +72,7 @@ class DateInput(PLOSBaseComponent):
         return {
             "field_id": field_id,
             "legend": legend,
+            "legend_class": legend_class_from_size(legend_size),
             "legend_size": legend_size,
             "hint": hint,
             "errors": errors,

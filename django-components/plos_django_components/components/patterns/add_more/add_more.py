@@ -94,7 +94,7 @@ class AddMore(PLOSBaseComponent):
             {
                 "label": f"{item_label.capitalize()} {i + 1}",
                 "message": field_error["message"],
-                "anchor": field_error["field_id"],
+                "anchor": f"{field_error['field_id']}_{i}",
             }
             for i, item_errors in enumerate(resolved_errors)
             if item_errors
@@ -121,6 +121,8 @@ class AddMore(PLOSBaseComponent):
             "values": resolved_values,
             "non_empty_values": [v for v in resolved_values if v and (not isinstance(v, str) or v.strip())],
             "show_delete": show_delete,
+            "remaining": max_items - count,
+            "items": items,
             "htmx_url": htmx_url,
             "error_summary": error_summary,
             "has_errors": bool(error_summary),

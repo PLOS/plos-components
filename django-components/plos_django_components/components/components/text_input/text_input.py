@@ -3,7 +3,7 @@ from typing import Literal
 from django_components import register
 
 from ..base.base_component import PLOSBaseComponent
-
+from ....utils.govuk_helper import label_class_from_size
 
 @register("plos_text_input")
 class TextInput(PLOSBaseComponent):
@@ -28,6 +28,7 @@ class TextInput(PLOSBaseComponent):
     ):
         return {
             "label": label,
+            "label_class": label_class_from_size("large"),
             "input_type": input_type,
             "name": name,
             "value": value,

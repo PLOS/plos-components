@@ -1,0 +1,65 @@
+{% with htmx_target="#"|add:name|add:"-item-list" htmx_field_name=name|add:"__action" %}
+<div id="{{ name }}-add-more" class="plos-add-more" data-add-more>
+  {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
+
+  <input type="hidden" aria-hidden="true" name="{{ name }}__count" value="{{ count }}">
+  <input type="hidden" aria-hidden="true" name="{{ name }}__max" value="{{ max_items }}">
+
+  {% for item in items %}
+    <div class="plos-add-more__item" data-item-index="{{ item.index }}" id="{{ name }}-item-{{ item.index }}">
+      {% component "plos_heading" level=heading_level %}{{ item_label|title }} {{ forloop.counter }}{% endcomponent %}
+      {% slot "item" index=item.index is_first=item.is_first errors=item.errors %}{% endslot %}
+      {% if count > 1 %}
+        {% with delete_value="delete__"|add:item.index %}
+          {% component "plos_button"
+            button_type="submit"
+            action="warning"
+            field_name=htmx_field_name
+            value=delete_value
+            hx_post=htmx_url
+            hx_target=htmx_target
+            hx_swap="outerHTML"
+            hx_include=htmx_target
+          %}
+            {% fill "default" %}
+              {% component "plos_icon_base" size=icon_size %}
+                {% fill "svg" %}
+                  {% if delete_icon %}<i class="{{ delete_icon }}"></i>{% endif %}
+                {% endfill %}
+              {% endcomponent %}
+              {{ delete_label }} {{ item_label }} {{ forloop.counter }}
+            {% endfill %}
+          {% endcomponent %}
+        {% endwith %}
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  {% if remaining > 0 %}
+    <div data-add-section id="{{ name }}-list-anchor">
+      {% component "plos_button"
+        button_type="submit"
+        action="secondary"
+        field_name=htmx_field_name
+        value="add"
+        hx_post=htmx_url
+        hx_target=htmx_target
+        hx_swap="outerHTML"
+        hx_include=htmx_target
+      %}
+        {% fill "default" %}
+          {% component "plos_icon_base" size=icon_size %}
+            {% fill "svg" %}
+              {% if add_icon %}<i class="{{ add_icon }}"></i>{% endif %}
+            {% endfill %}
+          {% endcomponent %}
+          {{ add_label }} {{ item_label }}
+        {% endfill %}
+      {% endcomponent %}
+      {% component "plos_text_box" %}You can add <span data-remaining-count>{{ remaining }}</span> more {{ item_label_plural }}{% endcomponent %}
+    </div>
+  {% else %}
+    <div id="{{ name }}-list-anchor"></div>
+  {% endif %}
+</div>
+{% endwith %}
