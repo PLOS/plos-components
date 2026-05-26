@@ -41,7 +41,6 @@ class AddMore(PLOSBaseComponent):
         required: bool = False,
         validation_message: str | None = None,
         show_save_button: bool = False,
-        show_saved_items: bool = False,
         saved_items_label: str | None = None,
         **kwargs,
     ):
@@ -135,7 +134,6 @@ class AddMore(PLOSBaseComponent):
             "required": required,
             "validation_message": validation_message or f"Enter a {item_label}",
             "show_save_button": show_save_button,
-            "show_saved_items": show_saved_items,
             "saved_items_label": saved_items_label or f"Saved {item_label_plural or item_label + 's'}",
         }
         context.update(kwargs)

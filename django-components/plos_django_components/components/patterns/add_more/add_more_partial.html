@@ -30,7 +30,6 @@
     <input type="hidden" aria-hidden="true" name="{{ name }}__required" value="{{ required }}">
     <input type="hidden" aria-hidden="true" name="{{ name }}__validation_message" value="{{ validation_message }}">
     <input type="hidden" aria-hidden="true" name="{{ name }}__show_save_button" value="{{ show_save_button }}">
-    <input type="hidden" aria-hidden="true" name="{{ name }}__show_saved_items" value="{{ show_saved_items }}">
     <input type="hidden" aria-hidden="true" name="{{ name }}__saved_items_label" value="{{ saved_items_label }}">
 
     {% for item in items %}
@@ -73,18 +72,5 @@
         </div>
       {% endif %}
     </div>
-
-    {% if show_saved_items %}
-      {% if non_empty_values %}
-        <div class="govuk-inset-text" style="margin-top: 1.5rem;">
-          <h3 class="govuk-heading-s">{{ saved_items_label }}</h3>
-          <ul class="govuk-list govuk-list--bullet">
-            {% for val in non_empty_values %}
-              <li>{{ val }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endif %}
-    {% endif %}
   </div>
 </form>
