@@ -1,19 +1,6 @@
 {% with htmx_target="#"|add:name|add:"-item-list" htmx_field_name=name|add:"__action" %}
 <div id="{{ name }}-item-list" class="plos-item-list" data-item-list>
-  {% if has_errors %}
-  <div class="govuk-error-summary" data-module="govuk-error-summary">
-    <div role="alert">
-      <h2 class="govuk-error-summary__title">There is an issue</h2>
-      <div class="govuk-error-summary__body">
-        <ul class="govuk-list govuk-error-summary__list">
-          {% for entry in error_summary %}
-            <li><a href="#{{ entry.anchor }}" class="govuk-link">{{ entry.label }}: {{ entry.message }}</a></li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-  </div>
-  {% endif %}
+  {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
 
   <input type="hidden" aria-hidden="true" name="{{ name }}__count" value="{{ count }}">
   <input type="hidden" aria-hidden="true" name="{{ name }}__max" value="{{ max_items }}">
