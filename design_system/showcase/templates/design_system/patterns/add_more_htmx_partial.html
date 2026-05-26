@@ -1,6 +1,6 @@
 {% load component_tags %}
 {% load ds_filters %}
-{% component "plos_item_list" name="patents" item_label="patent" count=count max_items=10 htmx_url=htmx_url errors=errors %}
+{% component "plos_add_more" name="patents" item_label="patent" count=count max_items=10 htmx_url=htmx_url errors=errors %}
   {% fill "item" data="slot_data" %}
     <div class="govuk-form-group{% if slot_data.errors.patent %} govuk-form-group--error{% endif %}">
       <label class="govuk-label" for="patent_{{ slot_data.index }}">Patent number</label>
