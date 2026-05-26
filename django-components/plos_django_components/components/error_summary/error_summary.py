@@ -6,7 +6,7 @@ anchor links to the affected fields.
 """
 from django_components import register
 
-from ..base.base_component import PLOSBaseComponent
+from ..components.base.base_component import PLOSBaseComponent
 
 
 @register("plos_error_summary")
