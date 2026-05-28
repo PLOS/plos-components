@@ -135,9 +135,27 @@ def add_more_htmx_page(request):
         request, "design_system/patterns/add_more.html", _build_page_context(request)
     )
 
+def error_summary_page(request):
+    ctx = _nav_context_components(
+        request, active_section="components", active_slug="error-summary"
+    )
+    ctx["example_entries"] = [
+        {"label": "Full name", "message": "Enter your full name", "anchor": "id_full_name"},
+        {"label": "Email address", "message": "Enter an email address in the correct format, like name@example.com", "anchor": "id_email"},
+    ]
+    ctx["full_name_errors"] = ["Enter your full name"]
+    ctx["email_errors"] = ["Enter an email address in the correct format, like name@example.com"]
+    ctx["custom_title_entries"] = [
+        {"label": "Date of birth", "message": "Enter a valid date of birth", "anchor": "id_dob"},
+        {"label": "Phone number", "message": "Enter a UK phone number", "anchor": "id_phone"},
+        {"label": "Postcode", "message": "Enter a full UK postcode", "anchor": "id_postcode"},
+    ]
+    return render(request, "design_system/components/error_summary.html", ctx)
 
 def design_system_component(request, component):
     slug = component.replace("-", "_")
+    if component == "error-summary":
+        return error_summary_page(request)
     return render(
         request,
         f"design_system/components/{slug}.html",
