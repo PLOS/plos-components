@@ -1,14 +1,22 @@
 {% load component_tags %}
-<div class="plos-add-more__item" data-item-index="{{ index }}" id="{{ name }}-item-{{ index }}">
+<div class="plos-add-more__item" data-item-index="{{ index }}" id="{{ field_name }}-item-{{ index }}">
   {% component "plos_heading" level=heading_level %}{{ item_label|title }} {{ display_index }}{% endcomponent %}
 
-  {% slot "item_content" index=index errors=errors %}{% endslot %}
+  {% slot "item_content" index=index errors=errors value=value %}{% endslot %}
 
-  {% if show_delete %}
-    <button type="submit" name="{{ name }}__action" value="delete__{{ index }}" class="govuk-button govuk-button--warning"
-            hx-post="{{ htmx_url }}" hx-target="#{{ name }}-add-more" hx-select="#{{ name }}-add-more" hx-swap="outerHTML" hx-include="#{{ name }}-add-more"
-            formaction="{{ htmx_url }}">
-      {{ delete_label }} {{ item_label }} {{ display_index }}
-    </button>
+    {% if show_delete %}
+        {% component "plos_button"
+                field_name="{{ field_name }}__action"
+                value="delete__{{ index }}"
+                form_action="{{ htmx_url }}"
+                button_type="submit"
+                action="warning"
+                hx_post="{{ htmx_url }}"
+                hx_target="#{{ field_name }}-add-more"
+                hx_select="#{{ field_name }}-add-more"
+                hx_swap="outerHTML"
+                hx_include="#{{ field_name }}-add-more" %}
+            {{ delete_label }} {{ item_label }} {{ display_index }}
+        {% endcomponent %}
   {% endif %}
 </div>

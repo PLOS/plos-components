@@ -32,37 +32,44 @@
     reload. If you disable JavaScript the form will still work via full POST.
   {% endcomponent %}
 
-  {% component "plos_add_more"
-      name="patents"
-      item_label="patent"
-      max_items=10
-      htmx_url="/patterns/add-more/htmx/"
-      heading_level=3
-      min_items=1
-      required=True
-      validation_message="Enter a patent number or application"
-      show_save_button=True
-      save_label="Save patents"
-      saved_items_label="Saved patents"
-  %}
-    {% fill "item" data="slot_data" %}
-      <div class="govuk-form-group{% if slot_data.errors.patent %} govuk-form-group--error{% endif %}">
-        <label class="govuk-label" for="patent_{{ slot_data.index }}">Patent number</label>
-        {% if slot_data.errors.patent %}
-          <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> {{ slot_data.errors.patent }}
-          </p>
-        {% endif %}
-        <input
-          class="govuk-input{% if slot_data.errors.patent %} govuk-input--error{% endif %}"
-          type="text"
-          id="patent_{{ slot_data.index }}"
-          name="patent_{{ slot_data.index }}"
-          value="{{ slot_data.value }}"
-        >
-      </div>
-    {% endfill %}
-  {% endcomponent %}
+{% component "plos_add_more"
+                        field_name="patents"
+                        item_label="patent"
+                        fields=[{"field_id": "patent_number", "required": True},
+                        {"field_id": "patent_date", "field_value_names":["-day", "-month", "-year"], "required": True}]
+                        max_items=10
+                        htmx_url="/patterns/add-more/htmx/"
+                        heading_level=3
+                        min_items=1
+                        required=True
+                        validation_message="Enter a patent number or application"
+                        show_save_button=True
+                        save_label="Continue"
+                        additional_buttons=[{"label":"Save and return",
+                        "field_name": "save_and_return__action",
+                        "action": "secondary",
+                        "value": ""}]
+                        %}
+                    {% fill "item" data="slot_data" %}
+                        {% component "plos_text_input"
+                                label="Patent reference or number"
+                                hint="The official number or reference used to identify the patent or application"
+                                name="patent_number_{{ slot_data.index }}"
+                                field_id="patent_number_{{ slot_data.index }}"
+                                errors=slot_data.errors
+                                value="{{ slot_data.value|plos_dictionary_fetch:'patent_number' }}" only %}
+                        {% endcomponent %}
+                        {% component "plos_date_input"
+                                use_field_value_names=True
+                                legend="Patent application filing date"
+                                hint="The date the patent application was first submitted. For example, 27 3 2025."
+                                field_id="patent_date_{{ slot_data.index }}"
+                                errors=slot_data.errors
+                                value="{{ slot_data.value|plos_dictionary_fetch:'patent_date' }}" only %}
+                        {% endcomponent %}
+                    {% endfill %}
+
+                {% endcomponent %}
 
 {% with non_empty=patent_values|ds_filter_nonempty %}
   {% if non_empty %}

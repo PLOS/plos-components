@@ -24,9 +24,9 @@
                         <input class="govuk-input govuk-date-input__input govuk-input--width-2"
                                id="{{ date_settings.day.field_id }}"
                                name="{{ date_settings.day.field_name }}"
-                               type="text"
+                               type="number"
                                inputmode="numeric"
-                               {% if value is not none and value.day is not none %}value="{{ value.day }}"{% endif %}>
+                               {% if value_day is not none %}value="{{ value_day }}"{% endif %}>
                     </div>
                 </div>
             {% endif %}
@@ -41,9 +41,9 @@
                         <input class="govuk-input govuk-date-input__input govuk-input--width-2"
                                id="{{ date_settings.month.field_id }}"
                                name="{{ date_settings.month.field_name }}"
-                               type="text"
+                               type="number"
                                inputmode="numeric"
-                               {% if value is not none and value.month is not none %}value="{{ value.month }}"{% endif %}>
+                               {% if value_month is not none %}value="{{ value_month }}"{% endif %}>
                     </div>
                 </div>
             {% endif %}
@@ -58,9 +58,9 @@
                         <input class="govuk-input govuk-date-input__input govuk-input--width-4"
                                id="{{ date_settings.year.field_id }}"
                                name="{{ date_settings.year.field_name }}"
-                               type="text"
+                               type="number"
                                inputmode="numeric"
-                               {% if value is not none and value.year is not none %}value="{{ value.year }}"{% endif %}>
+                               {% if value_year is not none %}value="{{ value_year }}"{% endif %}>
                     </div>
                 </div>
             {% endif %}

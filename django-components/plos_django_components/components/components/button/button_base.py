@@ -55,12 +55,14 @@ class Button(PLOSBaseComponent):
         icon: str | None = None,
         icon_position: Literal["right", "left"] = "right",
         value: str | None = None,
+        form_action: str | None = None,
         field_id: str | None = None,
         field_name: str | None = None,
         hx_post: str | None = None,
         hx_target: str | None = None,
         hx_swap: str | None = None,
         hx_include: str | None = None,
+        hx_select: str | None = None,
     ):
         return {
             "disabled": disabled,
@@ -69,10 +71,12 @@ class Button(PLOSBaseComponent):
             "icon": icon,
             "icon_position": icon_position,
             "value": value,
+            "form_action": form_action,
             "field_id": field_id,
             "field_name": field_name,
             "hx_post": hx_post,
             "hx_target": hx_target,
             "hx_swap": hx_swap,
             "hx_include": hx_include,
+            "hx_select": hx_select,
         }

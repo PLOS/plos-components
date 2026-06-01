@@ -1,4 +1,5 @@
 from typing import TypedDict
+
 from typing_extensions import NotRequired
 
 from ....components.summary_list.summary_list import SummaryListActionTuple
