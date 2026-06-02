@@ -11,9 +11,21 @@ def ds_filter_nonempty(lst):
         return []
 
 
-@register.filter(name="ds_index")
-def ds_index(lst, i):
+@register.filter(name="plos_dictionary_fetch")
+def plos_dictionary_fetch(dictionary: dict | None, index: str | None):
+    if not dictionary:
+        return ""
+
+    if not index:
+        return ""
+
     try:
-        return lst[int(i)]
+        return dictionary.get(index)
     except (IndexError, TypeError, ValueError):
         return ""
+
+
+@register.filter(name="ds_fake_print")
+def fake_print(printing: str):
+    print(printing)
+    return printing

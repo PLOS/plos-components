@@ -5,12 +5,13 @@ This module provides:
 - A date input component which provides the ability to select a date within a form
 """
 
+from ast import literal_eval
 from typing import Literal, TypedDict
 
 from django_components import register
 from typing_extensions import NotRequired
-from ....utils.govuk_helper import legend_class_from_size
 
+from ....utils.govuk_helper import legend_class_from_size
 from ..base.base_component import PLOSBaseComponent
 
 
@@ -59,7 +60,13 @@ class DateInput(PLOSBaseComponent):
         day: bool = True,
         month: bool = True,
         year: bool = True,
-        value: DateValue | None = None,
+        value: DateValue | str | dict | None = None,
+        use_field_value_names: bool = False,
+        field_value_names: dict | None = [
+            dict(field_value_name="-day", maps_to="day"),
+            dict(field_value_name="-month", maps_to="month"),
+            dict(field_value_name="-year", maps_to="year"),
+        ],
         date_settings: DateSettings | None = None,
     ):
         if field_id is None:
@@ -67,7 +74,37 @@ class DateInput(PLOSBaseComponent):
 
             field_id = f"date-input-{uuid.uuid4()}"
 
-        date_settings = self.merge_settings(date_settings, field_id, None, day, month, year)
+        if value and isinstance(value, str):
+            try:
+                value = literal_eval(value)
+            except ValueError:
+                value = None
+
+        if use_field_value_names and value and isinstance(value, dict):
+            temp_value = DateValue()
+            flagged: bool = False
+            for field_value_name in field_value_names:
+                field_name = field_value_name.get("field_value_name", None)
+                val = value.get(field_name, None)
+                if val is not None:
+                    flagged = True
+                    map_to = field_value_name.get("maps_to", None)
+                    key_finder: Literal["day", "month", "year"] | None = None
+                    if map_to == "day":
+                        key_finder = "day"
+                    if map_to == "month":
+                        key_finder = "month"
+                    if map_to == "year":
+                        key_finder = "year"
+                    if key_finder is not None:
+                        temp_value[key_finder] = val
+            if flagged:
+                value = temp_value
+
+        if not value:
+            value = {}
+
+        date_settings = self.merge_settings(date_settings, field_id, field_id, day, month, year)
 
         return {
             "field_id": field_id,
@@ -79,7 +116,9 @@ class DateInput(PLOSBaseComponent):
             "day": day,
             "month": month,
             "year": year,
-            "value": value,
+            "value_day": value.get("day", None),
+            "value_month": value.get("month", None),
+            "value_year": value.get("year", None),
             "date_settings": date_settings,
         }
 
