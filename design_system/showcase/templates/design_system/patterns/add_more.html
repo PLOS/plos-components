@@ -7,7 +7,7 @@
 
 {% block ds_content %}
     {% component "plos_heading" level=1 %}
-        Add More
+        Add More - Under Experimentation
     {% endcomponent %}
 
     {% component "plos_text_box" %}
@@ -16,12 +16,23 @@
       buttons submit the surrounding form normally and the page view handles
       everything. When HTMX.js is loaded, those same buttons instead POST to
       <code>htmx_url</code> and swap only the list container in place, without a
-      full page reload. The swap target is the component's outer
-      <code>&lt;div id="{name}-add-more"&gt;</code>; the endpoint must return
-      only that element.
+        full page reload. The swap target is the component's outer
+        <code>&lt;div id="{name}-add-more"&gt;</code>; the endpoint must return
+        only that element.
     {% endcomponent %}
 
-<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    {% component "plos_heading" level=2 %}
+        Notes of Concern
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}
+        Note this is still an experimental feature which may not work. Using two or more patterns, particularly the
+        Add More Pattern, on any given page will cause rendering issues and odd behavior.
+    {% endcomponent %}
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
   {% component "plos_heading" level=2 %}
     Interactive demo
@@ -68,7 +79,6 @@
                                 value="{{ slot_data.value|plos_dictionary_fetch:'patent_date' }}" only %}
                         {% endcomponent %}
                     {% endfill %}
-
                 {% endcomponent %}
 
 {% with non_empty=patent_values|ds_filter_nonempty %}
