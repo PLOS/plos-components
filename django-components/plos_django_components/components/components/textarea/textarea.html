@@ -11,6 +11,7 @@
         {{ hint }}
     </div>
     {% endif %}
+    {% component "plos_error_summary" entries=errors %}{% endcomponent %}
     <textarea
             class="govuk-textarea{% if maxlength %} govuk-js-character-count{% endif %}{% if errors %} govuk-textarea--error{% endif %}"
             id="{{ field_id }}"
@@ -25,13 +26,5 @@
             {% endif %}>{% if value %}{{ value }}{% endif %}</textarea>
     {% if maxlength %}
     <div id="{{ field_id }}-info" class="govuk-hint govuk-character-count__message"></div>
-    {% endif %}
-    {% if errors %}
-    {% for error in errors %}
-    <p class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error:</span>
-        {{ error }}
-    </p>
-    {% endfor %}
     {% endif %}
 </div>
