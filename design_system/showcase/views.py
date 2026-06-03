@@ -6,6 +6,7 @@ STYLES = {"column-grid", "colour", "spacing", "typography"}
 
 COMPONENTS = {
     "accordion",
+    "back-link",
     "button",
     "text-input",
     "textarea",
