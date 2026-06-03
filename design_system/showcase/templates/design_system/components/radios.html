@@ -11,16 +11,32 @@
   <h2 class="govuk-heading-m">
     Unselected state:
   </h2>
+  {% component "plos_radio_selection" name="example_1" %}
+    {%  component "plos_radio_selection_option" %} Option 1 {% endcomponent %}
+    {%  component "plos_radio_selection_option" %} Option 2 {% endcomponent %}
+  {%  endcomponent %}
 
   <h2 class="govuk-heading-m">
     With hint:
   </h2>
+  {% component "plos_radio_selection" name="example_2" hint="This is the second example" %}
+    {%  component "plos_radio_selection_option" %} Option 1 {% endcomponent %}
+    {%  component "plos_radio_selection_option" %} Option 2 {% endcomponent %}
+  {%  endcomponent %}
 
   <h2 class="govuk-heading-m">
     Selected state:
   </h2>
+  {% component "plos_radio_selection" name="example_3" %}
+    {%  component "plos_radio_selection_option" checked="true" %} Option 1 {% endcomponent %}
+    {%  component "plos_radio_selection_option" %} Option 2 {% endcomponent %}
+  {%  endcomponent %}
 
   <h2 class="govuk-heading-m">
     Error state:
   </h2>
+  {% component "plos_radio_selection" name="example_4" errors=[{"label": "Example", "anchor": "example_4", "message": "Please select an option" }] %}
+    {%  component "plos_radio_selection_option" %} Option 1 {% endcomponent %}
+    {%  component "plos_radio_selection_option" %} Option 2 {% endcomponent %}
+  {%  endcomponent %}
 {% endblock ds_content %}

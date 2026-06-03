@@ -13,13 +13,7 @@
             {{ hint|escape }}
         </div>
         {% endif %}
-        {% if errors %}
-        <p id="{{ name }}-error" class="govuk-error-message">
-            {% for error in errors %}
-            {{ error|escape }}<br>
-            {% endfor %}
-        </p>
-        {% endif %}
+        {% component "plos_error_summary" entries=errors %}{% endcomponent %}
         <div class="govuk-radios" data-module="govuk-radios">
             {% for option in radio_selection_options %}
             <div class="govuk-radios__item">
