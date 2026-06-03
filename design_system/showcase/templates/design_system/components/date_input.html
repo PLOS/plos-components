@@ -3,6 +3,7 @@
 {% block ds_title %}Date Input – PLOS Design System{% endblock ds_title %}
 
 {% block ds_content %}
+    {% component "plos_error_summary" entries=[{"label": "Day", "anchor": "day_error", "message": "Please enter a day" }, {"label": "Month", "anchor": "month_error", "message": "Please enter a month" }, {"label": "Year", "anchor": "year_error", "message": "Please enter a year" }] %}{% endcomponent %}
   {% component "plos_heading" level=1 %}
         Date Selector with Label and Hint
     {% endcomponent %}
@@ -46,5 +47,17 @@
             legend_size="small"
             date_settings={"day": {"label": "D"}, "year": {"label": "Y"}}
             value={"day": 0, "month": 5, "year": 2016} %}
+    {% endcomponent %}
+
+    {% component "plos_heading" level=1 %}
+        Date Selector with Errors
+    {% endcomponent %}
+
+    {% component "plos_date_input"
+            legend="When was your passport issued?"
+            hint="For example, 27 3 2007"
+            legend_size="large"
+            date_settings={"day": {"field_id": "day_error"}, "month": {"field_id": "month_error"}, "year": {"field_id": "year_error"}}
+            errors=[{"label": "Day", "anchor": "day_error", "message": "Please enter a day" }, {"label": "Month", "anchor": "month_error", "message": "Please enter a month" }, {"label": "Year", "anchor": "year_error", "message": "Please enter a year" }] %}
     {% endcomponent %}
 {% endblock ds_content %}

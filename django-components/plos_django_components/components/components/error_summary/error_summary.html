@@ -1,14 +1,25 @@
 {% if has_entries %}
-<div class="govuk-error-summary" data-module="govuk-error-summary">
-  <div role="alert">
-    {% component "plos_heading" level=2 css_class="govuk-error-summary__title" %}{{ title }}{% endcomponent %}
-    <div class="govuk-error-summary__body">
-      <ul class="govuk-list govuk-error-summary__list">
-        {% for entry in entries %}
-          <li><a href="#{{ entry.anchor }}" class="govuk-link">{{ entry.label }}: {{ entry.message }}</a></li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-</div>
+    {% if compact %}
+        <ul class="govuk-list govuk-error-summary__list">
+            {% for entry in entries %}
+              <li>
+                  <span class="govuk-visually-hidden">Error:</span>
+                  <p class="govuk-error-message">{{ entry.message }}</p>
+              </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="govuk-error-summary" data-module="govuk-error-summary">
+        <div role="alert">
+            {% component "plos_heading" level=2 css_class="govuk-error-summary__title" %}{{ title }}{% endcomponent %}
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    {% for entry in entries %}
+                        <li><a href="#{{ entry.anchor }}" class="govuk-link">{{ entry.label }}: {{ entry.message }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        </div>
+    {% endif %}
 {% endif %}

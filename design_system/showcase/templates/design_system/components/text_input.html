@@ -3,7 +3,12 @@
 {% block ds_title %}Text Input – PLOS Design System{% endblock ds_title %}
 
 {% block ds_content %}
+    {% component "plos_error_summary" entries=[{"label": "Full name with error", "message": "Enter your full name", "anchor": "id_full_name_error"}] %}{% endcomponent %}
   <h1 class="govuk-heading-xl">Text Input</h1>
-  {% component "plos_text_input" label="Full name" name="full_name" %}
+  {% component "plos_text_input" label="Full name with" name="full_name" %}
+  {% endcomponent%}
+
+   <h1 class="govuk-heading-xl">Text Input with Error</h1>
+  {% component "plos_text_input" errors=[{"label": "Full name with error", "message": "Enter your full name", "anchor": "id_full_name_error"}] label="Full name with error" name="full_name_error" field_id="id_full_name_errors" %}
   {% endcomponent%}
 {% endblock ds_content %}

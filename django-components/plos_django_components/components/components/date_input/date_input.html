@@ -12,6 +12,7 @@
                 {{ hint|escape }}
             </div>
         {% endif %}
+        {% component "plos_error_summary" entries=errors compact="True" %}{% endcomponent %}
         <div class="govuk-date-input" id="{{ field_id }}">
             {% if date_settings is not none and date_settings.day is not none and date_settings.day.display %}
                 <div class="govuk-date-input__item">

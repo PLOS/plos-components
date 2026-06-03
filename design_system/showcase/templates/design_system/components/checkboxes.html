@@ -3,5 +3,15 @@
 {% block ds_title %}Checkboxes – PLOS Design System{% endblock ds_title %}
 
 {% block ds_content %}
+    {% component "plos_error_summary" entries=[{"label": "Example", "anchor": "example_error-form-group", "message":"Please select a checkbox"}] %}{% endcomponent %}
   <h1 class="govuk-heading-xl">Checkboxes</h1>
+  {% component "plos_checkboxes" name="example" legend="Example checkboxes:" %}
+      {% component "plos_checkboxes_option" value="example1" %} Example 1 {% endcomponent %}
+      {% component "plos_checkboxes_option" value="example2" %} Example 2 {% endcomponent %}
+  {%  endcomponent %}
+
+  {% component "plos_checkboxes" errors=[{"label": "Example", "anchor": "example_error-form-group", "message":"Please select a checkbox"}] name="example_error" legend="Example checkboxes with error:" %}
+      {% component "plos_checkboxes_option" value="example_error1" %} Example 1 {% endcomponent %}
+      {% component "plos_checkboxes_option" value="example_error2" %} Example 2 {% endcomponent %}
+  {%  endcomponent %}
 {% endblock ds_content %}
