@@ -1,0 +1,15 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}File Upload – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+    {% component "plos_heading" level=1 %}
+        File Upload
+    {% endcomponent %}
+    {% component "plos_file_upload" field_id="file_upload" name="file_upload" label="Upload a file" %}{% endcomponent %}
+    {% component "plos_file_upload"
+    field_id="file_upload_error"
+    name="file_upload_error"
+    label="Upload a file"
+    errors=[{"label": "File upload", "anchor": "file_upload_error", "message": "Please select a file"}] %}{% endcomponent %}
+{% endblock ds_content %}

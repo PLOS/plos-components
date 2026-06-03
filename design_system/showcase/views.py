@@ -11,6 +11,7 @@ COMPONENTS = {
     "textarea",
     "select",
     "error-summary",
+    "file-upload",
     "panel",
     "radios",
     "checkboxes",

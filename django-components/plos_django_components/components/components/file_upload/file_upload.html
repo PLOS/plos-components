@@ -7,14 +7,7 @@
       {{ hint }}
     </div>
   {% endif %}
-  {% if errors %}
-    {% for error in errors %}
-      <p class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error:</span>
-        {{ error }}
-      </p>
-    {% endfor %}
-  {% endif %}
+  {% component "plos_error_summary" entries=errors %}{% endcomponent %}
   <div class="govuk-drop-zone" data-module="govuk-file-upload" data-i18n.choose-files-button="Choose files">
     <input class="govuk-file-upload{% if errors %} govuk-file-upload--error{% endif %}"
            id="{{ field_id }}"
