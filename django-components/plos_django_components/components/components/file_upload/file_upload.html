@@ -7,7 +7,7 @@
       {{ hint }}
     </div>
   {% endif %}
-  {% component "plos_error_summary" entries=errors %}{% endcomponent %}
+  {% component "plos_error_summary" entries=errors compact="True" %}{% endcomponent %}
   <div class="govuk-drop-zone" data-module="govuk-file-upload" data-i18n.choose-files-button="Choose files">
     <input class="govuk-file-upload{% if errors %} govuk-file-upload--error{% endif %}"
            id="{{ field_id }}"

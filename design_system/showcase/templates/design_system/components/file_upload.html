@@ -3,6 +3,7 @@
 {% block ds_title %}File Upload – PLOS Design System{% endblock ds_title %}
 
 {% block ds_content %}
+    {% component "plos_error_summary" entries=[{"label": "File upload", "anchor": "file_upload_error", "message": "Please select a file"}] %}{% endcomponent %}
     {% component "plos_heading" level=1 %}
         File Upload
     {% endcomponent %}
