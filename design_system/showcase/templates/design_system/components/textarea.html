@@ -5,6 +5,7 @@
 {% endblock ds_title %}
 
 {% block ds_content %}
+    {% component "plos_error_summary" entries=[{"label": "COI", "anchor": "coi-error", "message": "Enter a description of this conflict of interest"}] %}{% endcomponent %}
   <h1 class="govuk-heading-xl">
     Textarea
   </h1>

@@ -11,7 +11,7 @@
         {{ hint }}
     </div>
     {% endif %}
-    {% component "plos_error_summary" entries=errors %}{% endcomponent %}
+    {% component "plos_error_summary" entries=errors compact="True" %}{% endcomponent %}
     <textarea
             class="govuk-textarea{% if maxlength %} govuk-js-character-count{% endif %}{% if errors %} govuk-textarea--error{% endif %}"
             id="{{ field_id }}"
