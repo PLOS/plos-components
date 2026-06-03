@@ -3,6 +3,7 @@
 {% block ds_title %}Date Input – PLOS Design System{% endblock ds_title %}
 
 {% block ds_content %}
+    {% component "plos_error_summary" entries=[{"label": "Day", "anchor": "day_error", "message": "Please enter a day" }, {"label": "Month", "anchor": "month_error", "message": "Please enter a month" }, {"label": "Year", "anchor": "year_error", "message": "Please enter a year" }] %}{% endcomponent %}
   {% component "plos_heading" level=1 %}
         Date Selector with Label and Hint
     {% endcomponent %}
