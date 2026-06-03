@@ -40,10 +40,12 @@ class ErrorSummary(PLOSBaseComponent):
         self,
         entries: list[dict] | None = None,
         title: str = "There is an issue",
+        compact: bool = False,
     ):
         safe_entries = entries or []
         return {
             "entries": safe_entries,
             "title": title,
             "has_entries": bool(safe_entries),
+            "compact": compact
         }
