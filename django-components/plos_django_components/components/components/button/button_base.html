@@ -1,3 +1,4 @@
+{% if href %}<a href="{{ href }}">{% endif %}
 <button type="{{ button_type }}"
         {% if value %} value="{{ value }}"{% endif %}
         {% if field_name %} name="{{ field_name }}"{% endif %}
@@ -15,3 +16,4 @@
         Submit
     {% endslot %}
 </button>
+{% if href %}</a>{% endif %}
