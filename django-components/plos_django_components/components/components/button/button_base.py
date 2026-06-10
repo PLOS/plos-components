@@ -6,7 +6,6 @@ This module provides:
 - HTMX options for partial page updates without a full page reload.
 """
 
-from curses.ascii import isblank
 from typing import Literal
 
 from django_components import register
@@ -66,7 +65,7 @@ class Button(PLOSBaseComponent):
         hx_include: str | None = None,
         hx_select: str | None = None,
     ):
-        if isblank(href):
+        if href == "":
             href = None
 
         return {
