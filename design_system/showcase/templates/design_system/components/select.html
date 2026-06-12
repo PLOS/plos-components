@@ -3,5 +3,125 @@
 {% block ds_title %}Select – PLOS Design System{% endblock ds_title %}
 
 {% block ds_content %}
-  <h1 class="govuk-heading-xl">Select</h1>
+  {% component "plos_heading" level=1 %}Select{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    <code>plos_select</code> renders a dynamic dropdown with a label,
+    optional hint text, and optional error message.
+  {% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}With label{% endcomponent %}
+
+  {% component "plos_select"
+    label="Journal"
+    name="journal"
+    options=[{"value":"plos-one","text":"PLOS One"},{"value":"plos-biology","text":"PLOS Biology"},{"value":"plos-medicine","text":"PLOS Medicine"},{"value":"plos-pathogens","text":"PLOS Pathogens"},{"value":"plos-computational-biology","text":"PLOS Computational Biology"},{"value":"plos-genetics","text":"PLOS Genetics"},{"value":"plos-neglected-tropical-diseases","text":"PLOS Neglected Tropical Diseases"},{"value":"plos-digital-health","text":"PLOS Digital Health"},{"value":"plos-climate","text":"PLOS Climate"},{"value":"plos-water","text":"PLOS Water"},{"value":"plos-sustainability","text":"PLOS Sustainability and Transformation"},{"value":"plos-complex-systems","text":"PLOS Complex Systems"},{"value":"plos-mental-health","text":"PLOS Mental Health"},{"value":"plos-aging-and-health","text":"PLOS Aging and Health"},{"value":"plos-ecosystems","text":"PLOS Ecosystems"},{"value":"plos-global-public-health","text":"PLOS Global Public Health"}]
+    value="plos-biology"
+  %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}With label and hint{% endcomponent %}
+
+  {% component "plos_select"
+    label="Journal"
+    name="journal_hint"
+    hint="Choose the journal you are submitting to."
+    options=[{"value":"plos-one","text":"PLOS One"},{"value":"plos-biology","text":"PLOS Biology"},{"value":"plos-medicine","text":"PLOS Medicine"},{"value":"plos-pathogens","text":"PLOS Pathogens"},{"value":"plos-computational-biology","text":"PLOS Computational Biology"},{"value":"plos-genetics","text":"PLOS Genetics"},{"value":"plos-neglected-tropical-diseases","text":"PLOS Neglected Tropical Diseases"},{"value":"plos-digital-health","text":"PLOS Digital Health"},{"value":"plos-climate","text":"PLOS Climate"},{"value":"plos-water","text":"PLOS Water"},{"value":"plos-sustainability","text":"PLOS Sustainability and Transformation"},{"value":"plos-complex-systems","text":"PLOS Complex Systems"},{"value":"plos-mental-health","text":"PLOS Mental Health"},{"value":"plos-aging-and-health","text":"PLOS Aging and Health"},{"value":"plos-ecosystems","text":"PLOS Ecosystems"},{"value":"plos-global-public-health","text":"PLOS Global Public Health"}]
+  %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}Without label{% endcomponent %}
+
+  {% component "plos_select"
+    label="Journal"
+    name="journal_no_label"
+    hide_label=True
+    options=[{"value":"plos-one","text":"PLOS One"},{"value":"plos-biology","text":"PLOS Biology"},{"value":"plos-medicine","text":"PLOS Medicine"},{"value":"plos-pathogens","text":"PLOS Pathogens"},{"value":"plos-computational-biology","text":"PLOS Computational Biology"},{"value":"plos-genetics","text":"PLOS Genetics"},{"value":"plos-neglected-tropical-diseases","text":"PLOS Neglected Tropical Diseases"},{"value":"plos-digital-health","text":"PLOS Digital Health"},{"value":"plos-climate","text":"PLOS Climate"},{"value":"plos-water","text":"PLOS Water"},{"value":"plos-sustainability","text":"PLOS Sustainability and Transformation"},{"value":"plos-complex-systems","text":"PLOS Complex Systems"},{"value":"plos-mental-health","text":"PLOS Mental Health"},{"value":"plos-aging-and-health","text":"PLOS Aging and Health"},{"value":"plos-ecosystems","text":"PLOS Ecosystems"},{"value":"plos-global-public-health","text":"PLOS Global Public Health"}]
+  %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}With label and error{% endcomponent %}
+
+  {% component "plos_select"
+    label="Journal"
+    name="journal_error"
+    options=[{"value":"plos-one","text":"PLOS One"},{"value":"plos-biology","text":"PLOS Biology"},{"value":"plos-medicine","text":"PLOS Medicine"},{"value":"plos-pathogens","text":"PLOS Pathogens"},{"value":"plos-computational-biology","text":"PLOS Computational Biology"},{"value":"plos-genetics","text":"PLOS Genetics"},{"value":"plos-neglected-tropical-diseases","text":"PLOS Neglected Tropical Diseases"},{"value":"plos-digital-health","text":"PLOS Digital Health"},{"value":"plos-climate","text":"PLOS Climate"},{"value":"plos-water","text":"PLOS Water"},{"value":"plos-sustainability","text":"PLOS Sustainability and Transformation"},{"value":"plos-complex-systems","text":"PLOS Complex Systems"},{"value":"plos-mental-health","text":"PLOS Mental Health"},{"value":"plos-aging-and-health","text":"PLOS Aging and Health"},{"value":"plos-ecosystems","text":"PLOS Ecosystems"},{"value":"plos-global-public-health","text":"PLOS Global Public Health"}]
+    errors=[{"message":"Select a journal"}]
+  %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}Label size: large{% endcomponent %}
+
+  {% component "plos_select"
+    label="Journal"
+    name="journal_label_large"
+    label_size="large"
+    options=[{"value":"plos-one","text":"PLOS One"},{"value":"plos-biology","text":"PLOS Biology"},{"value":"plos-medicine","text":"PLOS Medicine"},{"value":"plos-pathogens","text":"PLOS Pathogens"},{"value":"plos-computational-biology","text":"PLOS Computational Biology"},{"value":"plos-genetics","text":"PLOS Genetics"},{"value":"plos-neglected-tropical-diseases","text":"PLOS Neglected Tropical Diseases"},{"value":"plos-digital-health","text":"PLOS Digital Health"},{"value":"plos-climate","text":"PLOS Climate"},{"value":"plos-water","text":"PLOS Water"},{"value":"plos-sustainability","text":"PLOS Sustainability and Transformation"},{"value":"plos-complex-systems","text":"PLOS Complex Systems"},{"value":"plos-mental-health","text":"PLOS Mental Health"},{"value":"plos-aging-and-health","text":"PLOS Aging and Health"},{"value":"plos-ecosystems","text":"PLOS Ecosystems"},{"value":"plos-global-public-health","text":"PLOS Global Public Health"}]
+  %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}Label size: medium{% endcomponent %}
+
+  {% component "plos_select"
+    label="Journal"
+    name="journal_label_medium"
+    label_size="medium"
+    options=[{"value":"plos-one","text":"PLOS One"},{"value":"plos-biology","text":"PLOS Biology"},{"value":"plos-medicine","text":"PLOS Medicine"},{"value":"plos-pathogens","text":"PLOS Pathogens"},{"value":"plos-computational-biology","text":"PLOS Computational Biology"},{"value":"plos-genetics","text":"PLOS Genetics"},{"value":"plos-neglected-tropical-diseases","text":"PLOS Neglected Tropical Diseases"},{"value":"plos-digital-health","text":"PLOS Digital Health"},{"value":"plos-climate","text":"PLOS Climate"},{"value":"plos-water","text":"PLOS Water"},{"value":"plos-sustainability","text":"PLOS Sustainability and Transformation"},{"value":"plos-complex-systems","text":"PLOS Complex Systems"},{"value":"plos-mental-health","text":"PLOS Mental Health"},{"value":"plos-aging-and-health","text":"PLOS Aging and Health"},{"value":"plos-ecosystems","text":"PLOS Ecosystems"},{"value":"plos-global-public-health","text":"PLOS Global Public Health"}]
+  %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}Label size: small{% endcomponent %}
+
+  {% component "plos_select"
+    label="Journal"
+    name="journal_label_small"
+    label_size="small"
+    options=[{"value":"plos-one","text":"PLOS One"},{"value":"plos-biology","text":"PLOS Biology"},{"value":"plos-medicine","text":"PLOS Medicine"},{"value":"plos-pathogens","text":"PLOS Pathogens"},{"value":"plos-computational-biology","text":"PLOS Computational Biology"},{"value":"plos-genetics","text":"PLOS Genetics"},{"value":"plos-neglected-tropical-diseases","text":"PLOS Neglected Tropical Diseases"},{"value":"plos-digital-health","text":"PLOS Digital Health"},{"value":"plos-climate","text":"PLOS Climate"},{"value":"plos-water","text":"PLOS Water"},{"value":"plos-sustainability","text":"PLOS Sustainability and Transformation"},{"value":"plos-complex-systems","text":"PLOS Complex Systems"},{"value":"plos-mental-health","text":"PLOS Mental Health"},{"value":"plos-aging-and-health","text":"PLOS Aging and Health"},{"value":"plos-ecosystems","text":"PLOS Ecosystems"},{"value":"plos-global-public-health","text":"PLOS Global Public Health"}]
+  %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}Disabled{% endcomponent %}
+
+  {% component "plos_select"
+    label="Journal"
+    name="journal_disabled"
+    disabled=True
+    options=[{"value":"plos-one","text":"PLOS One"},{"value":"plos-biology","text":"PLOS Biology"},{"value":"plos-medicine","text":"PLOS Medicine"},{"value":"plos-pathogens","text":"PLOS Pathogens"},{"value":"plos-computational-biology","text":"PLOS Computational Biology"},{"value":"plos-genetics","text":"PLOS Genetics"},{"value":"plos-neglected-tropical-diseases","text":"PLOS Neglected Tropical Diseases"},{"value":"plos-digital-health","text":"PLOS Digital Health"},{"value":"plos-climate","text":"PLOS Climate"},{"value":"plos-water","text":"PLOS Water"},{"value":"plos-sustainability","text":"PLOS Sustainability and Transformation"},{"value":"plos-complex-systems","text":"PLOS Complex Systems"},{"value":"plos-mental-health","text":"PLOS Mental Health"},{"value":"plos-aging-and-health","text":"PLOS Aging and Health"},{"value":"plos-ecosystems","text":"PLOS Ecosystems"},{"value":"plos-global-public-health","text":"PLOS Global Public Health"}]
+    value="plos-biology"
+  %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}Usage{% endcomponent %}
+
+  <code class="ds-code-block">{% verbatim %}{% component "plos_select"
+    label="Journal"
+    name="journal"
+    options=[{"value": "plos-one", "text": "PLOS One"}, {"value": "plos-biology", "text": "PLOS Biology"}]
+    value="plos-one"
+%}{% endcomponent %}{% endverbatim %}</code>
+
+  {% component "plos_text_box" %}Parameters:{% endcomponent %}
+  {% component "plos_bulleted_list" %}
+    {% component "plos_bulleted_list_option" %}<code>label</code>: label text (required){% endcomponent %}
+    {% component "plos_bulleted_list_option" %}<code>name</code>: form field name (required){% endcomponent %}
+    {% component "plos_bulleted_list_option" %}<code>options</code>: list of dicts with <code>value</code> and <code>text</code> keys; <code>selected</code> is optional{% endcomponent %}
+    {% component "plos_bulleted_list_option" %}<code>value</code>: pre-selected option value (default: <code>None</code>){% endcomponent %}
+    {% component "plos_bulleted_list_option" %}<code>label_size</code>: <code>"large"</code>, <code>"medium"</code>, or <code>"small"</code> (default: <code>"small"</code>){% endcomponent %}
+    {% component "plos_bulleted_list_option" %}<code>hide_label</code>: hides the label visually while keeping it accessible (default: <code>False</code>){% endcomponent %}
+    {% component "plos_bulleted_list_option" %}<code>hint</code>: hint text shown below the label (default: <code>None</code>){% endcomponent %}
+    {% component "plos_bulleted_list_option" %}<code>errors</code>: list of dicts with a <code>message</code> key (default: <code>[]</code>){% endcomponent %}
+    {% component "plos_bulleted_list_option" %}<code>field_id</code>: overrides the generated <code>id</code> attribute (default: <code>"id_{name}"</code>){% endcomponent %}
+    {% component "plos_bulleted_list_option" %}<code>disabled</code>: renders the select as disabled (default: <code>False</code>){% endcomponent %}
+  {% endcomponent %}
+
 {% endblock ds_content %}
