@@ -1,6 +1,6 @@
 {% load component_tags %}
 
-<form method="post" action="/patterns/add-more/htmx/" novalidate>
+<form method="post" action="{{ htmx_url }}" novalidate>
     {% csrf_token %}
     <div id="{{ field_name }}-add-more" class="plos-add-more" data-add-more>
     {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
@@ -94,5 +94,6 @@
                 {% endcomponent %}
             {% endfor %}
         {% endcomponent %}
+    </div>
     </div>
 </form>
