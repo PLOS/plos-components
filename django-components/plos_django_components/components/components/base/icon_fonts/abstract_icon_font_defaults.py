@@ -25,6 +25,8 @@ class IconFontDictionary(TypedDict):
 
     delete_item: NotRequired[str | None]
 
+    chevron_down: NotRequired[str | None]
+
 
 class IconFontDefaultSettings:
     _icon_font_dictionary: IconFontDictionary

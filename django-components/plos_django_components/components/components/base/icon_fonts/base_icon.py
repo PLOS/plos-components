@@ -116,3 +116,12 @@ class IconFontSetting:
         :return: Returns the icon class for the delete item button.
         """
         return IconFontSetting()._fetch_icon("delete_item")
+
+    @staticmethod
+    def get_chevron_down_icon() -> str | None:
+        """
+        Gets the icon class for a chevron pointing downward.
+
+        :return: Returns the icon class for the chevron down icon.
+        """
+        return IconFontSetting()._fetch_icon("chevron_down")

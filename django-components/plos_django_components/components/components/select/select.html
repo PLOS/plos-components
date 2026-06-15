@@ -1,0 +1,27 @@
+<div class="govuk-form-group{% if errors %} govuk-form-group--error{% endif %}">
+  <label class="{{ label_class }}{% if hide_label %} govuk-visually-hidden{% endif %}" for="{{ id }}">
+    {{ label }}
+  </label>
+  {% if hint %}
+  <div id="{{ id }}-hint" class="govuk-hint">{{ hint }}</div>
+  {% endif %}
+  {% component "plos_error_summary" entries=errors compact="True" %}{% endcomponent %}
+  <div class="plos-select-wrapper">
+    <select class="govuk-select plos-select{% if errors %} govuk-select--error{% endif %}"
+            id="{{ id }}"
+            name="{{ name }}"
+            {% if disabled %}disabled{% endif %}
+            {% if hint or errors %}aria-describedby="{% if hint %}{{ id }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ id }}-error{% endif %}"{% endif %}>
+      {% for option in options %}
+      <option value="{{ option.value }}"
+              {% if value %}{% if option.value == value %}selected{% endif %}{% elif option.selected %}selected{% endif %}>
+        {{ option.text }}
+      </option>
+      {% endfor %}
+    </select>
+    {# display var() fallback keeps the chevron hidden if the stylesheet fails to load, avoiding a mispositioned icon in document flow #}
+    <span aria-hidden="true" class="plos-select__chevron" style="display: var(--plos-select-show-chevron, none);">
+      {% component "plos_icon_chevron_down" size="sm" %}{% endcomponent %}
+    </span>
+  </div>
+</div>
