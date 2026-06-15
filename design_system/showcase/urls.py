@@ -30,6 +30,11 @@ urlpatterns = [
         name="design_system_component",
     ),
     path(
+        "patterns/add-more/implementation/",
+        views.add_more_implementation_page,
+        name="add_more_implementation",
+    ),
+    path(
         "patterns/add-more/htmx/",
         AddMore.as_view(),
         name="add_more_htmx",

@@ -26,6 +26,10 @@ PATTERNS = {
     "check_answers",
 }
 
+ADD_MORE_SUBPAGES = [
+    {"slug": "implementation", "label": "Implementation"},
+]
+
 TYPOGRAPHY_SUBPAGES = [
     {"slug": "headings-body", "label": "Headings and Body"},
     {"slug": "functional-text", "label": "Functional Text"},
@@ -66,10 +70,16 @@ def _nav_context(
 
     nav_components = None
     if library is not None:
-        nav_components = [
-            {"slug": c, "label": fetch_design_system_title_from_slug(c)}
-            for c in sorted(library)
-        ]
+        nav_components = []
+        for c in sorted(library):
+            item = {
+                "slug": c,
+                "label": fetch_design_system_title_from_slug(c),
+                "children": [],
+            }
+            if c == "add-more":
+                item["children"] = ADD_MORE_SUBPAGES
+            nav_components.append(item)
 
     return {
         "nav_styles": nav_styles,
@@ -135,6 +145,18 @@ def design_system_style(request, page):
 def add_more_htmx_page(request):
     return render(
         request, "design_system/patterns/add_more.html", _build_page_context(request)
+    )
+
+
+def add_more_implementation_page(request):
+    ctx = _nav_context_patterns(
+        request,
+        active_section="patterns",
+        active_slug="add-more",
+        active_subslug="implementation",
+    )
+    return render(
+        request, "design_system/patterns/add_more/implementation.html", ctx
     )
 
 def error_summary_page(request):
