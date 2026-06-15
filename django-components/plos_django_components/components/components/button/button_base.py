@@ -64,11 +64,12 @@ class Button(PLOSBaseComponent):
         hx_swap: str | None = None,
         hx_include: str | None = None,
         hx_select: str | None = None,
+        **kwargs,
     ):
         if href == "":
             href = None
 
-        return {
+        context = {
             "disabled": disabled,
             "action": action,
             "button_type": button_type,
@@ -85,3 +86,5 @@ class Button(PLOSBaseComponent):
             "hx_include": hx_include,
             "hx_select": hx_select,
         }
+        context.update(kwargs)
+        return context

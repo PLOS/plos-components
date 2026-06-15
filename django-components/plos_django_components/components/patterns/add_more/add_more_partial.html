@@ -3,98 +3,96 @@
 <form method="post" action="/patterns/add-more/htmx/" novalidate>
     {% csrf_token %}
     <div id="{{ field_name }}-add-more" class="plos-add-more" data-add-more>
-        {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
+    {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
 
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__count" value="{{ count }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__max" value="{{ max_items }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__min" value="{{ min_items }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__item_label" value="{{ item_label }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__item_label_plural" value="{{ item_label_plural }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__htmx_url" value="{{ htmx_url }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__add_label" value="{{ add_label }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__delete_label" value="{{ delete_label }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__save_label" value="{{ save_label }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__heading_level" value="{{ heading_level }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__required" value="{{ required }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__validation_message" value="{{ validation_message }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__show_save_button" value="{{ show_save_button }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__saved_items_label" value="{{ saved_items_label }}">
-        <input type="hidden" aria-hidden="true" name="{{ field_name }}__fields" value="{{ fields }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__count" value="{{ count }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__max" value="{{ max_items }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__min" value="{{ min_items }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__item_label" value="{{ item_label }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__item_label_plural" value="{{ item_label_plural }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__htmx_url" value="{{ htmx_url }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__add_label" value="{{ add_label }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__delete_label" value="{{ delete_label }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__save_label" value="{{ save_label }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__heading_level" value="{{ heading_level }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__required" value="{{ required }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__validation_message" value="{{ validation_message }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__show_save_button" value="{{ show_save_button }}">
+    <input type="hidden" aria-hidden="true" name="{{ field_name }}__fields" value="{{ fields }}">
 
-        {% for item in add_more_items %}
-            {% component "plos_add_more_item"
-                    index=item.index
-                    fields=fields
-                    display_index=forloop.counter
-                    errors=item.errors
-                    field_name=field_name
-                    item_label=item_label
-                    heading_level=heading_level
-                    delete_label=delete_label
-                    show_delete=show_delete
-                    htmx_url=htmx_url
-                    value=item.value
-                    only
-                    %}
-                {% fill "item_content" data="item_data" %}
-                    {% slot "item" index=item_data.index errors=item_data.errors value=item_data.value %}{% endslot %}
-                {% endfill %}
-            {% endcomponent %}
-        {% endfor %}
+    {% for item in add_more_items %}
+        {% component "plos_add_more_item"
+                index=item.index
+                fields=fields
+                display_index=forloop.counter
+                errors=item.errors
+                field_name=field_name
+                item_label=item_label
+                heading_level=heading_level
+                delete_label=delete_label
+                show_delete=show_delete
+                htmx_url=htmx_url
+                value=item.values
+                only
+                %}
+            {% fill "item_content" data="item_data" %}
+                {% slot "item" index=item_data.index errors=item_data.errors value=item_data.value %}{% endslot %}
+            {% endfill %}
+        {% endcomponent %}
+    {% endfor %}
 
-        <div id="{{ field_name }}-list-anchor">
-            {% if remaining > 0 %}
-                <div data-add-section>
-                    {% component "plos_button"
-                            field_name="{{ field_name }}__action"
-                            value="add"
-                            button_type="submit"
-                            action="secondary"
-                            hx_post="{{ htmx_url }}"
-                            hx_target="#{{ field_name }}-add-more"
-                            hx_select="#{{ field_name }}-add-more"
-                            hx_swap="outerHTML"
-                            hx_include="#{{ field_name }}-add-more"
-                            form_action="{{ htmx_url }}" %}
-                        {{ add_label }} {{ item_label }}
-                    {% endcomponent %}
-                    {% component "plos_text_box" %}You can add <span data-remaining-count>{{ remaining }}</span> more {{ item_label_plural }}{% endcomponent %}
-                </div>
+    <div id="{{ field_name }}-list-anchor">
+        {% if remaining > 0 %}
+            <div data-add-section>
+                {% component "plos_button"
+                        field_name="{{ field_name }}__action"
+                        value="add"
+                        button_type="submit"
+                        action="secondary"
+                        hx_post="{{ htmx_url }}"
+                        hx_target="#{{ field_name }}-add-more"
+                        hx_select="#{{ field_name }}-add-more"
+                        hx_swap="outerHTML"
+                        hx_include="#{{ field_name }}-add-more"
+                        form_action="{{ htmx_url }}" %}
+                    {{ add_label }} {{ item_label }}
+                {% endcomponent %}
+                {% component "plos_text_box" %}You can add <span data-remaining-count>{{ remaining }}</span> more {{ item_label_plural }}{% endcomponent %}
+            </div>
+        {% endif %}
+
+        {% component "plos_button_group" %}
+            {% if show_save_button %}
+                {% component "plos_button"
+                        field_name="{{ field_name }}__action"
+                        value=""
+                        button_type="submit"
+                        hx_post="{{ htmx_url }}"
+                        hx_target="#{{ field_name }}-add-more"
+                        hx_select="#{{ field_name }}-add-more"
+                        hx_swap="outerHTML"
+                        hx_include="#{{ field_name }}-add-more"
+                        form_action="{{ htmx_url }}" %}
+                    {{ save_label }}
+                {% endcomponent %}
             {% endif %}
-
-            {% component "plos_button_group" %}
-                {% if show_save_button %}
-                    {% component "plos_button"
-                            field_name="{{ field_name }}__action"
-                            value=""
-                            button_type="submit"
-                            hx_post="{{ htmx_url }}"
-                            hx_target="#{{ field_name }}-add-more"
-                            hx_select="#{{ field_name }}-add-more"
-                            hx_swap="outerHTML"
-                            hx_include="#{{ field_name }}-add-more"
-                            form_action="{{ htmx_url }}" %}
-                        {{ save_label }}
-                    {% endcomponent %}
-                {% endif %}
-                {% for additional_button in additional_buttons %}
-                    {% component "plos_button"
-                            disabled=additional_button.disabled
-                            action=additional_button.action
-                            button_type=additional_button.button_type
-                            value=additional_button.value
-                            form_action=(additional_button.get("form_action") if additional_button.get("form_action") else htmx_url)
-                            field_id=additional_button.field_id
-                            field_name=additional_button.field_name
-                            hx_post=(additional_button.get("hx_post") if additional_button.get("hx_post") else htmx_url)
-                            hx_target=additional_button.hx_target
-                            hx_select=additional_button.hx_select
-                            hx_swap=additional_button.hx_swap
-                            hx_include=(additional_button.get("hx_include") if additional_button.get("hx_include") else "#{{ field_name }}-add-more") %}
-                        {% if additional_button.label %}{{ additional_button.label }}{% endif %}
-                    {% endcomponent %}
-                {% endfor %}
-            {% endcomponent %}
-        </div>
+            {% for additional_button in additional_buttons %}
+                {% component "plos_button"
+                        disabled=additional_button.disabled
+                        action=additional_button.action
+                        button_type=additional_button.button_type
+                        value=additional_button.value
+                        form_action=(additional_button.get("form_action") if additional_button.get("form_action") is not None else htmx_url)
+                        field_id=additional_button.field_id
+                        field_name=additional_button.field_name
+                        hx_post=(additional_button.get("hx_post") if additional_button.get("hx_post") is not None else htmx_url)
+                        hx_target=additional_button.hx_target
+                        hx_select=additional_button.hx_select
+                        hx_swap=additional_button.hx_swap
+                        hx_include=(additional_button.get("hx_include") if additional_button.get("hx_include") is not None else "#{{ field_name }}-add-more") %}
+                    {% if additional_button.label %}{{ additional_button.label }}{% endif %}
+                {% endcomponent %}
+            {% endfor %}
+        {% endcomponent %}
     </div>
 </form>

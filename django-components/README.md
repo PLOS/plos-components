@@ -99,6 +99,32 @@ The urls need to be added to the application urls for the "Add More" component t
 urlpatterns.append(path("components/", include("django_components.urls")))
 ```
 
+## Testing
+
+This project uses `pytest` for unit tests and `playwright` for end-to-end interactivity tests.
+
+### Running Unit Tests (Pytest)
+
+To run the unit tests, use the following command from the project root:
+
+```bash
+uv run pytest django-components/tests/
+```
+
+### Running End-to-End Tests (Playwright)
+
+To run the Playwright tests, you first need to ensure the browsers are installed:
+
+```bash
+uv run playwright install
+```
+
+Then you can run the Playwright tests using the internal test application:
+
+```bash
+PYTHONPATH=./design_system:./django-components uv run pytest django-components/tests/playwright/ --ds tests.playwright.test_app.settings
+```
+
 ## Linting
 
 This project uses [ruff](https://docs.astral.sh/ruff/) for linting and [pre-commit](https://pre-commit.com/) to run it automatically on staged `.py` files before each commit.
@@ -152,6 +178,6 @@ This will render a simple button which says "Next".
 This section covers more advanced settings.
 
 ## Font Icon Overrides
-There are a number of preset icons for easy integration. Any, all or none of these can all be overridden through the settings. 
+There are a number of preset icons for easy integration. Any, all or none of these can all be overridden through the settings.
 
-A `TypedDict` is given to show which icons can be overridden with examples in the `bootstrap` class. 
+A `TypedDict` is given to show which icons can be overridden with examples in the `bootstrap` class.

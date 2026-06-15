@@ -30,6 +30,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "ruff",
+    "hypothesis",
+    "pytest",
+    "pytest-django",
+    "pytest-playwright",
 ]
 
 [build-system]
@@ -96,3 +100,8 @@ ignore = [
     "D200",
     "D212",
 ]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "plos_django_components.settings"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+pythonpath = "."

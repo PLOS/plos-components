@@ -147,3 +147,9 @@ cython_debug/
 # PyCharm
 .idea/*
 .DS_Store
+/.hypothesis/
+/django-components/.hypothesis/
+
+# Playwright
+django-components/tests/playwright/test-results/
+django-components/tests/playwright/playwright-report/

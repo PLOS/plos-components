@@ -2,6 +2,14 @@ import os
 
 from .components.components.base.icon_fonts.abstract_icon_font_defaults import IconFontDictionary
 
+SECRET_KEY = "fake-key"
+ROOT_URLCONF = "plos_django_components.urls"
+
+COMPONENTS = {
+    "libraries": [],
+    "autodiscover": False,
+}
+
 INSTALLED_APPS = [
     "django_components",
     "plos_django_components",
@@ -31,8 +39,10 @@ GOV_UK_TEMPLATE_PRIMARY_CSS = "https://YOUR_SOURCE_OR_CDN_URI/stylesheets/govuk-
 GOV_UK_TEMPLATE_OVERRIDE_CSS = ["https://YOUR_SOURCE_OR_CDN_URI/stylesheets/override-<VERSION-NUMBER>.min.css"]
 GOV_UK_TEMPLATE_PRIMARY_JS = "https://YOUR_SOURCE_OR_CDN_URI/assets/v3/scripts/gov-uk-frontend-<VERSION-NUMBER>.min.js"
 
+
 # Information about the icons to use.
 ICON_FONT = "bootstrap"
+
 
 # Icon overrides
 ICON_FONT_OVERRIDE_DICTIONARY: IconFontDictionary = dict(

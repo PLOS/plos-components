@@ -8,12 +8,15 @@ This module provides:
 from ast import literal_eval as ast_literal_eval
 
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.views import View
 from django_components import get_component_url, register
 
 from ...components.base.base_component import PLOSBaseComponent
 from ...components.base.icon_fonts.base_icon import IconFontSetting
 from ...universal_dictionaries.button_dictionary import Button
+from ...universal_dictionaries.component_error import PLOSComponentError
 from .typed_dict.add_more_fields import AddMoreField
+from .typed_dict.add_more_value import AddMoreValue
 
 
 def get_session_key_values(field_name: str) -> str:
@@ -24,10 +27,16 @@ def get_session_key_errors(field_name: str) -> str:
     return f"add_more_{field_name}_errors"
 
 
-def any_field_required(fields: list[AddMoreField]) -> bool:
+def any_field_required(fields: list[AddMoreField] | str) -> bool:
+    if isinstance(fields, str):
+        try:
+            fields = ast_literal_eval(fields)
+        except (ValueError, SyntaxError):
+            return False
+
     required = False
     for field in fields:
-        if field.get("required", False):
+        if isinstance(field, dict) and field.get("required", False):
             required = True
             break
     return required
@@ -100,13 +109,13 @@ class AddMore(PLOSBaseComponent):
         self,
         field_name: str,
         item_label: str,
-        fields: list[AddMoreField],
+        fields: list[AddMoreField] | str,
         max_items: int = 10,
         min_items: int = 1,
         count: int | None = None,
         htmx_url: str | None = "/patterns/add-more/htmx/",
         item_label_plural: str | None = None,
-        errors: list | None = None,
+        errors: list[PLOSComponentError] | None = None,
         heading_level: int = 2,
         add_label: str = "Add another",
         delete_label: str = "Delete",
@@ -114,69 +123,110 @@ class AddMore(PLOSBaseComponent):
         icon_size: str = "xs",
         add_icon: str | None = None,
         delete_icon: str | None = None,
-        values: list[dict] | None = None,
+        values: list[AddMoreValue] | str | None = None,
         validation_message: str | None = None,
         show_save_button: bool = False,
-        saved_items_label: str | None = None,
         additional_buttons: list[Button] | None = None,
         **kwargs,
     ):
         # State management: if count and values are not provided, try to get them from session
         # This is useful for the initial render and non-HTMX updates.
         request = getattr(self, "request", None) or kwargs.get("request")
+
+        if fields and isinstance(fields, str):
+            try:
+                fields = ast_literal_eval(fields)
+            except (ValueError, SyntaxError):
+                fields = []
+
+        if values and isinstance(values, str):
+            try:
+                values = ast_literal_eval(values)
+            except (ValueError, SyntaxError):
+                values = None
+
         session_key_values = get_session_key_values(field_name)
         session_key_errors = get_session_key_errors(field_name)
 
-        if values is None and request and hasattr(request, "session"):
-            values = request.session.get(session_key_values, None)
+        if request and hasattr(request, "session"):
+            # We want to use values passed from the parent if they exist.
+            # However, we also need to respect any changes made during the session
+            # (e.g. via HTMX add/delete).
+            # If values were passed in, we use them as the base.
+            # If session already has values for this field, it means the user has started interacting with it.
+            # In that case, we should probably stick with session values to avoid losing user progress.
+            # BUT the requirement says: "display the incoming values from the database, but then use the session as
+            # is normal"
 
-        if errors is None and request and hasattr(request, "session"):
+            session_values = request.session.get(session_key_values, None)
+
+            if values:
+                # If values are passed, they override the session values UNLESS we are in an HTMX request
+                # or if the user has already interacted with the component in this session?
+                # Actually, the patent_example.py clears the session after save.
+                # If session_values exist, it means we are in the middle of a session.
+                if session_values is None:
+                    # First time seeing this component in this session, use passed values.
+                    # Convert passed values to the internal format if they aren't already.
+                    # Expected internal format: [{"errors": [], "values": {...}}, ...]
+                    # patent_example.py passes: [{"patent_number": "...", "patent_description": "..."}, ...]
+                    processed_values = []
+                    try:
+                        for val in values:
+                            if isinstance(val, dict):
+                                if "values" in val and "errors" in val:
+                                    processed_values.append(val)
+                                else:
+                                    processed_values.append({"errors": [], "values": val})
+                            else:
+                                raise ValueError("Each value must be a dictionary.")
+                        values = processed_values
+                    except (ValueError, TypeError, SyntaxError) as e:
+                        # Graceful failure with helpful message
+                        msg = f"Invalid format for incoming values: {str(e)}"
+                        values = [
+                            {"errors": [], "values": {}} for _ in range(count if count is not None else min_items)
+                        ]
+                        if not errors:
+                            errors = []
+                        errors.append({"field_id": "", "message": msg})
+
+                    request.session[session_key_values] = values
+                else:
+                    # User is already interacting, use session values.
+                    values = session_values
+            else:
+                # No values passed, use session values.
+                values = session_values
+
             # We pop errors so they don't persist on next refresh
-            errors = request.session.pop(session_key_errors, None)
+            if not errors:
+                errors = request.session.pop(session_key_errors, None)
 
         if values is None:
-            values = [{}] * min_items
-            if request and hasattr(request, "session"):
+            values = [{"errors": [], "values": {}} for _ in range(count if count is not None else min_items)]
+
+        if request and hasattr(request, "session"):
+            if request.session.get(session_key_values) is None:
                 request.session[session_key_values] = values
 
         if count is None:
             count = len(values)
 
         resolved_errors = errors or []
-        resolved_values: list[dict] = values or []
+        resolved_values: list[AddMoreValue] = values or []
 
-        def _item_errors_dict(i):
-            if i >= len(resolved_errors) or not resolved_errors[i]:
-                return {}
-            return {field_error["field_id"]: field_error["message"] for field_error in resolved_errors[i]}
-
-        def _item_value(i):
-            if i < len(resolved_values):
-                return resolved_values[i]
-            return ""
-
-        add_more_items = [
-            {
-                "index": str(i),
-                "is_first": i == 0,
-                "errors": _item_errors_dict(i),
-                "value": _item_value(i),
-            }
-            for i in range(count)
-        ]
+        add_more_items: list[AddMoreValue] = []
+        for i in range(count):
+            value: AddMoreValue = resolved_values[i]
+            item: AddMoreValue = AddMoreValue()
+            item["index"] = str(i)
+            item["is_first"] = i == 0
+            item["errors"] = value.get("errors", [])
+            item["values"] = value.get("values", {})
+            add_more_items.append(item)
 
         show_delete = count > min_items
-
-        error_summary = [
-            {
-                "label": f"{item_label.capitalize()} {i + 1}",
-                "message": field_error["message"],
-                "anchor": f"{field_error['field_id']}_{i}",
-            }
-            for i, item_errors in enumerate(resolved_errors)
-            if item_errors
-            for field_error in item_errors
-        ]
 
         if htmx_url is None:
             try:
@@ -203,8 +253,8 @@ class AddMore(PLOSBaseComponent):
             "remaining": remaining,
             "add_more_items": add_more_items,
             "htmx_url": htmx_url,
-            "error_summary": error_summary,
-            "has_errors": bool(error_summary),
+            "error_summary": resolved_errors,
+            "has_errors": bool(resolved_errors),
             "heading_level": heading_level,
             "add_label": add_label,
             "delete_label": delete_label,
@@ -214,13 +264,12 @@ class AddMore(PLOSBaseComponent):
             "delete_icon": delete_icon if delete_icon is not None else IconFontSetting.get_delete_item_icon(),
             "validation_message": validation_message or f"Enter a {item_label}",
             "show_save_button": show_save_button,
-            "saved_items_label": saved_items_label or f"Saved {item_label_plural or item_label + 's'}",
             "additional_buttons": additional_buttons,
         }
         context.update(kwargs)
         return context
 
-    class View:
+    class View(View):
         def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
             # Redirect back to the page that contains the component
             referer = request.META.get("HTTP_REFERER")
@@ -285,7 +334,7 @@ class AddMore(PLOSBaseComponent):
             errors = None
             if action == "add" and count < max_items:
                 count += 1
-                values.append({})
+                values.append({"errors": [], "values": {}})
             elif action.startswith("delete__"):
                 try:
                     idx = int(action.split("__")[1])
@@ -324,7 +373,15 @@ class AddMore(PLOSBaseComponent):
             session_key_errors = get_session_key_errors(field_name)
 
             # Persist state in session
-            request.session[session_key_values] = values
+            # Map values to the format expected by the component
+            # If values are already in internal format, keep them
+            formatted_values = []
+            for v in values:
+                if isinstance(v, dict) and "values" in v and "errors" in v:
+                    formatted_values.append(v)
+                else:
+                    formatted_values.append({"errors": [], "values": v})
+            request.session[session_key_values] = formatted_values
 
             # Store errors in session so they can be shown after redirect
             request.session[session_key_errors] = errors
