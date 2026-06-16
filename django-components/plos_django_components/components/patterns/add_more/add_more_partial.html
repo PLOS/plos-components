@@ -5,20 +5,20 @@
     <div id="{{ field_name }}-add-more" class="plos-add-more" data-add-more>
     {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
 
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__count" value="{{ count }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__max" value="{{ max_items }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__min" value="{{ min_items }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__item_label" value="{{ item_label }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__item_label_plural" value="{{ item_label_plural }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__htmx_url" value="{{ htmx_url }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__add_label" value="{{ add_label }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__delete_label" value="{{ delete_label }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__save_label" value="{{ save_label }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__heading_level" value="{{ heading_level }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__required" value="{{ required }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__validation_message" value="{{ validation_message }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__show_save_button" value="{{ show_save_button }}">
-    <input type="hidden" aria-hidden="true" name="{{ field_name }}__fields" value="{{ fields }}">
+    <input type="hidden" name="{{ field_name }}__count" value="{{ count }}">
+    <input type="hidden" name="{{ field_name }}__max" value="{{ max_items }}">
+    <input type="hidden" name="{{ field_name }}__min" value="{{ min_items }}">
+    <input type="hidden" name="{{ field_name }}__item_label" value="{{ item_label }}">
+    <input type="hidden" name="{{ field_name }}__item_label_plural" value="{{ item_label_plural }}">
+    <input type="hidden" name="{{ field_name }}__htmx_url" value="{{ htmx_url }}">
+    <input type="hidden" name="{{ field_name }}__add_label" value="{{ add_label }}">
+    <input type="hidden" name="{{ field_name }}__delete_label" value="{{ delete_label }}">
+    <input type="hidden" name="{{ field_name }}__save_label" value="{{ save_label }}">
+    <input type="hidden" name="{{ field_name }}__heading_level" value="{{ heading_level }}">
+    <input type="hidden" name="{{ field_name }}__required" value="{{ required }}">
+    <input type="hidden" name="{{ field_name }}__validation_message" value="{{ validation_message }}">
+    <input type="hidden" name="{{ field_name }}__show_save_button" value="{{ show_save_button }}">
+    <input type="hidden" name="{{ field_name }}__fields" value="{{ fields }}">
 
     {% for item in add_more_items %}
         {% component "plos_add_more_item"
@@ -32,11 +32,12 @@
                 delete_label=delete_label
                 show_delete=show_delete
                 htmx_url=htmx_url
+                is_first=item.is_first
                 value=item.values
                 only
                 %}
             {% fill "item_content" data="item_data" %}
-                {% slot "item" index=item_data.index errors=item_data.errors value=item_data.value %}{% endslot %}
+                {% slot "item" index=item_data.index errors=item_data.errors value=item_data.value is_first=item_data.is_first %}{% endslot %}
             {% endfill %}
         {% endcomponent %}
     {% endfor %}

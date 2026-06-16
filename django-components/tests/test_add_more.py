@@ -141,15 +141,20 @@ def test_get_context_data_initialization(field_name, item_label, min_items, max_
     component = AddMore()
     # Mock request to test session initialization
     request = create_mock_request()
+    component.request = request
 
-    context = component.get_context_data(
-        field_name=field_name,
-        item_label=item_label,
-        fields=[],
-        min_items=min_items,
-        max_items=max_items,
-        request=request,
-    )
+    context = component.get_template_data(
+        None,
+        AddMore.Kwargs(
+            field_name=field_name,
+            item_label=item_label,
+            fields=[],
+            min_items=min_items,
+            max_items=max_items,
+        ),
+        None,
+        None,
+    )._asdict()
 
     assert context["field_name"] == field_name
     assert context["item_label"] == item_label
@@ -180,12 +185,18 @@ def test_get_context_data_with_existing_values(field_name, item_label, count):
     component = AddMore()
     values = [{"values": {"f1": f"v{i}"}, "errors": []} for i in range(count)]
 
-    context = component.get_context_data(
-        field_name=field_name,
-        item_label=item_label,
-        fields=[],
-        values=values,
-    )
+    component.request = None
+    context = component.get_template_data(
+        None,
+        AddMore.Kwargs(
+            field_name=field_name,
+            item_label=item_label,
+            fields=[],
+            values=values,
+        ),
+        None,
+        None,
+    )._asdict()
 
     assert context["count"] == count
     assert len(context["add_more_items"]) == count
@@ -203,11 +214,21 @@ def test_get_context_data_show_delete():
     component = AddMore()
 
     # count == min_items
-    context = component.get_context_data("f", "L", [], min_items=2, count=2)
+    context = component.get_template_data(
+        None,
+        AddMore.Kwargs(field_name="f", item_label="L", fields=[], min_items=2, count=2),
+        None,
+        None,
+    )._asdict()
     assert context["show_delete"] is False
 
     # count > min_items
-    context = component.get_context_data("f", "L", [], min_items=2, count=3)
+    context = component.get_template_data(
+        None,
+        AddMore.Kwargs(field_name="f", item_label="L", fields=[], min_items=2, count=3),
+        None,
+        None,
+    )._asdict()
     assert context["show_delete"] is True
 
 
@@ -221,7 +242,12 @@ def test_get_context_data_error_summary():
         {"label": "Item 2", "message": "Error 2", "anchor": "#a2"},
     ]
 
-    context = component.get_context_data("f", "L", [], errors=errors)
+    context = component.get_template_data(
+        None,
+        AddMore.Kwargs(field_name="f", item_label="L", fields=[], errors=errors),
+        None,
+        None,
+    )._asdict()
     assert context["error_summary"] == errors
     assert context["has_errors"] is True
 
@@ -236,8 +262,14 @@ def test_get_context_data_session_pop_errors():
     errors = [{"message": "Session Error"}]
 
     request = create_mock_request({session_key_errors: errors})
+    component.request = request
 
-    context = component.get_context_data(field_name=field_name, item_label="L", fields=[], request=request)
+    context = component.get_template_data(
+        None,
+        AddMore.Kwargs(field_name=field_name, item_label="L", fields=[]),
+        None,
+        None,
+    )._asdict()
 
     assert context["error_summary"] == errors
     # Errors should be popped from session

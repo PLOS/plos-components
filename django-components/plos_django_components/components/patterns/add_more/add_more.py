@@ -6,10 +6,11 @@ This module provides:
 """
 
 from ast import literal_eval as ast_literal_eval
+from typing import Any, NamedTuple
 
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.views import View
-from django_components import get_component_url, register
+from django_components import Empty, get_component_url, register
 
 from ...components.base.base_component import PLOSBaseComponent
 from ...components.base.icon_fonts.base_icon import IconFontSetting
@@ -27,19 +28,26 @@ def get_session_key_errors(field_name: str) -> str:
     return f"add_more_{field_name}_errors"
 
 
-def any_field_required(fields: list[AddMoreField] | str) -> bool:
-    if isinstance(fields, str):
+def parse_literal(value: Any, default: Any = None) -> Any:
+    """
+    Parses a literal string into a Python object using ast.literal_eval.
+    """
+    if isinstance(value, str):
         try:
-            fields = ast_literal_eval(fields)
+            return ast_literal_eval(value)
         except (ValueError, SyntaxError):
-            return False
+            return default
+    return value
 
-    required = False
-    for field in fields:
-        if isinstance(field, dict) and field.get("required", False):
-            required = True
-            break
-    return required
+
+def any_field_required(fields: list[AddMoreField] | str) -> bool:
+    """Check if any field in the list is marked as required."""
+    fields_list = parse_literal(fields, [])
+
+    if not isinstance(fields_list, list):
+        return False
+
+    return any(field.get("required", False) for field in fields_list if isinstance(field, dict))
 
 
 def is_required_field(field: AddMoreField) -> bool:
@@ -54,7 +62,7 @@ def is_required_field(field: AddMoreField) -> bool:
 @register("plos_add_more")
 class AddMore(PLOSBaseComponent):
     """
-        A dynamic add/delete item list with HTMX progressive enhancement.
+    A dynamic add/delete item list with HTMX progressive enhancement.
 
     Renders a list of repeating form items. Add and delete buttons submit to
     `htmx_url` via HTMX, swapping only the outer `<div id="{name}-item-list">`
@@ -103,171 +111,199 @@ class AddMore(PLOSBaseComponent):
     and implementation guide.
     """
 
+    class Kwargs(NamedTuple):
+        field_name: str
+        item_label: str
+        fields: list[AddMoreField] | str
+        max_items: int = 10
+        min_items: int = 1
+        count: int | None = None
+        htmx_url: str | None = "/patterns/add-more/htmx/"
+        item_label_plural: str | None = None
+        errors: list[PLOSComponentError] | None = None
+        heading_level: int = 2
+        add_label: str = "Add another"
+        delete_label: str = "Delete"
+        save_label: str = "Save"
+        icon_size: str = "xs"
+        add_icon: str | None = None
+        delete_icon: str | None = None
+        values: list[AddMoreValue] | str | None = None
+        validation_message: str | None = None
+        show_save_button: bool = False
+        additional_buttons: list[Button] | None = None
+        required: bool = False
+
+    Args = Empty
+
+    class Slots(NamedTuple):
+        item: Any
+
+    class TemplateData(NamedTuple):
+        field_name: str
+        item_label: str
+        item_label_plural: str
+        fields: list[AddMoreField]
+        count: int
+        required: bool
+        max_items: int
+        min_items: int
+        values: list[AddMoreValue]
+        show_delete: bool
+        remaining: int
+        add_more_items: list[dict]
+        htmx_url: str
+        error_summary: list[dict]
+        has_errors: bool
+        heading_level: int
+        add_label: str
+        delete_label: str
+        save_label: str
+        icon_size: str
+        add_icon: str
+        delete_icon: str
+        validation_message: str
+        show_save_button: bool
+        additional_buttons: list[Button]
+
     template_name = "add_more_partial.html"
 
-    def get_context_data(
-        self,
-        field_name: str,
-        item_label: str,
-        fields: list[AddMoreField] | str,
-        max_items: int = 10,
-        min_items: int = 1,
-        count: int | None = None,
-        htmx_url: str | None = "/patterns/add-more/htmx/",
-        item_label_plural: str | None = None,
-        errors: list[PLOSComponentError] | None = None,
-        heading_level: int = 2,
-        add_label: str = "Add another",
-        delete_label: str = "Delete",
-        save_label: str = "Save",
-        icon_size: str = "xs",
-        add_icon: str | None = None,
-        delete_icon: str | None = None,
-        values: list[AddMoreValue] | str | None = None,
-        validation_message: str | None = None,
-        show_save_button: bool = False,
-        additional_buttons: list[Button] | None = None,
-        **kwargs,
-    ):
-        # State management: if count and values are not provided, try to get them from session
-        # This is useful for the initial render and non-HTMX updates.
-        request = getattr(self, "request", None) or kwargs.get("request")
+    def get_template_data(self, args, kwargs: Kwargs, slots, context) -> TemplateData:
+        request = self.request
 
-        if fields and isinstance(fields, str):
-            try:
-                fields = ast_literal_eval(fields)
-            except (ValueError, SyntaxError):
-                fields = []
+        fields = parse_literal(kwargs.fields, [])
+        values = parse_literal(kwargs.values, None)
 
-        if values and isinstance(values, str):
-            try:
-                values = ast_literal_eval(values)
-            except (ValueError, SyntaxError):
-                values = None
+        session_key_values = get_session_key_values(kwargs.field_name)
+        session_key_errors = get_session_key_errors(kwargs.field_name)
 
-        session_key_values = get_session_key_values(field_name)
-        session_key_errors = get_session_key_errors(field_name)
+        errors = kwargs.errors
 
         if request and hasattr(request, "session"):
-            # We want to use values passed from the parent if they exist.
-            # However, we also need to respect any changes made during the session
-            # (e.g. via HTMX add/delete).
-            # If values were passed in, we use them as the base.
-            # If session already has values for this field, it means the user has started interacting with it.
-            # In that case, we should probably stick with session values to avoid losing user progress.
-            # BUT the requirement says: "display the incoming values from the database, but then use the session as
-            # is normal"
+            session_values = request.session.get(session_key_values)
 
-            session_values = request.session.get(session_key_values, None)
-
-            if values:
-                # If values are passed, they override the session values UNLESS we are in an HTMX request
-                # or if the user has already interacted with the component in this session?
-                # Actually, the patent_example.py clears the session after save.
-                # If session_values exist, it means we are in the middle of a session.
-                if session_values is None:
-                    # First time seeing this component in this session, use passed values.
-                    # Convert passed values to the internal format if they aren't already.
-                    # Expected internal format: [{"errors": [], "values": {...}}, ...]
-                    # patent_example.py passes: [{"patent_number": "...", "patent_description": "..."}, ...]
-                    processed_values = []
-                    try:
-                        for val in values:
-                            if isinstance(val, dict):
-                                if "values" in val and "errors" in val:
-                                    processed_values.append(val)
-                                else:
-                                    processed_values.append({"errors": [], "values": val})
-                            else:
-                                raise ValueError("Each value must be a dictionary.")
-                        values = processed_values
-                    except (ValueError, TypeError, SyntaxError) as e:
-                        # Graceful failure with helpful message
-                        msg = f"Invalid format for incoming values: {str(e)}"
-                        values = [
-                            {"errors": [], "values": {}} for _ in range(count if count is not None else min_items)
-                        ]
-                        if not errors:
-                            errors = []
-                        errors.append({"field_id": "", "message": msg})
-
-                    request.session[session_key_values] = values
-                else:
-                    # User is already interacting, use session values.
-                    values = session_values
-            else:
-                # No values passed, use session values.
+            if values and session_values is None:
+                # First time seeing this component in this session, use passed values.
+                values, format_errors = self._format_values(values, kwargs.count, kwargs.min_items)
+                request.session[session_key_values] = values
+                if format_errors:
+                    request.session[session_key_errors] = format_errors
+            elif session_values is not None:
+                # User is already interacting, use session values.
                 values = session_values
 
-            # We pop errors so they don't persist on next refresh
+            # Pop errors so they don't persist on next refresh
             if not errors:
                 errors = request.session.pop(session_key_errors, None)
 
         if values is None:
-            values = [{"errors": [], "values": {}} for _ in range(count if count is not None else min_items)]
+            values = [{"errors": [], "values": {}} for _ in range(kwargs.count or kwargs.min_items)]
 
-        if request and hasattr(request, "session"):
-            if request.session.get(session_key_values) is None:
-                request.session[session_key_values] = values
+        if request and hasattr(request, "session") and request.session.get(session_key_values) is None:
+            request.session[session_key_values] = values
 
-        if count is None:
-            count = len(values)
+        count = kwargs.count or len(values)
+        resolved_values: list[AddMoreValue] = values
+        resolved_errors = self._build_error_summary(errors, kwargs.item_label)
 
-        resolved_errors = errors or []
-        resolved_values: list[AddMoreValue] = values or []
-
-        add_more_items: list[AddMoreValue] = []
+        add_more_items = []
         for i in range(count):
-            value: AddMoreValue = resolved_values[i]
-            item: AddMoreValue = AddMoreValue()
-            item["index"] = str(i)
-            item["is_first"] = i == 0
-            item["errors"] = value.get("errors", [])
-            item["values"] = value.get("values", {})
-            add_more_items.append(item)
+            val = resolved_values[i] if i < len(resolved_values) else {"errors": [], "values": {}}
+            add_more_items.append(
+                {
+                    "index": str(i),
+                    "is_first": i == 0,
+                    "errors": val.get("errors", []),
+                    "values": val.get("values", {}),
+                }
+            )
 
-        show_delete = count > min_items
-
+        htmx_url = kwargs.htmx_url
         if htmx_url is None:
             try:
                 htmx_url = get_component_url(AddMore)
             except Exception:
-                # If we're not using standard component URLs, fallback to empty
-                # which will mean it posts to the current page.
                 htmx_url = ""
 
-        remaining: int = max_items - count
+        remaining = kwargs.max_items - count
 
-        context = {
-            "field_name": field_name,
-            "item_label": item_label,
-            "item_label_plural": item_label_plural or f"{item_label}s",
-            "fields": fields,
-            "count": count,
-            "required": any_field_required(fields),
-            "max_items": max_items,
-            "min_items": min_items,
-            "values": resolved_values,
-            "non_empty_values": [v for v in resolved_values if v and (not isinstance(v, str) or v.strip())],
-            "show_delete": show_delete,
-            "remaining": remaining,
-            "add_more_items": add_more_items,
-            "htmx_url": htmx_url,
-            "error_summary": resolved_errors,
-            "has_errors": bool(resolved_errors),
-            "heading_level": heading_level,
-            "add_label": add_label,
-            "delete_label": delete_label,
-            "save_label": save_label,
-            "icon_size": icon_size,
-            "add_icon": add_icon if add_icon is not None else IconFontSetting.get_add_item_icon(),
-            "delete_icon": delete_icon if delete_icon is not None else IconFontSetting.get_delete_item_icon(),
-            "validation_message": validation_message or f"Enter a {item_label}",
-            "show_save_button": show_save_button,
-            "additional_buttons": additional_buttons,
-        }
-        context.update(kwargs)
-        return context
+        return AddMore.TemplateData(
+            field_name=kwargs.field_name,
+            item_label=kwargs.item_label,
+            item_label_plural=kwargs.item_label_plural or f"{kwargs.item_label}s",
+            fields=fields,
+            count=count,
+            required=any_field_required(fields),
+            max_items=kwargs.max_items,
+            min_items=kwargs.min_items,
+            values=resolved_values,
+            show_delete=count > kwargs.min_items,
+            remaining=remaining,
+            add_more_items=add_more_items,
+            htmx_url=htmx_url,
+            error_summary=resolved_errors,
+            has_errors=bool(resolved_errors),
+            heading_level=kwargs.heading_level,
+            add_label=kwargs.add_label,
+            delete_label=kwargs.delete_label,
+            save_label=kwargs.save_label,
+            icon_size=kwargs.icon_size,
+            add_icon=kwargs.add_icon or IconFontSetting.get_add_item_icon(),
+            delete_icon=kwargs.delete_icon or IconFontSetting.get_delete_item_icon(),
+            validation_message=kwargs.validation_message or f"Enter a {kwargs.item_label}",
+            show_save_button=kwargs.show_save_button,
+            additional_buttons=kwargs.additional_buttons or [],
+        )
+
+    def _format_values(self, values: Any, count: int | None, min_items: int) -> tuple[list[dict], list[dict] | None]:
+        processed_values = []
+        try:
+            if not isinstance(values, list):
+                raise ValueError("Values must be a list.")
+            for val in values:
+                if isinstance(val, dict):
+                    if "values" in val and "errors" in val:
+                        processed_values.append(val)
+                    else:
+                        processed_values.append({"errors": [], "values": val})
+                else:
+                    raise ValueError("Each item must be a dictionary.")
+            return processed_values, None
+        except (ValueError, TypeError):
+            return [{"errors": [], "values": {}} for _ in range(count or min_items)], [
+                {"message": "Invalid format for incoming values"}
+            ]
+
+    def _build_error_summary(self, errors: Any, item_label: str) -> list[dict]:
+        """
+        Flattens nested errors into a format suitable for plos_error_summary.
+        Expected input: [None, [{"field_id": "field", "message": "error"}], ...]
+        """
+        if not errors or not isinstance(errors, list):
+            return errors or []
+
+        flat_errors = []
+        for i, item_errors in enumerate(errors):
+            if not item_errors:
+                continue
+
+            if isinstance(item_errors, list):
+                for err in item_errors:
+                    if not isinstance(err, dict):
+                        continue
+                    field_id = err.get("field_id", "")
+                    message = err.get("message", "")
+                    flat_errors.append(
+                        {
+                            "label": f"{item_label} {i + 1}",
+                            "message": message,
+                            "anchor": f"{field_id}_{i}",
+                        }
+                    )
+            elif isinstance(item_errors, dict) and "message" in item_errors:
+                flat_errors.append(item_errors)
+
+        return flat_errors
 
     class View(View):
         def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -278,122 +314,86 @@ class AddMore(PLOSBaseComponent):
             return HttpResponseRedirect("/")
 
         def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-            # Handle add/delete/save actions and return the partial
-            field_name = None
-            for key in request.POST:
-                if key.endswith("__action"):
-                    field_name = key[: -len("__action")]
-                    break
-
+            field_name = self._get_field_name(request)
             if not field_name:
-                # If we're here, it might be a standard form submission that was boosted.
-                # But for AddMore component, we expect an action.
                 return HttpResponse("Missing action name", status=400)
 
-            field_name = field_name.lower().strip()
-
-            try:
-                fields_str: str | None = request.POST.get(f"{field_name}__fields")
-                if not fields_str:
-                    return HttpResponse("Missing field definitions", status=400)
-                fields: list[AddMoreField] = ast_literal_eval(fields_str)
-            except (ValueError, TypeError, KeyError):
-                return HttpResponse("Misconfigured fields definition.", status=400)
+            fields = parse_literal(request.POST.get(f"{field_name}__fields"), [])
+            if not fields:
+                return HttpResponse("Missing or misconfigured field definitions", status=400)
 
             action = request.POST.get(f"{field_name}__action", "")
+            config = self._get_config(request, field_name)
 
-            try:
-                count = int(request.POST.get(f"{field_name}__count", 1))
-                max_items = int(request.POST.get(f"{field_name}__max", 10))
-                min_items = int(request.POST.get(f"{field_name}__min", 1))
-            except (ValueError, TypeError):
-                count = 1
-                max_items = 10
-                min_items = 1
+            values = self._extract_values_from_post(request, field_name, fields, config["count"])
 
-            # Get values to preserve them during HTMX swap
-            values: list[dict] = []
-            for i in range(count):
-                val: dict = {}
-                for field in fields:
-                    field_id = field.get("field_id")
-                    field_value_names: list[str] = field.get("field_value_names", None)
-                    field_id_index = f"{field_id}_{i}"
-                    if not field_value_names:
-                        field_value = request.POST.get(field_id_index, "")
-                        val[field_id] = field_value
-                    else:
-                        consolidated_value: dict = {}
-                        for field_value_name in field_value_names:
-                            merged_field_name = f"{field_id_index}{field_value_name}"
-                            field_value = request.POST.get(merged_field_name, "")
-                            consolidated_value[field_value_name] = field_value
-                        val[field_id] = consolidated_value
-                values.append(val)
-
-            errors = None
-            if action == "add" and count < max_items:
+            count = config["count"]
+            if action == "add" and count < config["max_items"]:
                 count += 1
                 values.append({"errors": [], "values": {}})
             elif action.startswith("delete__"):
-                try:
-                    idx = int(action.split("__")[1])
-                    if count > min_items:
-                        count -= 1
-                        if idx < len(values):
-                            values.pop(idx)
-                except (IndexError, ValueError):
-                    pass
-            # This needs reworked from the ground up but is preserved for now.
-            # elif action == "":  # Save action
-            #     if required:
-            #         errors: list[list] | None = []
-            #         for i, v in enumerate(values):
-            #             error: list[dict] = []
-            #             for field in fields:
-            #                 if not is_required_field(field):
-            #                     continue
-            #                 field_id: str = field.get("field_id", "")
-            #                 val: str | dict = v.get(field_id, "")
-            #                 if isinstance(val, str):
-            #                     if len(val.strip()) <= 0:
-            #                         error.append({"field_id": f"{field_id}_{i}", "message": validation_message})
-            #                 else:
-            #                     for key, value in val.items():
-            #                         if not value.strip():
-            #                             error.append(
-            #                                 {"field_id": f"{field_id}_{i}{key}", "message": validation_message}
-            #                             )
-            #             if any(error):
-            #                 errors.append(error)
-            #         if not any(errors):
-            #             errors = None
+                values, count = self._handle_delete(action, values, count, config["min_items"])
 
-            session_key_values = get_session_key_values(field_name)
-            session_key_errors = get_session_key_errors(field_name)
+            self._persist_to_session(request, field_name, values)
 
-            # Persist state in session
-            # Map values to the format expected by the component
-            # If values are already in internal format, keep them
-            formatted_values = []
-            for v in values:
-                if isinstance(v, dict) and "values" in v and "errors" in v:
-                    formatted_values.append(v)
-                else:
-                    formatted_values.append({"errors": [], "values": v})
-            request.session[session_key_values] = formatted_values
-
-            # Store errors in session so they can be shown after redirect
-            request.session[session_key_errors] = errors
-
-            # Always redirect back to the page that contains the component.
-            # This ensures that slots (which are defined in the page template)
-            # are correctly re-rendered.
             referer = request.META.get("HTTP_REFERER")
             if referer:
-                # If we're using hx-boost or HTMX redirect, we want to stay on the same page but refreshed.
                 return HttpResponseRedirect(referer)
             return HttpResponseRedirect(request.path)
+
+        def _get_field_name(self, request: HttpRequest) -> str | None:
+            for key in request.POST:
+                if key.endswith("__action"):
+                    return key[: -len("__action")].lower().strip()
+            return None
+
+        def _get_config(self, request: HttpRequest, field_name: str) -> dict[str, Any]:
+            try:
+                return {
+                    "count": int(request.POST.get(f"{field_name}__count", 1)),
+                    "max_items": int(request.POST.get(f"{field_name}__max", 10)),
+                    "min_items": int(request.POST.get(f"{field_name}__min", 1)),
+                }
+            except (ValueError, TypeError):
+                return {"count": 1, "max_items": 10, "min_items": 1}
+
+        def _extract_values_from_post(
+            self, request: HttpRequest, field_name: str, fields: list[AddMoreField], count: int
+        ) -> list[dict]:
+            values = []
+            for i in range(count):
+                item_values = {}
+                for field in fields:
+                    field_id = field.get("field_id")
+                    if not field_id:
+                        continue
+                    field_value_names = field.get("field_value_names")
+                    field_id_index = f"{field_id}_{i}"
+
+                    if not field_value_names:
+                        item_values[field_id] = request.POST.get(field_id_index, "")
+                    else:
+                        item_values[field_id] = {
+                            name: request.POST.get(f"{field_id_index}{name}", "") for name in field_value_names
+                        }
+                values.append({"errors": [], "values": item_values})
+            return values
+
+        def _handle_delete(self, action: str, values: list[dict], count: int, min_items: int) -> tuple[list[dict], int]:
+            try:
+                idx = int(action.split("__")[1])
+                if count > min_items and idx < len(values):
+                    values.pop(idx)
+                    count -= 1
+            except (IndexError, ValueError):
+                pass
+            return values, count
+
+        def _persist_to_session(self, request: HttpRequest, field_name: str, values: list[dict]) -> None:
+            session_key_values = get_session_key_values(field_name)
+            session_key_errors = get_session_key_errors(field_name)
+            request.session[session_key_values] = values
+            request.session[session_key_errors] = None  # Clear errors on add/delete
 
 
 @register("plos_add_more_item")
@@ -402,32 +402,53 @@ class AddMoreItem(PLOSBaseComponent):
     A child component for Add More items.
     """
 
+    class Kwargs(NamedTuple):
+        index: int | str
+        display_index: int | str
+        fields: list[AddMoreField]
+        field_name: str
+        item_label: str
+        heading_level: int
+        delete_label: str
+        show_delete: bool
+        htmx_url: str
+        is_first: bool = False
+        errors: dict | None = None
+        value: dict | None = None
+
+    Args = Empty
+
+    class Slots(NamedTuple):
+        item_content: Any
+
+    class TemplateData(NamedTuple):
+        index: int | str
+        display_index: int | str
+        fields: list[AddMoreField]
+        field_name: str
+        item_label: str
+        heading_level: int
+        delete_label: str
+        show_delete: bool
+        htmx_url: str
+        is_first: bool
+        errors: dict
+        value: dict
+
     template_name = "add_more_item.html"
 
-    def get_context_data(
-        self,
-        index: int | str,
-        display_index: int | str,
-        fields: list[AddMoreField],
-        field_name: str,
-        item_label: str,
-        heading_level: int,
-        delete_label: str,
-        show_delete: bool,
-        htmx_url: str,
-        errors: dict | None = None,
-        value: dict | None = None,
-    ):
-        return {
-            "index": index,
-            "display_index": display_index,
-            "fields": fields,
-            "field_name": field_name,
-            "item_label": item_label,
-            "heading_level": heading_level,
-            "delete_label": delete_label,
-            "show_delete": show_delete,
-            "htmx_url": htmx_url,
-            "errors": errors or {},
-            "value": value or {},
-        }
+    def get_template_data(self, args, kwargs: Kwargs, slots, context) -> TemplateData:
+        return AddMoreItem.TemplateData(
+            index=kwargs.index,
+            display_index=kwargs.display_index,
+            fields=kwargs.fields,
+            field_name=kwargs.field_name,
+            item_label=kwargs.item_label,
+            heading_level=kwargs.heading_level,
+            delete_label=kwargs.delete_label,
+            show_delete=kwargs.show_delete,
+            htmx_url=kwargs.htmx_url,
+            is_first=kwargs.is_first,
+            errors=kwargs.errors or {},
+            value=kwargs.value or {},
+        )
