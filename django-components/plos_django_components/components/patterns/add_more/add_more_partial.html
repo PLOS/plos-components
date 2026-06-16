@@ -2,7 +2,9 @@
 
 <form method="post" action="{{ htmx_url }}" novalidate>
     {% csrf_token %}
-    <div id="{{ field_name }}-add-more" class="plos-add-more" data-add-more>
+    <div id="{{ field_name }}-add-more" class="plos-add-more" data-add-more
+         data-last-action="{% if last_action %}{{ last_action }}{% endif %}"
+         data-last-index="{% if last_index is not None %}{{ last_index }}{% endif %}">
     {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
 
     <input type="hidden" name="{{ field_name }}__count" value="{{ count }}">
@@ -96,5 +98,43 @@
             {% endfor %}
         {% endcomponent %}
     </div>
+    <script>
+        (function() {
+            var container = document.getElementById('{{ field_name }}-add-more');
+            if (!container) return;
+
+            var lastAction = container.getAttribute('data-last-action');
+            var lastIndex = container.getAttribute('data-last-index');
+
+            if (!lastAction) return;
+
+            if (lastAction === 'add') {
+                var newItem = document.getElementById('{{ field_name }}-item-' + lastIndex);
+                if (newItem) {
+                    var firstInput = newItem.querySelector('input, textarea, select');
+                    if (firstInput) {
+                        firstInput.focus();
+                    }
+                }
+            } else if (lastAction.startsWith('delete__')) {
+                var nextItem = document.getElementById('{{ field_name }}-item-' + lastIndex);
+                if (nextItem) {
+                    var heading = nextItem.querySelector('h1, h2, h3, h4, h5, h6');
+                    if (heading) {
+                        heading.setAttribute('tabindex', '-1');
+                        heading.focus();
+                    } else {
+                        var firstInput = nextItem.querySelector('input, textarea, select');
+                        if (firstInput) firstInput.focus();
+                    }
+                } else {
+                    var addButton = container.querySelector('[value="add"]');
+                    if (addButton) {
+                        addButton.focus();
+                    }
+                }
+            }
+        })();
+    </script>
     </div>
 </form>

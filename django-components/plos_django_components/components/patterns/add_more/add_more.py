@@ -165,6 +165,8 @@ class AddMore(PLOSBaseComponent):
         validation_message: str
         show_save_button: bool
         additional_buttons: list[Button]
+        last_action: str | None
+        last_index: int | None
 
     template_name = "add_more_partial.html"
 
@@ -195,6 +197,12 @@ class AddMore(PLOSBaseComponent):
             # Pop errors so they don't persist on next refresh
             if not errors:
                 errors = request.session.pop(session_key_errors, None)
+
+            last_action = request.session.pop(f"add_more_{kwargs.field_name}_last_action", None)
+            last_index = request.session.pop(f"add_more_{kwargs.field_name}_last_index", None)
+        else:
+            last_action = None
+            last_index = None
 
         if values is None:
             values = [{"errors": [], "values": {}} for _ in range(kwargs.count or kwargs.min_items)]
@@ -253,6 +261,8 @@ class AddMore(PLOSBaseComponent):
             validation_message=kwargs.validation_message or f"Enter a {kwargs.item_label}",
             show_save_button=kwargs.show_save_button,
             additional_buttons=kwargs.additional_buttons or [],
+            last_action=last_action,
+            last_index=last_index,
         )
 
     def _format_values(self, values: Any, count: int | None, min_items: int) -> tuple[list[dict], list[dict] | None]:
@@ -328,13 +338,19 @@ class AddMore(PLOSBaseComponent):
             values = self._extract_values_from_post(request, field_name, fields, config["count"])
 
             count = config["count"]
+            last_index = None
             if action == "add" and count < config["max_items"]:
+                last_index = count  # Index of the new item
                 count += 1
                 values.append({"errors": [], "values": {}})
             elif action.startswith("delete__"):
+                try:
+                    last_index = int(action.split("__")[1])
+                except (IndexError, ValueError):
+                    pass
                 values, count = self._handle_delete(action, values, count, config["min_items"])
 
-            self._persist_to_session(request, field_name, values)
+            self._persist_to_session(request, field_name, values, action, last_index)
 
             referer = request.META.get("HTTP_REFERER")
             if referer:
@@ -389,11 +405,23 @@ class AddMore(PLOSBaseComponent):
                 pass
             return values, count
 
-        def _persist_to_session(self, request: HttpRequest, field_name: str, values: list[dict]) -> None:
+        def _persist_to_session(
+            self,
+            request: HttpRequest,
+            field_name: str,
+            values: list[dict],
+            last_action: str | None = None,
+            last_index: int | None = None,
+        ) -> None:
             session_key_values = get_session_key_values(field_name)
             session_key_errors = get_session_key_errors(field_name)
             request.session[session_key_values] = values
             request.session[session_key_errors] = None  # Clear errors on add/delete
+
+            if last_action:
+                request.session[f"add_more_{field_name}_last_action"] = last_action
+            if last_index is not None:
+                request.session[f"add_more_{field_name}_last_index"] = last_index
 
 
 @register("plos_add_more_item")
