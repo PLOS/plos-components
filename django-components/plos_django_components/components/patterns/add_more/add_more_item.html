@@ -15,7 +15,8 @@
                 hx_target="#{{ field_name }}-add-more"
                 hx_select="#{{ field_name }}-add-more"
                 hx_swap="outerHTML"
-                hx_include="#{{ field_name }}-add-more" %}
+                hx_include="#{{ field_name }}-add-more"
+                hx_disabled_elt="#{{ field_name }}-add-more button" %}
             {{ delete_label }} {{ item_label }} {{ display_index }}
         {% endcomponent %}
   {% endif %}

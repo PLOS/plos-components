@@ -57,6 +57,7 @@
                         hx_select="#{{ field_name }}-add-more"
                         hx_swap="outerHTML"
                         hx_include="#{{ field_name }}-add-more"
+                        hx_disabled_elt="#{{ field_name }}-add-more button"
                         form_action="{{ htmx_url }}" %}
                     {{ add_label }} {{ item_label }}
                 {% endcomponent %}
@@ -75,6 +76,7 @@
                         hx_select="#{{ field_name }}-add-more"
                         hx_swap="outerHTML"
                         hx_include="#{{ field_name }}-add-more"
+                        hx_disabled_elt="#{{ field_name }}-add-more button"
                         form_action="{{ htmx_url }}" %}
                     {{ save_label }}
                 {% endcomponent %}
@@ -92,6 +94,7 @@
                         hx_target=additional_button.hx_target
                         hx_select=additional_button.hx_select
                         hx_swap=additional_button.hx_swap
+                        hx_disabled_elt="#{{ field_name }}-add-more button"
                         hx_include=(additional_button.get("hx_include") if additional_button.get("hx_include") is not None else "#{{ field_name }}-add-more") %}
                     {% if additional_button.label %}{{ additional_button.label }}{% endif %}
                 {% endcomponent %}
