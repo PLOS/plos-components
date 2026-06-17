@@ -154,10 +154,53 @@ def error_summary_page(request):
     ]
     return render(request, "design_system/components/error_summary.html", ctx)
 
+def _whole_number_error(request, field_name, label, anchor):
+    """Validate a posted step-comparison field, returning PLOS-style errors.
+
+    Errors are only produced once the field has actually been submitted, so
+    nothing shows on the initial GET. Each form posts only its own field, so a
+    field not present in `request.POST` is treated as not yet submitted.
+    """
+    if request.method != "POST" or field_name not in request.POST:
+        return []
+    value = request.POST.get(field_name, "").strip()
+    try:
+        number = float(value)
+    except ValueError:
+        return [{"label": label, "message": "Enter a number", "anchor": anchor}]
+    if number != int(number):
+        return [{"label": label, "message": "Enter a whole number", "anchor": anchor}]
+    return []
+
+
+def text_input_page(request):
+    ctx = _nav_context_components(
+        request, active_section="components", active_slug="text-input"
+    )
+    # Echo the posted value back into each field; both start empty so that
+    # typing marks the value dirty (browsers skip step validation until a
+    # number field has been user-modified).
+    ctx["age_step_one_value"] = request.POST.get("age_step_one", "")
+    ctx["age_step_any_value"] = request.POST.get("age_step_any", "")
+    # The default-step input can reach the backend and render on-brand PLOS errors,
+    # whereas the `step="1"` input is blocked by the browser before it can post.
+    ctx["age_step_one_errors"] = _whole_number_error(
+        request, "age_step_one", 'Age (step="1")', "id_age_step_one"
+    )
+    ctx["age_step_any_errors"] = _whole_number_error(
+        request, "age_step_any", "Age (default step)", "id_age_step_any"
+    )
+    # Combined summary for the number section.
+    ctx["number_errors"] = ctx["age_step_one_errors"] + ctx["age_step_any_errors"]
+    return render(request, "design_system/components/text_input.html", ctx)
+
+
 def design_system_component(request, component):
     slug = component.replace("-", "_")
     if component == "error-summary":
         return error_summary_page(request)
+    if component == "text-input":
+        return text_input_page(request)
     return render(
         request,
         f"design_system/components/{slug}.html",
