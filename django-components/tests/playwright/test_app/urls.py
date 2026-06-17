@@ -8,4 +8,5 @@ urlpatterns = [
     path("patterns/add-more/", views.add_more_view, name="add_more"),
     path("patterns/add-more/patent-example/", views.patent_example_view, name="patent_example"),
     path("patterns/add-more/htmx/", AddMore.as_view(), name="add_more_htmx"),
+    path("components/text-input/validation/", views.text_input_validation_view, name="text_input_validation"),
 ]
