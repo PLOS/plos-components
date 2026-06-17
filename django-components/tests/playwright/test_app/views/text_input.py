@@ -51,3 +51,36 @@ def text_input_validation_view(request):
                 pass
 
     return render(request, "playwright_test_app/text_input/text_input_validation.html", context)
+
+
+def text_input_types_view(request):
+    success_msg = ""
+    if request.method == "POST":
+        items = [f"{k}: {v}" for k, v in request.POST.items() if k != "csrfmiddlewaretoken"]
+        success_msg = "Submitted: " + ", ".join(items)
+    return render(request, "playwright_test_app/text_input/text_input_types.html", {"success_msg": success_msg})
+
+
+def text_input_attributes_view(request):
+    success_msg = ""
+    if request.method == "POST":
+        items = [f"{k}: {v}" for k, v in request.POST.items() if k != "csrfmiddlewaretoken"]
+        success_msg = "Submitted: " + ", ".join(items)
+    return render(request, "playwright_test_app/text_input/text_input_attributes.html", {"success_msg": success_msg})
+
+
+def text_input_visual_view(request):
+    return render(request, "playwright_test_app/text_input/text_input_visual.html")
+
+
+def text_input_errors_view(request):
+    errors = ["This field is required", "Invalid format"]
+    field_errors = [
+        {"label": "Email address", "message": "This field is required", "anchor": "id_email"},
+        {"label": "Email address", "message": "Invalid format", "anchor": "id_email"},
+    ]
+    return render(
+        request,
+        "playwright_test_app/text_input/text_input_errors.html",
+        {"errors": errors, "field_errors": field_errors},
+    )
