@@ -25,9 +25,19 @@ class TextInput(PLOSBaseComponent):
         disabled: bool = False,
         maxlength: int | None = None,
         minlength: int | None = None,
+        step: str | None = None,
         prefix: str | None = None,
         suffix: str | None = None,
     ):
+        # Default `step` attribute to "any" for number inputs if not provided.
+        # This removes browser validation as the default for step is `1`,
+        # which meant that when users tried to submit decimal values in number inputs,
+        # they would see non-PLOS error messages from the browser.
+        if input_type == "number":
+            step = step or "any"
+        else:
+            step = None
+
         return {
             "label": label,
             "label_class": label_class_from_size(label_size),
@@ -37,6 +47,7 @@ class TextInput(PLOSBaseComponent):
             "disabled": disabled,
             "maxlength": maxlength,
             "minlength": minlength,
+            "step": step,
             "placeholder": placeholder,
             "required": required,
             "hint": hint,

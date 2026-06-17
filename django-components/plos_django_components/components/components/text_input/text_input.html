@@ -22,7 +22,8 @@
                aria-describedby="{% if hint %}{{ name }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ name }}-error{% endif %}"
                {% endif %}
                {% if maxlength %}maxlength={{ maxlength }}{% endif %}
-               {% if minlength %}minlength={{ minlength }}{% endif %}>
+               {% if minlength %}minlength={{ minlength }}{% endif %}
+               {% if step %}step="{{ step }}"{% endif %}>
         {% if suffix %}
         <div class="govuk-input__suffix" aria-hidden="true">{{ suffix }}</div>
         {% endif %}
