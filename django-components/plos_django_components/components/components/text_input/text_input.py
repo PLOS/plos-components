@@ -38,6 +38,14 @@ class TextInput(PLOSBaseComponent):
         else:
             step = None
 
+        # Normalize errors to a list of dictionaries for the error summary component
+        normalized_errors = []
+        for error in errors or []:
+            if isinstance(error, str):
+                normalized_errors.append({"message": error})
+            else:
+                normalized_errors.append(error)
+
         return {
             "label": label,
             "label_class": label_class_from_size(label_size),
@@ -51,7 +59,7 @@ class TextInput(PLOSBaseComponent):
             "placeholder": placeholder,
             "required": required,
             "hint": hint,
-            "errors": errors or [],
+            "errors": normalized_errors,
             "id": field_id or f"id_{name}",
             "prefix": prefix,
             "suffix": suffix,

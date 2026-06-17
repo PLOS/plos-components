@@ -1,14 +1,3 @@
-import os
-
-# Mock django settings before imports
-from django.conf import settings
-
-if not settings.configured:
-    settings.configure(
-        SECRET_KEY="fake-key",
-        ICON_FONT="bootstrap",
-        BASE_DIR=os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")),
-    )
 
 from django.http import HttpRequest, QueryDict
 from hypothesis import given
