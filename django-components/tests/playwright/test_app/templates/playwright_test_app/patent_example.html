@@ -1,0 +1,55 @@
+{% load component_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Patent Example Test</title>
+    {% component_css_dependencies %}
+</head>
+<body>
+    <h1>Patent Submissions</h1>
+
+    {% if saved_data %}
+        <div id="saved-data">
+            <h2>Saved Data</h2>
+            <ul>
+            {% for item in saved_data %}
+                <li class="saved-item">
+                    Number: <span class="saved-number">{{ item.patent_number }}</span>,
+                    Description: <span class="saved-description">{{ item.patent_description }}</span>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="post" action="">
+        {% csrf_token %}
+        {% component "plos_add_more"
+                field_name="patents"
+                item_label="patent"
+                fields='[{"field_id": "patent_number"}, {"field_id": "patent_description"}]'
+                show_save_button=False
+                additional_buttons=additional_buttons
+                values=values
+        %}
+            {% fill "item" data="slot_data" %}
+                {% component "plos_text_input"
+                        label="Patent number"
+                        name="patent_number_"|add:slot_data.index
+                        field_id="patent_number_"|add:slot_data.index
+                        value=slot_data.value.patent_number
+                /%}
+                {% component "plos_textarea"
+                        label="Patent description"
+                        name="patent_description_"|add:slot_data.index
+                        field_id="patent_description_"|add:slot_data.index
+                        value=slot_data.value.patent_description
+                /%}
+            {% endfill %}
+        {% endcomponent %}
+    </form>
+
+    {% component_js_dependencies %}
+</body>
+</html>

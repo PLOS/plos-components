@@ -1,2 +1,8 @@
 [tool.uv.workspace]
 members = ["django-components", "design_system"]
+
+[dependency-groups]
+dev = [
+    "playwright>=1.60.0",
+    "pytest-playwright>=0.8.0",
+]

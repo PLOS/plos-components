@@ -1,0 +1,65 @@
+{% extends "plos_submission_manager/base.html" %}
+{% load ds_filters %}
+
+{% block title %}
+  Add More - Playwright Test
+{% endblock title %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">Add More - Playwright Test</h1>
+
+    {% component "plos_add_more"
+        field_name="patents"
+        item_label="patent"
+        fields=[{"field_id": "patent_number", "required": True},
+        {"field_id": "patent_date", "field_value_names":["-day", "-month", "-year"], "required": True}]
+        max_items=10
+        htmx_url="/patterns/add-more/htmx/"
+        heading_level=2
+        min_items=1
+        required=True
+        validation_message="Enter a patent number or application"
+        show_save_button=True
+        save_label="Continue"
+        additional_buttons=[{"label":"Save and return",
+        "field_name": "save_and_return__action",
+        "action": "secondary",
+        "value": ""}]
+    %}
+        {% fill "item" data="slot_data" %}
+            {% component "plos_text_input"
+                    label="Patent reference or number"
+                    hint="The official number or reference used to identify the patent or application"
+                    name="patent_number_{{ slot_data.index }}"
+                    field_id="patent_number_{{ slot_data.index }}"
+                    errors=slot_data.errors
+                    value="{{ slot_data.value|plos_dictionary_fetch:'patent_number' }}" only %}
+            {% endcomponent %}
+            {% component "plos_date_input"
+                    use_field_value_names=True
+                    legend="Patent application filing date"
+                    hint="The date the patent application was first submitted. For example, 27 3 2025."
+                    field_id="patent_date_{{ slot_data.index }}"
+                    errors=slot_data.errors
+                    value="{{ slot_data.value|plos_dictionary_fetch:'patent_date' }}" only %}
+            {% endcomponent %}
+        {% endfill %}
+    {% endcomponent %}
+
+    {% with non_empty=patent_values|ds_filter_nonempty %}
+      {% if non_empty %}
+        <div class="govuk-inset-text" id="saved-patents" style="margin-top: 1.5rem;">
+          <h3 class="govuk-heading-s">Saved patents</h3>
+          <ul class="govuk-list govuk-list--bullet">
+            {% for patent in non_empty %}
+              <li>{{ patent }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endwith %}
+{% endblock content %}
+
+{% block js %}
+    {% include "admin/core/partials/htmx.html" %}
+{% endblock js %}

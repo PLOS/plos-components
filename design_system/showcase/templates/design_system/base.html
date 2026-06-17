@@ -108,11 +108,27 @@
                            {% endif %}">
                                     <a href="{% url 'design_system_pattern' item.slug %}"
                                        class="govuk-link govuk-link--no-visited-state govuk-body-s ds-sidebar__link
-                            {% if item.slug == active_slug %}
+                            {% if item.slug == active_slug and not active_subslug %}
                               ds-sidebar__link--active
                             {% endif %}">
                                         {{ item.label }}
                                     </a>
+                                    {% if item.children %}
+                                        <ul class="govuk-list ds-sidebar__subnav">
+                                            {% for child in item.children %}
+                                                <li class="ds-sidebar__subitem">
+                                                    {# Hardcoded for now as we only have add-more subpages #}
+                                                    <a href="{% url 'add_more_implementation' %}"
+                                                       class="govuk-link govuk-link--no-visited-state govuk-body-s ds-sidebar__sublink
+                                    {% if child.slug == active_subslug %}
+                                      ds-sidebar__sublink--active
+                                    {% endif %}">
+                                                        {{ child.label }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
                                 </li>
                             {% endfor %}
                         {% endif %}

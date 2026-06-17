@@ -1,0 +1,132 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}
+  Add More Implementation - PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+    {% component "plos_heading" level=1 %}
+        Implementing the Add More Pattern
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}
+        The <code>plos_add_more</code> pattern is a complex component that manages a dynamic list of form items.
+        It supports both standard form submissions and HTMX-powered partial updates for a smoother user experience.
+    {% endcomponent %}
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    {% component "plos_heading" level=2 %}
+        1. Template Usage
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}
+        To use the pattern in your template, you need to call the <code>plos_add_more</code> component and provide an <code>item</code> slot.
+        The <code>item</code> slot is used to render each individual item in the list.
+    {% endcomponent %}
+
+    <code class="ds-code-block">{% verbatim %}{% component "plos_add_more"
+    field_name="patents"
+    item_label="patent"
+    fields='[{"field_id": "patent_number", "required": True}]'
+    max_items=10
+    htmx_url="/patterns/add-more/htmx/"
+%}
+    {% fill "item" data="slot_data" %}
+        {% component "plos_text_input"
+            label="Patent reference or number"
+            name="patent_number_{{ slot_data.index }}"
+            field_id="patent_number_{{ slot_data.index }}"
+            errors=slot_data.errors
+            value="{{ slot_data.value|plos_dictionary_fetch:'patent_number' }}"
+        %}
+        {% endcomponent %}
+    {% endfill %}
+{% endcomponent %}{% endverbatim %}</code>
+
+    {% component "plos_heading" level=3 %}
+        Slot Data
+    {% endcomponent %}
+    {% component "plos_text_box" %}
+        The <code>item</code> slot receives a <code>slot_data</code> object with the following properties:
+        <ul class="govuk-list govuk-list--bullet">
+            <li><code>index</code>: The zero-based index of the current item (as a string).</li>
+            <li><code>is_first</code>: A boolean indicating if this is the first item in the list.</li>
+            <li><code>errors</code>: A dictionary of errors for the current item.</li>
+            <li><code>value</code>: A dictionary of values for the current item.</li>
+        </ul>
+    {% endcomponent %}
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    {% component "plos_heading" level=2 %}
+        2. Handling HTMX Requests
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}
+        The component includes a built-in Django View to handle add and delete actions via HTMX.
+        You should wire this view in your <code>urls.py</code>:
+    {% endcomponent %}
+
+    <code class="ds-code-block">from plos_django_components.components.patterns.add_more.add_more import AddMore
+
+urlpatterns = [
+    # ...
+    path("patterns/add-more/htmx/", AddMore.as_view(), name="add_more_htmx"),
+]</code>
+
+    {% component "plos_text_box" %}
+        The <code>htmx_url</code> parameter in the component call should match this URL.
+    {% endcomponent %}
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    {% component "plos_heading" level=2 %}
+        3. Initial Values and State
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}
+        The component manages its state using the Django session. To provide initial values (e.g., from a database),
+        you can pass a list of dictionaries to the <code>values</code> parameter.
+    {% endcomponent %}
+
+    <code class="ds-code-block">initial_values = [
+    {"patent_number": "US1234567"},
+    {"patent_number": "EP9876543"},
+]
+
+{% verbatim %}{% component "plos_add_more"
+    field_name="patents"
+    values=initial_values
+%}{% endverbatim %}</code>
+
+    {% component "plos_text_box" %}
+        When the component is first rendered, it will populate the session with these values.
+        Subsequent interactions (add/delete) will update the session state.
+    {% endcomponent %}
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    {% component "plos_heading" level=2 %}
+        4. Retrieving Saved Data
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}
+        In your main view, when the form is submitted, you can retrieve the final list of values from the session
+        using the <code>get_session_key_values</code> helper function.
+    {% endcomponent %}
+
+    <code class="ds-code-block">from plos_django_components.components.patterns.add_more.add_more import get_session_key_values
+
+def my_view(request):
+    if request.method == "POST":
+        session_key = get_session_key_values("patents")
+        saved_data = request.session.get(session_key)
+        # Process saved_data...
+        # Don't forget to clear the session afterward if needed
+        del request.session[session_key]
+        return redirect("success_url")
+
+    return render(request, "my_template.html")</code>
+
+{% endblock ds_content %}

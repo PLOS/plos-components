@@ -27,7 +27,7 @@ def get_css() -> list[str | SafeString]:
     templates.append(primary_css)
 
     if override_css is not None:
-        if override_css is str:
+        if isinstance(override_css, str):
             templates.append(override_css)
         else:
             for template in override_css:
