@@ -1,5 +1,6 @@
 """
-An application which provides a number of components in alignment with [GovUK](https://design-system.service.gov.uk/) components.
+An application which provides a number of components in alignment with
+[GovUK](https://design-system.service.gov.uk/) components.
 """
 
 from django.apps import AppConfig

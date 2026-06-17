@@ -4,6 +4,7 @@ A component which renders an error summary.
 Use at the top of a form page to collect and display validation errors with
 anchor links to the affected fields.
 """
+
 from django_components import register
 
 from ..base.base_component import PLOSBaseComponent
@@ -43,9 +44,4 @@ class ErrorSummary(PLOSBaseComponent):
         compact: bool = False,
     ):
         safe_entries = entries or []
-        return {
-            "entries": safe_entries,
-            "title": title,
-            "has_entries": bool(safe_entries),
-            "compact": compact
-        }
+        return {"entries": safe_entries, "title": title, "has_entries": bool(safe_entries), "compact": compact}

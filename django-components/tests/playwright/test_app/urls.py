@@ -1,5 +1,4 @@
 from django.urls import path
-
 from plos_django_components.components.patterns.add_more.add_more import AddMore
 
 from .views import add_more, text_input

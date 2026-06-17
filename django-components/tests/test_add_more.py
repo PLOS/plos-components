@@ -1,9 +1,7 @@
-
 from django.http import HttpRequest, QueryDict
 from hypothesis import given
 from hypothesis import settings as hypothesis_settings
 from hypothesis import strategies as st
-
 from plos_django_components.components.patterns.add_more.add_more import (
     AddMore,
     any_field_required,

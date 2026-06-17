@@ -5,9 +5,7 @@ from . import views
 
 urlpatterns = [
     path("", views.design_system_index, name="design_system_index"),
-    path(
-        "styles/", views.design_system_styles_index, name="design_system_styles_index"
-    ),
+    path("styles/", views.design_system_styles_index, name="design_system_styles_index"),
     path(
         "styles/typography/<str:page>/",
         views.design_system_typography,

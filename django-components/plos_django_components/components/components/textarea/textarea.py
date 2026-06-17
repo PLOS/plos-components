@@ -9,8 +9,8 @@ from typing import Literal
 
 from django_components import register
 
-from ..base.base_component import PLOSBaseComponent
 from ....utils.govuk_helper import label_class_from_size
+from ..base.base_component import PLOSBaseComponent
 
 
 @register("plos_textarea")

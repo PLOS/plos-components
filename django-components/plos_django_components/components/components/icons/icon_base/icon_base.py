@@ -13,7 +13,6 @@ Examples:
 
 """
 
-
 from django_components import register
 
 from ...base.base_component import PLOSBaseComponent
@@ -54,22 +53,11 @@ class IconBase(PLOSBaseComponent):
     template_name = "icon_base.html"
 
     def get_context_data(  # noqa: D102
-            self,
-            size: str = "md",
-            display: str = "inline",
-            field_id: str | None = None
-        ):
+        self, size: str = "md", display: str = "inline", field_id: str | None = None
+    ):
         if size not in SIZE_MAP:
-            raise ValueError(
-                f"Invalid icon size '{size}': must be one of {', '.join(SIZE_MAP)}"
-            )
+            raise ValueError(f"Invalid icon size '{size}': must be one of {', '.join(SIZE_MAP)}")
         if display not in DISPLAY_MAP:
-            raise ValueError(
-                f"Invalid icon display '{display}': must be one of {', '.join(DISPLAY_MAP)}"
-            )
+            raise ValueError(f"Invalid icon display '{display}': must be one of {', '.join(DISPLAY_MAP)}")
 
-        return {
-            "size_px": SIZE_MAP[size],
-            "display_class": DISPLAY_MAP[display],
-            "field_id": field_id
-        }
+        return {"size_px": SIZE_MAP[size], "display_class": DISPLAY_MAP[display], "field_id": field_id}

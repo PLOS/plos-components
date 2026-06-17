@@ -36,17 +36,11 @@ TYPOGRAPHY_SUBPAGES = [
 ]
 
 
-def _nav_context_components(
-    request, active_section=None, active_slug=None, active_subslug=None
-):
-    return _nav_context(
-        request, active_section, active_slug, active_subslug, COMPONENTS
-    )
+def _nav_context_components(request, active_section=None, active_slug=None, active_subslug=None):
+    return _nav_context(request, active_section, active_slug, active_subslug, COMPONENTS)
 
 
-def _nav_context_patterns(
-    request, active_section=None, active_slug=None, active_subslug=None
-):
+def _nav_context_patterns(request, active_section=None, active_slug=None, active_subslug=None):
     return _nav_context(request, active_section, active_slug, active_subslug, PATTERNS)
 
 
@@ -92,9 +86,7 @@ def _nav_context(
 
 
 def _build_page_context(request):
-    return _nav_context_patterns(
-        request, active_section="patterns", active_slug="add-more"
-    )
+    return _nav_context_patterns(request, active_section="patterns", active_slug="add-more")
 
 
 def design_system_index(request):
@@ -143,9 +135,7 @@ def design_system_style(request, page):
 
 
 def add_more_htmx_page(request):
-    return render(
-        request, "design_system/patterns/add_more.html", _build_page_context(request)
-    )
+    return render(request, "design_system/patterns/add_more.html", _build_page_context(request))
 
 
 def add_more_implementation_page(request):
@@ -155,17 +145,18 @@ def add_more_implementation_page(request):
         active_slug="add-more",
         active_subslug="implementation",
     )
-    return render(
-        request, "design_system/patterns/add_more/implementation.html", ctx
-    )
+    return render(request, "design_system/patterns/add_more/implementation.html", ctx)
+
 
 def error_summary_page(request):
-    ctx = _nav_context_components(
-        request, active_section="components", active_slug="error-summary"
-    )
+    ctx = _nav_context_components(request, active_section="components", active_slug="error-summary")
     ctx["example_entries"] = [
         {"label": "Full name", "message": "Enter your full name", "anchor": "id_full_name"},
-        {"label": "Email address", "message": "Enter an email address in the correct format, like name@example.com", "anchor": "id_email"},
+        {
+            "label": "Email address",
+            "message": "Enter an email address in the correct format, like name@example.com",
+            "anchor": "id_email",
+        },
     ]
     ctx["full_name_errors"] = ["Enter your full name"]
     ctx["email_errors"] = ["Enter an email address in the correct format, like name@example.com"]
@@ -175,6 +166,7 @@ def error_summary_page(request):
         {"label": "Postcode", "message": "Enter a full UK postcode", "anchor": "id_postcode"},
     ]
     return render(request, "design_system/components/error_summary.html", ctx)
+
 
 def _whole_number_error(request, field_name, label, anchor):
     """Validate a posted step-comparison field, returning PLOS-style errors.
@@ -196,9 +188,7 @@ def _whole_number_error(request, field_name, label, anchor):
 
 
 def text_input_page(request):
-    ctx = _nav_context_components(
-        request, active_section="components", active_slug="text-input"
-    )
+    ctx = _nav_context_components(request, active_section="components", active_slug="text-input")
     # Echo the posted value back into each field; both start empty so that
     # typing marks the value dirty (browsers skip step validation until a
     # number field has been user-modified).
@@ -206,12 +196,8 @@ def text_input_page(request):
     ctx["age_step_any_value"] = request.POST.get("age_step_any", "")
     # The default-step input can reach the backend and render on-brand PLOS errors,
     # whereas the `step="1"` input is blocked by the browser before it can post.
-    ctx["age_step_one_errors"] = _whole_number_error(
-        request, "age_step_one", 'Age (step="1")', "id_age_step_one"
-    )
-    ctx["age_step_any_errors"] = _whole_number_error(
-        request, "age_step_any", "Age (default step)", "id_age_step_any"
-    )
+    ctx["age_step_one_errors"] = _whole_number_error(request, "age_step_one", 'Age (step="1")', "id_age_step_one")
+    ctx["age_step_any_errors"] = _whole_number_error(request, "age_step_any", "Age (default step)", "id_age_step_any")
     # Combined summary for the number section.
     ctx["number_errors"] = ctx["age_step_one_errors"] + ctx["age_step_any_errors"]
     return render(request, "design_system/components/text_input.html", ctx)
@@ -226,9 +212,7 @@ def design_system_component(request, component):
     return render(
         request,
         f"design_system/components/{slug}.html",
-        _nav_context_components(
-            request, active_section="components", active_slug=component
-        ),
+        _nav_context_components(request, active_section="components", active_slug=component),
     )
 
 
