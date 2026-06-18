@@ -1,0 +1,13 @@
+{% extends "plos_submission_manager/base.html" %}
+
+{% block title %}Text Input Errors Test{% endblock %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">Text Input Error States</h1>
+
+    {% component "plos_error_summary" entries=field_errors %}{% endcomponent %}
+
+    <div id="error-scenarios">
+        {% component "plos_text_input" label='Email address' name="email" field_id="id_email" errors=errors %}{% endcomponent %}
+    </div>
+{% endblock content %}

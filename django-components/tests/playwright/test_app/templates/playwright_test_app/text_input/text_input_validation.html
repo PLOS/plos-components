@@ -1,0 +1,37 @@
+{% extends "plos_submission_manager/base.html" %}
+
+{% block title %}Text Input Validation Test{% endblock %}
+
+{% block content %}
+    <div id="number-input-step-validation">
+        <h1 class="govuk-heading-xl">Number Input: step validation</h1>
+    </div>
+
+    {% if errors %}
+        {% component "plos_error_summary" entries=errors %}{% endcomponent %}
+    {% endif %}
+
+    <h2 class="govuk-heading-m">With step="1" (not recommended)</h2>
+    <form method="post" id="form-step-1">
+        {% csrf_token %}
+        {% component "plos_text_input" input_type="number" label='How many patents do you have?' name="age_step_one" field_id="id_age_step_one" value=age_step_one_value step="1" errors=age_step_one_errors %}
+        {% endcomponent %}
+        {% component "plos_button" button_type="submit" action="primary" field_id="submit-step-1" %}
+            {% fill "default" %}Submit Step 1{% endfill %}
+        {% endcomponent %}
+    </form>
+
+    <h2 class="govuk-heading-m">Without step (default "any", recommended)</h2>
+    <form method="post" id="form-step-any">
+        {% csrf_token %}
+        {% component "plos_text_input" input_type="number" label='How many patents do you have?' name="age_step_any" field_id="id_age_step_any" value=age_step_any_value errors=age_step_any_errors %}
+        {% endcomponent %}
+        {% component "plos_button" button_type="submit" action="primary" field_id="submit-step-any" %}
+            {% fill "default" %}Submit Step Any{% endfill %}
+        {% endcomponent %}
+    </form>
+
+    {% if success_msg %}
+        <div id="success-msg" class="govuk-body">{{ success_msg }}</div>
+    {% endif %}
+{% endblock content %}

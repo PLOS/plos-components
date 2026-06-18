@@ -1,0 +1,24 @@
+{% extends "plos_submission_manager/base.html" %}
+
+{% block title %}Text Input Types Test{% endblock %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">Text Input Types</h1>
+
+    <form method="post" id="form-types" novalidate>
+        {% csrf_token %}
+        {% component "plos_text_input" input_type="text" label='Text input' name="text_field" field_id="id_text" %}{% endcomponent %}
+        {% component "plos_text_input" input_type="email" label='Email input' name="email_field" field_id="id_email" %}{% endcomponent %}
+        {% component "plos_text_input" input_type="url" label='URL input' name="url_field" field_id="id_url" %}{% endcomponent %}
+        {% component "plos_text_input" input_type="password" label='Password input' name="password_field" field_id="id_password" %}{% endcomponent %}
+        {% component "plos_text_input" input_type="number" label='Number input' name="number_field" field_id="id_number" %}{% endcomponent %}
+
+        {% component "plos_button" button_type="submit" action="primary" field_id="submit-types" %}
+            {% fill "default" %}Submit Types{% endfill %}
+        {% endcomponent %}
+    </form>
+
+    {% if success_msg %}
+        <div id="success-msg" class="govuk-body">{{ success_msg }}</div>
+    {% endif %}
+{% endblock content %}

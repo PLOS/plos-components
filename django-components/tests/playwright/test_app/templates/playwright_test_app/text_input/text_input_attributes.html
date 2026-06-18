@@ -1,0 +1,27 @@
+{% extends "plos_submission_manager/base.html" %}
+
+{% block title %}Text Input Attributes Test{% endblock %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">Text Input Attributes</h1>
+
+    <form method="post" id="form-attributes">
+        {% csrf_token %}
+        <h2 class="govuk-heading-m">Required Field</h2>
+        {% component "plos_text_input" label='Required input' name="required_field" field_id="id_required" required=True %}{% endcomponent %}
+
+        <h2 class="govuk-heading-m">Disabled Field</h2>
+        {% component "plos_text_input" label='Disabled input' name="disabled_field" field_id="id_disabled" disabled=True value="Cannot change me" %}{% endcomponent %}
+
+        <h2 class="govuk-heading-m">Length Constraints</h2>
+        {% component "plos_text_input" label='Length constrained input' name="length_field" field_id="id_length" minlength=5 maxlength=10 %}{% endcomponent %}
+
+        {% component "plos_button" button_type="submit" action="primary" field_id="submit-attributes" %}
+            {% fill "default" %}Submit Attributes{% endfill %}
+        {% endcomponent %}
+    </form>
+
+    {% if success_msg %}
+        <div id="success-msg" class="govuk-body">{{ success_msg }}</div>
+    {% endif %}
+{% endblock content %}

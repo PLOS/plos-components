@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 
 def add_more_view(request):
-    return render(request, "playwright_test_app/add_more.html")
+    return render(request, "playwright_test_app/add_more/add_more.html")
 
 
 def patent_example_view(request):
@@ -60,4 +60,4 @@ def patent_example_view(request):
             }
         ],
     }
-    return render(request, "playwright_test_app/patent_example.html", context)
+    return render(request, "playwright_test_app/add_more/patent_example.html", context)

@@ -1,0 +1,25 @@
+{% extends "plos_submission_manager/base.html" %}
+
+{% block title %}Text Input Visual Test{% endblock %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">Text Input Visual Elements</h1>
+
+    <div id="visual-scenarios">
+        <h2 class="govuk-heading-m">Hint Text</h2>
+        {% component "plos_text_input" label='Input with hint' name="hint_field" field_id="id_hint" hint="This is a helpful hint" %}{% endcomponent %}
+
+        <h2 class="govuk-heading-m">Prefix and Suffix</h2>
+        {% component "plos_text_input" label='Input with prefix' name="prefix_field" field_id="id_prefix" prefix="£" %}{% endcomponent %}
+        {% component "plos_text_input" label='Input with suffix' name="suffix_field" field_id="id_suffix" suffix="per month" %}{% endcomponent %}
+        {% component "plos_text_input" label='Input with both' name="both_field" field_id="id_both" prefix="£" suffix="per month" %}{% endcomponent %}
+
+        <h2 class="govuk-heading-m">Label Sizes</h2>
+        {% component "plos_text_input" label='Small label' name="small_label" label_size="small" %}{% endcomponent %}
+        {% component "plos_text_input" label='Medium label' name="medium_label" label_size="medium" %}{% endcomponent %}
+        {% component "plos_text_input" label='Large label' name="large_label" label_size="large" %}{% endcomponent %}
+
+        <h2 class="govuk-heading-m">Placeholder</h2>
+        {% component "plos_text_input" label='Input with placeholder' name="placeholder_field" field_id="id_placeholder" placeholder="Enter your text here" %}{% endcomponent %}
+    </div>
+{% endblock content %}
