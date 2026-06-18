@@ -8,6 +8,7 @@ This module provides:
 from ast import literal_eval as ast_literal_eval
 from typing import Any, NamedTuple
 
+from django.core import signing
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.views import View
 from django_components import Empty, get_component_url, register
@@ -167,6 +168,8 @@ class AddMore(PLOSBaseComponent):
         additional_buttons: list[Button]
         last_action: str | None
         last_index: int | None
+        autofocus_add_button: bool
+        signed_fields: str
 
     template_name = "add_more_partial.html"
 
@@ -178,6 +181,8 @@ class AddMore(PLOSBaseComponent):
 
         session_key_values = get_session_key_values(kwargs.field_name)
         session_key_errors = get_session_key_errors(kwargs.field_name)
+
+        signed_fields = signing.dumps(fields)
 
         errors = kwargs.errors
 
@@ -198,8 +203,19 @@ class AddMore(PLOSBaseComponent):
             if not errors:
                 errors = request.session.pop(session_key_errors, None)
 
-            last_action = request.session.pop(f"add_more_{kwargs.field_name}_last_action", None)
-            last_index = request.session.pop(f"add_more_{kwargs.field_name}_last_index", None)
+            # Pop last action/index so they don't persist on next refresh.
+            # We use the request object to cache them for the duration of this request
+            # in case this component is rendered multiple times.
+            cache_key_action = f"_add_more_{kwargs.field_name}_last_action"
+            cache_key_index = f"_add_more_{kwargs.field_name}_last_index"
+            if hasattr(request, cache_key_action):
+                last_action = getattr(request, cache_key_action)
+                last_index = getattr(request, cache_key_index)
+            else:
+                last_action = request.session.pop(f"add_more_{kwargs.field_name}_last_action", None)
+                last_index = request.session.pop(f"add_more_{kwargs.field_name}_last_index", None)
+                setattr(request, cache_key_action, last_action)
+                setattr(request, cache_key_index, last_index)
         else:
             last_action = None
             last_index = None
@@ -217,14 +233,31 @@ class AddMore(PLOSBaseComponent):
         add_more_items = []
         for i in range(count):
             val = resolved_values[i] if i < len(resolved_values) else {"errors": [], "values": {}}
+
+            # Determine if this item should be autofocused (non-JS)
+            item_autofocus_input = False
+            item_autofocus_heading = False
+            if last_action == "add" and str(last_index) == str(i):
+                item_autofocus_input = True
+            elif last_action and last_action.startswith("delete__") and str(last_index) == str(i):
+                # If we deleted an item, focus the one that took its place
+                item_autofocus_heading = True
+
             add_more_items.append(
                 {
                     "index": str(i),
                     "is_first": i == 0,
                     "errors": val.get("errors", []),
                     "values": val.get("values", {}),
+                    "autofocus_input": item_autofocus_input,
+                    "autofocus_heading": item_autofocus_heading,
                 }
             )
+
+        autofocus_add_button = False
+        if last_action and last_action.startswith("delete__") and last_index is not None and int(last_index) >= count:
+            # If we deleted the last item and it wasn't replaced, focus the add button
+            autofocus_add_button = True
 
         htmx_url = kwargs.htmx_url
         if htmx_url is None:
@@ -263,6 +296,8 @@ class AddMore(PLOSBaseComponent):
             additional_buttons=kwargs.additional_buttons or [],
             last_action=last_action,
             last_index=last_index,
+            autofocus_add_button=autofocus_add_button,
+            signed_fields=signed_fields,
         )
 
     def _format_values(self, values: Any, count: int | None, min_items: int) -> tuple[list[dict], list[dict] | None]:
@@ -328,9 +363,14 @@ class AddMore(PLOSBaseComponent):
             if not field_name:
                 return HttpResponse("Missing action name", status=400)
 
-            fields = parse_literal(request.POST.get(f"{field_name}__fields"), [])
-            if not fields:
-                return HttpResponse("Missing or misconfigured field definitions", status=400)
+            signed_fields = request.POST.get(f"{field_name}__fields")
+            if not signed_fields:
+                return HttpResponse("Missing field definitions", status=400)
+
+            try:
+                fields = signing.loads(signed_fields)
+            except signing.BadSignature:
+                return HttpResponse("Invalid or tampered field definitions", status=400)
 
             action = request.POST.get(f"{field_name}__action", "")
             config = self._get_config(request, field_name)
@@ -349,6 +389,14 @@ class AddMore(PLOSBaseComponent):
                 except (IndexError, ValueError):
                     pass
                 values, count = self._handle_delete(action, values, count, config["min_items"])
+
+                # Also handle errors in session when deleting
+                session_key_errors = get_session_key_errors(field_name)
+                errors = request.session.get(session_key_errors)
+                if errors and isinstance(errors, list) and last_index is not None:
+                    if last_index < len(errors):
+                        errors.pop(last_index)
+                        request.session[session_key_errors] = errors
 
             self._persist_to_session(request, field_name, values, action, last_index)
 
@@ -414,9 +462,7 @@ class AddMore(PLOSBaseComponent):
             last_index: int | None = None,
         ) -> None:
             session_key_values = get_session_key_values(field_name)
-            session_key_errors = get_session_key_errors(field_name)
             request.session[session_key_values] = values
-            request.session[session_key_errors] = None  # Clear errors on add/delete
 
             if last_action:
                 request.session[f"add_more_{field_name}_last_action"] = last_action
@@ -443,6 +489,8 @@ class AddMoreItem(PLOSBaseComponent):
         is_first: bool = False
         errors: dict | None = None
         value: dict | None = None
+        autofocus_heading: bool = False
+        autofocus_input: bool = False
 
     Args = Empty
 
@@ -462,6 +510,8 @@ class AddMoreItem(PLOSBaseComponent):
         is_first: bool
         errors: dict
         value: dict
+        autofocus_heading: bool
+        autofocus_input: bool
 
     template_name = "add_more_item.html"
 
@@ -479,4 +529,6 @@ class AddMoreItem(PLOSBaseComponent):
             is_first=kwargs.is_first,
             errors=kwargs.errors or {},
             value=kwargs.value or {},
+            autofocus_heading=kwargs.autofocus_heading,
+            autofocus_input=kwargs.autofocus_input,
         )

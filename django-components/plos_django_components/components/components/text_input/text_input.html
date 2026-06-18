@@ -15,6 +15,7 @@
                name="{{ name }}"
                class="govuk-input{% if errors %} govuk-input--error{% endif %}"
                {% if disabled %}disabled{% endif %}
+               {% if autofocus %}autofocus{% endif %}
                {% if value %}value="{{ value }}" {% endif %}
                {% if placeholder %}placeholder="{{ placeholder }}" {% endif %}
                {% if required %}required{% endif %}

@@ -1,3 +1,4 @@
+from django.core import signing
 from django.http import HttpRequest, QueryDict
 from hypothesis import given
 from hypothesis import settings as hypothesis_settings
@@ -290,7 +291,7 @@ def test_view_post_add_action(field_name, count, min_items, max_items):
             f"{field_name.lower().strip()}__count": str(count),
             f"{field_name.lower().strip()}__min": str(min_items),
             f"{field_name.lower().strip()}__max": str(max_items),
-            f"{field_name.lower().strip()}__fields": str(fields),
+            f"{field_name.lower().strip()}__fields": signing.dumps(fields),
             "f1_0": "val0",
         }
     )
@@ -332,7 +333,7 @@ def test_view_post_delete_action(field_name, count, index_to_delete):
             f"{field_name.lower().strip()}__count": str(count),
             f"{field_name.lower().strip()}__min": "1",
             f"{field_name.lower().strip()}__max": "20",
-            f"{field_name.lower().strip()}__fields": str(fields),
+            f"{field_name.lower().strip()}__fields": signing.dumps(fields),
         }
     )
     # Fill with some values

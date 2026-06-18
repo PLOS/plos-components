@@ -33,6 +33,7 @@
                     name="patent_number_{{ slot_data.index }}"
                     field_id="patent_number_{{ slot_data.index }}"
                     errors=slot_data.errors
+                    autofocus=slot_data.autofocus
                     value="{{ slot_data.value|plos_dictionary_fetch:'patent_number' }}" only %}
             {% endcomponent %}
             {% component "plos_date_input"

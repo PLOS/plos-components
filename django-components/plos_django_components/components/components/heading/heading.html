@@ -1,1 +1,5 @@
-<{{ tag }} class="{{ css_class }}">{% slot "default" default %}{% endslot %}</{{ tag }}>
+<{{ tag }} class="{{ css_class }}"
+    {% if autofocus %}autofocus{% endif %}
+    {% if tabindex is not None %}tabindex="{{ tabindex }}"{% endif %}>
+    {% slot "default" default %}{% endslot %}
+</{{ tag }}>

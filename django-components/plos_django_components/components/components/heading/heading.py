@@ -20,7 +20,13 @@ class Heading(PLOSBaseComponent):
 
     template_name = "heading.html"
 
-    def get_context_data(self, level: int = 1, css_class: str | None = None):  # noqa: D102
+    def get_context_data(
+        self,
+        level: int = 1,
+        css_class: str | None = None,
+        autofocus: bool = False,
+        tabindex: int | str | None = None,
+    ):  # noqa: D102
         # Validate heading level
         if not 1 <= level <= 4:
             raise ValueError(f"Invalid heading level {level}: must be between 1 and 4")
@@ -35,4 +41,6 @@ class Heading(PLOSBaseComponent):
         return {
             "tag": f"h{level}",
             "css_class": css_class if css_class is not None else heading_classes[level],
+            "autofocus": autofocus,
+            "tabindex": tabindex,
         }
