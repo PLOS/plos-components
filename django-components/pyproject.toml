@@ -47,60 +47,6 @@ packages = ["plos_django_components"]
 type = "virtual"
 path = ".venv"
 
-[tool.ruff]
-# Exclude a variety of commonly ignored directories.
-exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".git-rewrite",
-    ".hg",
-    ".ipynb_checkpoints",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pyenv",
-    ".pytest_cache",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    ".vscode",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "site-packages",
-    "venv",
-    "*.html"
-]
-
-# Assume Python 3.10
-target-version = "py310"
-
-[tool.ruff.lint]
-select = [
-    "E",     # pycodestyle errors
-    "D",      # PyDoc Style
-    "W",     # pycodestyle warnings
-    "F",        # pyflakes
-    "I",           # isort
-    "B",  # flake8-bugbear
-    "C4",       # flake8-comprehensions
-    "UP",     # pyupgrade
-    "DJ",  # flake8-django
-]
-ignore = [
-    "E501",  # line-too-long
-    "D401",
-    "D200",
-    "D212",
-]
-
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "tests.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]

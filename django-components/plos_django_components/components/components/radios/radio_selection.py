@@ -12,8 +12,8 @@ from django.template import Context, Template
 from django.utils.safestring import mark_safe
 from django_components import register
 from django_components import types as t
-from ....utils.govuk_helper import legend_class_from_size
 
+from ....utils.govuk_helper import legend_class_from_size
 from ..base.base_component import PLOSBaseComponent
 
 

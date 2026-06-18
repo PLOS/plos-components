@@ -1,6 +1,7 @@
 """
 A component which renders a dynamic select dropdown.
 """
+
 from typing import Literal
 
 from django_components import register

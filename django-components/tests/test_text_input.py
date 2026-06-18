@@ -2,7 +2,6 @@ import pytest
 from django.template import Context, Template
 from hypothesis import given
 from hypothesis import strategies as st
-
 from plos_django_components.components.components.text_input.text_input import TextInput
 from plos_django_components.utils.govuk_helper import label_class_from_size
 

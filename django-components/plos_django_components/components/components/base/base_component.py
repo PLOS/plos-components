@@ -9,9 +9,7 @@ from django_components import Component
 from .icon_fonts.base_icon import IconFontSetting
 
 primary_css: str | None = getattr(settings, "GOV_UK_TEMPLATE_PRIMARY_CSS", None)
-override_css: list[str] | str | None = getattr(
-    settings, "GOV_UK_TEMPLATE_OVERRIDE_CSS", None
-)
+override_css: list[str] | str | None = getattr(settings, "GOV_UK_TEMPLATE_OVERRIDE_CSS", None)
 primary_js: str | None = getattr(settings, "GOV_UK_TEMPLATE_PRIMARY_JS", None)
 
 
