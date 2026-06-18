@@ -65,18 +65,20 @@ class AddMore(PLOSBaseComponent):
     """
     A dynamic add/delete item list with HTMX progressive enhancement.
 
-    Renders a list of repeating form items. Add and delete buttons submit to
-    `htmx_url` via HTMX, swapping only the outer `<div id="{name}-item-list">`
-    in place. Without HTMX the same buttons submit the surrounding form normally
-    and the page view handles everything.
+    Renders a list of repeating form items. It contains its own <form> element
+    and is designed to be the primary form on its page. Add and delete buttons
+    submit to `htmx_url` via HTMX, swapping the outer `<div id="{field_name}-add-more">`
+    in place. Without HTMX, the same buttons submit the component's form normally
+    and the page view handles the state.
 
     Each item is rendered via the `item` slot. Use `data="slot_data"` in the
     fill to access per-item variables:
 
-        slot_data.index  — zero-based item index as a str; use for id/name/for attributes
-        slot_data.is_first — True for the first item
-        slot_data.errors — dict keyed by base field name (e.g. slot_data.errors.patent,
-                           slot_data.errors.coi_description); empty dict when no errors
+        slot_data.index      — zero-based item index as a str; use for id/name/for attributes
+        slot_data.is_first    — True for the first item
+        slot_data.errors      — list of errors for this item; empty list when no errors
+        slot_data.value       — dict of current values for this item
+        slot_data.autofocus   — True if this item's first input should be autofocused
 
     HTML id convention: field ids in the fill must follow `{field_id}_{slot_data.index}`
     so the error summary anchors resolve correctly (the component appends _{i} to each
@@ -99,16 +101,31 @@ class AddMore(PLOSBaseComponent):
     linking to #{field_id}_{index}. Errors are rendered inside the HTMX swap
     container so they clear automatically on add/delete swaps.
 
-    Optional display parameters:
+    Arguments:
+        field_name (str): Unique name for the component, used for session keys and form prefixes.
+        item_label (str): Singular label for an item (e.g. "patent").
+        fields (list[AddMoreField] | str): List of field definitions for each item; can be a JSON string.
+        max_items (int, optional): Maximum number of items allowed. Defaults to 10.
+        min_items (int, optional): Minimum number of items allowed. Defaults to 1.
+        count (int, optional): Initial number of items to show; if omitted, defaults to min_items or values length.
+        htmx_url (str, optional): URL for HTMX add/delete requests. Defaults to "/patterns/add-more/htmx/".
+        item_label_plural (str, optional): Plural label for items. Defaults to {item_label}s.
+        errors (list[PLOSComponentError], optional): List of errors for each item. See Error format below.
+        values (list[AddMoreValue] | str, optional): List of initial values for each item.
+        validation_message (str, optional): Message shown in error summary for general errors.
+                                            Defaults to "Enter a {item_label}".
+        show_save_button (bool, optional): Whether to show a save button. Defaults to False.
+        save_label (str, optional): Label for the save button. Defaults to "Save".
+        additional_buttons (list[Button], optional): List of extra buttons to render after Add/Save.
+        required (bool, optional): Whether at least one item must be completed. Defaults to False.
+        heading_level (int, optional): Heading level for each item heading. Defaults to 2.
+        add_label (str, optional): Prefix for the add button label. Defaults to "Add another".
+        delete_label (str, optional): Prefix for the delete button label. Defaults to "Delete".
+        icon_size (str, optional): Size applied to both add and delete icons. Defaults to "xs".
+        add_icon (str, optional): Icon class for the add button; defaults to the global add_item icon setting.
+        delete_icon (str, optional): Icon class for the delete button; defaults to the global delete_item icon setting.
 
-        heading_level   heading level for each item heading (default: 2)
-        add_label       prefix for the add button label (default: "Add another")
-        delete_label    prefix for the delete button label (default: "Delete")
-        icon_size       size applied to both add and delete icons (default: "xs")
-        add_icon        icon class for the add button; defaults to the global add_item icon setting
-        delete_icon     icon class for the delete button; defaults to the global delete_item icon setting
-
-    See the design system page (components/add-more) for a full interactive demo
+    See the design system page (patterns/add-more) for a full interactive demo
     and implementation guide.
     """
 

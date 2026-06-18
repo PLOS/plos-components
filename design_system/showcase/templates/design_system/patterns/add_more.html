@@ -13,12 +13,12 @@
     {% component "plos_text_box" %}
       <code>plos_add_more</code> is built with HTMX to enable
       progressive enhancement. HTMX is not required. Without it, add and delete
-      buttons submit the surrounding form normally and the page view handles
-      everything. When HTMX.js is loaded, those same buttons instead POST to
+      buttons submit the form normally and the page view handles
+      the state. When HTMX.js is loaded, those same buttons instead POST to
       <code>htmx_url</code> and swap only the list container in place, without a
-        full page reload. The swap target is the component's outer
-        <code>&lt;div id="{name}-add-more"&gt;</code>; the endpoint must return
-        only that element.
+      full page reload. The swap target is the component's outer
+      <code>&lt;div id="{field_name}-add-more"&gt;</code>; the endpoint must return
+      only that element.
     {% endcomponent %}
 
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
