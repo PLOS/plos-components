@@ -38,6 +38,22 @@ def test_add_more_accessibility_initial_state(page: Page, live_server):
     # Wait for the pattern to be visible
     expect(page.locator(".plos-add-more")).to_be_visible()
 
+    # Use ARIA snapshot to verify the structure and accessibility labels
+    expect(page.locator(".plos-add-more")).to_match_aria_snapshot(
+        r"""
+        - heading "Patent 1" [level=2]
+        - textbox "Patent reference or number"
+        - group "Patent application filing date":
+          - spinbutton "Day"
+          - spinbutton "Month"
+          - spinbutton "Year"
+        - button "Add another patent"
+        - paragraph: /You can add \d+ more patents/
+        - button "Continue"
+        - button "Save and return"
+        """
+    )
+
     violations = run_accessibility_check(page)
     assert len(violations) == 0, f"Found {len(violations)} accessibility violations in initial state."
 

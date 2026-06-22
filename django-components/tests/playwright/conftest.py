@@ -1,6 +1,9 @@
 import os
 
 import pytest
+from hypothesis import Phase, settings
+
+settings.register_profile("failfast", phases=[Phase.explicit, Phase.reuse, Phase.generate])
 
 
 @pytest.fixture(scope="session", autouse=True)
