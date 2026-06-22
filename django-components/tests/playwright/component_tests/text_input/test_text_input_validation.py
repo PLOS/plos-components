@@ -1,3 +1,9 @@
+"""
+Playwright tests for TextInput validation, specifically focusing on the 'step' attribute.
+
+This module verifies that browser-level and server-level validation for numeric
+inputs behaves as expected, especially concerning decimal vs. whole numbers.
+"""
 import pytest
 from django.urls import reverse
 from hypothesis import HealthCheck, given, settings

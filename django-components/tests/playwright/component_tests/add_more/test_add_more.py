@@ -1,3 +1,10 @@
+"""
+Playwright end-to-end tests for the AddMore pattern.
+
+This module tests the interactivity, persistence, and validation of the
+plos_add_more component using a real browser via Playwright.
+"""
+
 import os
 
 import pytest

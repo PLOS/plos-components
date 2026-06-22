@@ -1,3 +1,9 @@
+"""
+Tests for the TextInput component.
+
+This module contains unit tests and property-based tests using Hypothesis to verify
+the logic and rendering of the plos_text_input component.
+"""
 import pytest
 from django.template import Context, Template
 from hypothesis import given

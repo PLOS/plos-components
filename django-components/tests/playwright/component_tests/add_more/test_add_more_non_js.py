@@ -1,3 +1,10 @@
+"""
+Playwright tests for the AddMore pattern with JavaScript disabled.
+
+This module verifies that the plos_add_more component remains fully functional
+without JavaScript, relying on standard form submissions.
+"""
+
 import os
 
 import pytest

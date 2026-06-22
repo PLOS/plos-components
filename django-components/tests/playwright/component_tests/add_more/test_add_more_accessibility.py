@@ -1,3 +1,10 @@
+"""
+Accessibility tests for the AddMore pattern.
+
+This module uses axe-core to verify that the plos_add_more component
+follows accessibility best practices and handles focus management correctly.
+"""
+
 import os
 
 import pytest

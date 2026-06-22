@@ -1,3 +1,10 @@
+"""
+Pytest configuration and global fixtures for Playwright tests.
+
+This module sets up the Django environment for Playwright tests and registers
+Hypothesis profiles.
+"""
+
 import os
 
 import pytest
