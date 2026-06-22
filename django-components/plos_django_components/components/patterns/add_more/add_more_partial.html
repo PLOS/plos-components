@@ -7,6 +7,9 @@
          data-last-index="{% if last_index is not None %}{{ last_index }}{% endif %}">
     {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
 
+    {# Unsigned structural inputs are kept for backward compatibility with external views #}
+    {# that might process this form. The AddMore component's own View ignores them #}
+    {# in favor of the signed_config below. #}
     <input type="hidden" name="{{ field_name }}__count" value="{{ count }}">
     <input type="hidden" name="{{ field_name }}__max" value="{{ max_items }}">
     <input type="hidden" name="{{ field_name }}__min" value="{{ min_items }}">
@@ -20,7 +23,7 @@
     <input type="hidden" name="{{ field_name }}__required" value="{{ required }}">
     <input type="hidden" name="{{ field_name }}__validation_message" value="{{ validation_message }}">
     <input type="hidden" name="{{ field_name }}__show_save_button" value="{{ show_save_button }}">
-    <input type="hidden" name="{{ field_name }}__fields" value="{{ signed_fields }}">
+    <input type="hidden" name="{{ field_name }}__config" value="{{ signed_config }}">
 
     {% for item in add_more_items %}
         {% component "plos_add_more_item"

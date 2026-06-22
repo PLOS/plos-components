@@ -186,7 +186,7 @@ class AddMore(PLOSBaseComponent):
         last_action: str | None
         last_index: int | None
         autofocus_add_button: bool
-        signed_fields: str
+        signed_config: str
 
     template_name = "add_more_partial.html"
 
@@ -198,8 +198,6 @@ class AddMore(PLOSBaseComponent):
 
         session_key_values = get_session_key_values(kwargs.field_name)
         session_key_errors = get_session_key_errors(kwargs.field_name)
-
-        signed_fields = signing.dumps(fields)
 
         errors = kwargs.errors
 
@@ -276,6 +274,15 @@ class AddMore(PLOSBaseComponent):
             # If we deleted the last item and it wasn't replaced, focus the add button
             autofocus_add_button = True
 
+        signed_config = signing.dumps(
+            {
+                "fields": fields,
+                "max_items": kwargs.max_items,
+                "min_items": kwargs.min_items,
+                "count": count,
+            }
+        )
+
         htmx_url = kwargs.htmx_url
         if htmx_url is None:
             try:
@@ -312,9 +319,9 @@ class AddMore(PLOSBaseComponent):
             show_save_button=kwargs.show_save_button,
             additional_buttons=kwargs.additional_buttons or [],
             last_action=last_action,
-            last_index=last_index,
-            autofocus_add_button=autofocus_add_button,
-            signed_fields=signed_fields,
+            last_index = last_index,
+            autofocus_add_button = autofocus_add_button,
+            signed_config = signed_config,
         )
 
     def _format_values(self, values: Any, count: int | None, min_items: int) -> tuple[list[dict], list[dict] | None]:
@@ -380,21 +387,21 @@ class AddMore(PLOSBaseComponent):
             if not field_name:
                 return HttpResponse("Missing action name", status=400)
 
-            signed_fields = request.POST.get(f"{field_name}__fields")
-            if not signed_fields:
-                return HttpResponse("Missing field definitions", status=400)
+            signed_config = request.POST.get(f"{field_name}__config")
+            if not signed_config:
+                return HttpResponse("Missing component configuration", status=400)
 
             try:
-                fields = signing.loads(signed_fields)
-            except signing.BadSignature:
-                return HttpResponse("Invalid or tampered field definitions", status=400)
+                config = signing.loads(signed_config)
+                fields = config["fields"]
+            except (signing.BadSignature, KeyError):
+                return HttpResponse("Invalid or tampered component configuration", status=400)
 
             action = request.POST.get(f"{field_name}__action", "")
-            config = self._get_config(request, field_name)
-
-            values = self._extract_values_from_post(request, field_name, fields, config["count"])
 
             count = config["count"]
+            values = self._extract_values_from_post(request, field_name, fields, count, config["max_items"])
+
             last_index = None
             if action == "add" and count < config["max_items"]:
                 last_index = count  # Index of the new item
@@ -428,21 +435,14 @@ class AddMore(PLOSBaseComponent):
                     return key[: -len("__action")].lower().strip()
             return None
 
-        def _get_config(self, request: HttpRequest, field_name: str) -> dict[str, Any]:
-            try:
-                return {
-                    "count": int(request.POST.get(f"{field_name}__count", 1)),
-                    "max_items": int(request.POST.get(f"{field_name}__max", 10)),
-                    "min_items": int(request.POST.get(f"{field_name}__min", 1)),
-                }
-            except (ValueError, TypeError):
-                return {"count": 1, "max_items": 10, "min_items": 1}
 
         def _extract_values_from_post(
-            self, request: HttpRequest, field_name: str, fields: list[AddMoreField], count: int
+            self, request: HttpRequest, field_name: str, fields: list[AddMoreField], count: int, max_items: int
         ) -> list[dict]:
             values = []
-            for i in range(count):
+            # Safety: cap the iteration by max_items to prevent DoS via massive count
+            safe_count = min(count, max_items)
+            for i in range(safe_count):
                 item_values = {}
                 for field in fields:
                     field_id = field.get("field_id")

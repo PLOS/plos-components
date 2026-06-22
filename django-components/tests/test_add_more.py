@@ -294,10 +294,14 @@ def test_view_post_add_action(field_name, count, min_items, max_items):
     post_data.update(
         {
             f"{field_name.lower().strip()}__action": "add",
-            f"{field_name.lower().strip()}__count": str(count),
-            f"{field_name.lower().strip()}__min": str(min_items),
-            f"{field_name.lower().strip()}__max": str(max_items),
-            f"{field_name.lower().strip()}__fields": signing.dumps(fields),
+            f"{field_name.lower().strip()}__config": signing.dumps(
+                {
+                    "fields": fields,
+                    "count": count,
+                    "min_items": min_items,
+                    "max_items": max_items,
+                }
+            ),
             "f1_0": "val0",
         }
     )
@@ -336,10 +340,14 @@ def test_view_post_delete_action(field_name, count, index_to_delete):
     post_data.update(
         {
             f"{field_name.lower().strip()}__action": f"delete__{index_to_delete}",
-            f"{field_name.lower().strip()}__count": str(count),
-            f"{field_name.lower().strip()}__min": "1",
-            f"{field_name.lower().strip()}__max": "20",
-            f"{field_name.lower().strip()}__fields": signing.dumps(fields),
+            f"{field_name.lower().strip()}__config": signing.dumps(
+                {
+                    "fields": fields,
+                    "count": count,
+                    "min_items": 1,
+                    "max_items": 20,
+                }
+            ),
         }
     )
     # Fill with some values
