@@ -19,6 +19,7 @@ COMPONENTS = {
     "banner",
     "summary-list",
     "date_input",
+    "icon",
 }
 
 PATTERNS = {
