@@ -23,7 +23,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+# NOTE: Must maintain compatibility with Django 4.2
 dependencies = [
+    "django>=4.2",
     "django-components == 0.148.0",
 ]
 

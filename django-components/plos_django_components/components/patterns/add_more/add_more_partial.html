@@ -7,6 +7,9 @@
          data-last-index="{% if last_index is not None %}{{ last_index }}{% endif %}">
     {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
 
+    {# Unsigned structural inputs are kept for backward compatibility with external views #}
+    {# that might process this form. The AddMore component's own View ignores them #}
+    {# in favor of the signed_config below. #}
     <input type="hidden" name="{{ field_name }}__count" value="{{ count }}">
     <input type="hidden" name="{{ field_name }}__max" value="{{ max_items }}">
     <input type="hidden" name="{{ field_name }}__min" value="{{ min_items }}">
@@ -20,7 +23,7 @@
     <input type="hidden" name="{{ field_name }}__required" value="{{ required }}">
     <input type="hidden" name="{{ field_name }}__validation_message" value="{{ validation_message }}">
     <input type="hidden" name="{{ field_name }}__show_save_button" value="{{ show_save_button }}">
-    <input type="hidden" name="{{ field_name }}__fields" value="{{ fields }}">
+    <input type="hidden" name="{{ field_name }}__config" value="{{ signed_config }}">
 
     {% for item in add_more_items %}
         {% component "plos_add_more_item"
@@ -36,10 +39,12 @@
                 htmx_url=htmx_url
                 is_first=item.is_first
                 value=item.values
+                autofocus_heading=item.autofocus_heading
+                autofocus_input=item.autofocus_input
                 only
                 %}
             {% fill "item_content" data="item_data" %}
-                {% slot "item" index=item_data.index errors=item_data.errors value=item_data.value is_first=item_data.is_first %}{% endslot %}
+                {% slot "item" index=item_data.index errors=item_data.errors value=item_data.value is_first=item_data.is_first autofocus=item_data.autofocus_input %}{% endslot %}
             {% endfill %}
         {% endcomponent %}
     {% endfor %}
@@ -58,6 +63,7 @@
                         hx_swap="outerHTML"
                         hx_include="#{{ field_name }}-add-more"
                         hx_disabled_elt="#{{ field_name }}-add-more button"
+                        autofocus=autofocus_add_button
                         form_action="{{ htmx_url }}" %}
                     {{ add_label }} {{ item_label }}
                 {% endcomponent %}
@@ -101,43 +107,5 @@
             {% endfor %}
         {% endcomponent %}
     </div>
-    <script>
-        (function() {
-            var container = document.getElementById('{{ field_name }}-add-more');
-            if (!container) return;
-
-            var lastAction = container.getAttribute('data-last-action');
-            var lastIndex = container.getAttribute('data-last-index');
-
-            if (!lastAction) return;
-
-            if (lastAction === 'add') {
-                var newItem = document.getElementById('{{ field_name }}-item-' + lastIndex);
-                if (newItem) {
-                    var firstInput = newItem.querySelector('input, textarea, select');
-                    if (firstInput) {
-                        firstInput.focus();
-                    }
-                }
-            } else if (lastAction.startsWith('delete__')) {
-                var nextItem = document.getElementById('{{ field_name }}-item-' + lastIndex);
-                if (nextItem) {
-                    var heading = nextItem.querySelector('h1, h2, h3, h4, h5, h6');
-                    if (heading) {
-                        heading.setAttribute('tabindex', '-1');
-                        heading.focus();
-                    } else {
-                        var firstInput = nextItem.querySelector('input, textarea, select');
-                        if (firstInput) firstInput.focus();
-                    }
-                } else {
-                    var addButton = container.querySelector('[value="add"]');
-                    if (addButton) {
-                        addButton.focus();
-                    }
-                }
-            }
-        })();
-    </script>
     </div>
 </form>

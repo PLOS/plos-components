@@ -1,8 +1,8 @@
 {% load component_tags %}
 <div class="plos-add-more__item" data-item-index="{{ index }}" id="{{ field_name }}-item-{{ index }}">
-  {% component "plos_heading" level=heading_level %}{{ item_label|title }} {{ display_index }}{% endcomponent %}
+  {% component "plos_heading" level=heading_level autofocus=autofocus_heading tabindex="-1" %}{{ item_label|title }} {{ display_index }}{% endcomponent %}
 
-  {% slot "item_content" index=index errors=errors value=value is_first=is_first %}{% endslot %}
+  {% slot "item_content" index=index errors=errors value=value is_first=is_first autofocus_input=autofocus_input %}{% endslot %}
 
     {% if show_delete %}
         {% component "plos_button"

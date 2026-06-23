@@ -1,11 +1,13 @@
+"""
+Django settings for the Playwright test application.
+"""
 import os
 
 from plos_django_components import apps as _plos_apps
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLOS_COMPONENTS_DIR = os.path.dirname(os.path.abspath(_plos_apps.__file__))
-# SHOWCASE_DIR is hardcoded because it is not installed as a package
-SHOWCASE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR))), "design_system", "showcase")
+TEST_APP_TEMPLATES_DIR = os.path.join(BASE_DIR, "test_app", "templates")
 
 SECRET_KEY = "playwright-test-key"
 DEBUG = True
@@ -16,7 +18,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_components",
     "plos_django_components",
-    "showcase",
     "tests.playwright.test_app",
 ]
 
@@ -32,7 +33,7 @@ ROOT_URLCONF = "tests.playwright.test_app.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [PLOS_COMPONENTS_DIR, os.path.join(SHOWCASE_DIR, "templates")],
+        "DIRS": [PLOS_COMPONENTS_DIR, TEST_APP_TEMPLATES_DIR],
         "OPTIONS": {
             "loaders": [
                 "django.template.loaders.filesystem.Loader",

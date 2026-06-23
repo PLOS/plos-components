@@ -66,6 +66,7 @@ class Button(PLOSBaseComponent):
         hx_select: str | None = None,
         hx_disabled_elt: str | None = None,
         hx_sync: str | None = None,
+        autofocus: bool = False,
         **kwargs,
     ):
         if href == "":
@@ -89,6 +90,7 @@ class Button(PLOSBaseComponent):
             "hx_select": hx_select,
             "hx_disabled_elt": hx_disabled_elt,
             "hx_sync": hx_sync,
+            "autofocus": autofocus,
         }
         context.update(kwargs)
         return context

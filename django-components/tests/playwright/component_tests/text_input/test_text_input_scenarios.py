@@ -1,3 +1,11 @@
+"""
+Playwright tests for various TextInput scenarios.
+
+This module covers complex rendering scenarios including input types,
+attributes (required, disabled, length), visual elements (hint, prefix, suffix),
+and error states.
+"""
+import os
 import re
 import string
 
@@ -6,6 +14,8 @@ from django.urls import reverse
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 from playwright.sync_api import Page, expect
+
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 # Use a reasonably small number of examples for Playwright tests to avoid excessive runtimes
 HYPOTHESIS_SETTINGS = settings(
@@ -137,6 +147,14 @@ def test_text_input_visual_elements(page: Page, live_server):
     """
     url = live_server.url + reverse("text_input_visual")
     page.goto(url)
+
+    # Use ARIA snapshot for one of the complex inputs
+    expect(page.locator(".govuk-form-group").filter(has_text="Input with hint")).to_match_aria_snapshot(
+        """
+        - text: Input with hint This is a helpful hint
+        - textbox "Input with hint"
+        """
+    )
 
     # Hint text
     hint = page.locator("#id_hint-hint")

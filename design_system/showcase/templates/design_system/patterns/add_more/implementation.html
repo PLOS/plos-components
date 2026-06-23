@@ -11,6 +11,7 @@
 
     {% component "plos_text_box" %}
         The <code>plos_add_more</code> pattern is a complex component that manages a dynamic list of form items.
+        It contains its own <code>&lt;form&gt;</code> element and is designed to be the primary form on the page it services.
         It supports both standard form submissions and HTMX-powered partial updates for a smoother user experience.
     {% endcomponent %}
 
@@ -45,6 +46,36 @@
 {% endcomponent %}{% endverbatim %}</code>
 
     {% component "plos_heading" level=3 %}
+        Arguments
+    {% endcomponent %}
+    {% component "plos_text_box" %}
+        The <code>plos_add_more</code> component accepts the following arguments:
+        <ul class="govuk-list govuk-list--bullet">
+            <li><code>field_name</code> (str): Unique name for the component, used for session keys and form prefixes.</li>
+            <li><code>item_label</code> (str): Singular label for an item (e.g. "patent").</li>
+            <li><code>fields</code> (list | str): List of field definitions for each item; can be a JSON string.</li>
+            <li><code>max_items</code> (int, optional): Maximum number of items allowed. Defaults to 10.</li>
+            <li><code>min_items</code> (int, optional): Minimum number of items allowed. Defaults to 1.</li>
+            <li><code>count</code> (int, optional): Initial number of items to show; defaults to min_items or values length.</li>
+            <li><code>htmx_url</code> (str, optional): URL for HTMX requests. Defaults to <code>"/patterns/add-more/htmx/"</code>.</li>
+            <li><code>item_label_plural</code> (str, optional): Plural label for items.</li>
+            <li><code>errors</code> (list, optional): List of errors for each item.</li>
+            <li><code>values</code> (list | str, optional): List of initial values for each item.</li>
+            <li><code>validation_message</code> (str, optional): Message shown in error summary for general errors.</li>
+            <li><code>show_save_button</code> (bool, optional): Whether to show a save button. Defaults to False.</li>
+            <li><code>save_label</code> (str, optional): Label for the save button. Defaults to "Save".</li>
+            <li><code>additional_buttons</code> (list, optional): List of extra buttons to render.</li>
+            <li><code>required</code> (bool, optional): Whether at least one item must be completed. Defaults to False.</li>
+            <li><code>heading_level</code> (int, optional): Heading level for each item heading. Defaults to 2.</li>
+            <li><code>add_label</code> (str, optional): Prefix for the add button label. Defaults to "Add another".</li>
+            <li><code>delete_label</code> (str, optional): Prefix for the delete button label. Defaults to "Delete".</li>
+            <li><code>icon_size</code> (str, optional): Size for both add and delete icons. Defaults to "xs".</li>
+            <li><code>add_icon</code> (str, optional): Icon class for the add button.</li>
+            <li><code>delete_icon</code> (str, optional): Icon class for the delete button.</li>
+        </ul>
+    {% endcomponent %}
+
+    {% component "plos_heading" level=3 %}
         Slot Data
     {% endcomponent %}
     {% component "plos_text_box" %}
@@ -52,8 +83,9 @@
         <ul class="govuk-list govuk-list--bullet">
             <li><code>index</code>: The zero-based index of the current item (as a string).</li>
             <li><code>is_first</code>: A boolean indicating if this is the first item in the list.</li>
-            <li><code>errors</code>: A dictionary of errors for the current item.</li>
+            <li><code>errors</code>: A list of errors for the current item.</li>
             <li><code>value</code>: A dictionary of values for the current item.</li>
+            <li><code>autofocus</code>: A boolean indicating if the first input in this item should be autofocused.</li>
         </ul>
     {% endcomponent %}
 

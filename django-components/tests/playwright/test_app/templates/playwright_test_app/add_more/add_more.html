@@ -1,3 +1,7 @@
+{#
+  Template for basic AddMore pattern testing.
+  Used by: django-components/tests/playwright/component_tests/add_more/test_add_more.py
+#}
 {% extends "plos_submission_manager/base.html" %}
 {% load ds_filters %}
 
@@ -33,6 +37,7 @@
                     name="patent_number_{{ slot_data.index }}"
                     field_id="patent_number_{{ slot_data.index }}"
                     errors=slot_data.errors
+                    autofocus=slot_data.autofocus
                     value="{{ slot_data.value|plos_dictionary_fetch:'patent_number' }}" only %}
             {% endcomponent %}
             {% component "plos_date_input"

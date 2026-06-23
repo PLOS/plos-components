@@ -1,3 +1,10 @@
+"""
+Playwright tests for the Patent Example of the AddMore pattern.
+
+This module tests a more complex scenario of the plos_add_more component,
+including interaction with a simulated database and multi-field items.
+"""
+
 import os
 
 import pytest

@@ -8,6 +8,7 @@ This module provides:
 from ast import literal_eval as ast_literal_eval
 from typing import Any, NamedTuple
 
+from django.core import signing
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.views import View
 from django_components import Empty, get_component_url, register
@@ -64,18 +65,20 @@ class AddMore(PLOSBaseComponent):
     """
     A dynamic add/delete item list with HTMX progressive enhancement.
 
-    Renders a list of repeating form items. Add and delete buttons submit to
-    `htmx_url` via HTMX, swapping only the outer `<div id="{name}-item-list">`
-    in place. Without HTMX the same buttons submit the surrounding form normally
-    and the page view handles everything.
+    Renders a list of repeating form items. It contains its own <form> element
+    and is designed to be the primary form on its page. Add and delete buttons
+    submit to `htmx_url` via HTMX, swapping the outer `<div id="{field_name}-add-more">`
+    in place. Without HTMX, the same buttons submit the component's form normally
+    and the page view handles the state.
 
     Each item is rendered via the `item` slot. Use `data="slot_data"` in the
     fill to access per-item variables:
 
-        slot_data.index  — zero-based item index as a str; use for id/name/for attributes
-        slot_data.is_first — True for the first item
-        slot_data.errors — dict keyed by base field name (e.g. slot_data.errors.patent,
-                           slot_data.errors.coi_description); empty dict when no errors
+        slot_data.index      — zero-based item index as a str; use for id/name/for attributes
+        slot_data.is_first    — True for the first item
+        slot_data.errors      — list of errors for this item; empty list when no errors
+        slot_data.value       — dict of current values for this item
+        slot_data.autofocus   — True if this item's first input should be autofocused
 
     HTML id convention: field ids in the fill must follow `{field_id}_{slot_data.index}`
     so the error summary anchors resolve correctly (the component appends _{i} to each
@@ -98,16 +101,31 @@ class AddMore(PLOSBaseComponent):
     linking to #{field_id}_{index}. Errors are rendered inside the HTMX swap
     container so they clear automatically on add/delete swaps.
 
-    Optional display parameters:
+    Arguments:
+        field_name (str): Unique name for the component, used for session keys and form prefixes.
+        item_label (str): Singular label for an item (e.g. "patent").
+        fields (list[AddMoreField] | str): List of field definitions for each item; can be a JSON string.
+        max_items (int, optional): Maximum number of items allowed. Defaults to 10.
+        min_items (int, optional): Minimum number of items allowed. Defaults to 1.
+        count (int, optional): Initial number of items to show; if omitted, defaults to min_items or values length.
+        htmx_url (str, optional): URL for HTMX add/delete requests. Defaults to "/patterns/add-more/htmx/".
+        item_label_plural (str, optional): Plural label for items. Defaults to {item_label}s.
+        errors (list[PLOSComponentError], optional): List of errors for each item. See Error format below.
+        values (list[AddMoreValue] | str, optional): List of initial values for each item.
+        validation_message (str, optional): Message shown in error summary for general errors.
+                                            Defaults to "Enter a {item_label}".
+        show_save_button (bool, optional): Whether to show a save button. Defaults to False.
+        save_label (str, optional): Label for the save button. Defaults to "Save".
+        additional_buttons (list[Button], optional): List of extra buttons to render after Add/Save.
+        required (bool, optional): Whether at least one item must be completed. Defaults to False.
+        heading_level (int, optional): Heading level for each item heading. Defaults to 2.
+        add_label (str, optional): Prefix for the add button label. Defaults to "Add another".
+        delete_label (str, optional): Prefix for the delete button label. Defaults to "Delete".
+        icon_size (str, optional): Size applied to both add and delete icons. Defaults to "xs".
+        add_icon (str, optional): Icon class for the add button; defaults to the global add_item icon setting.
+        delete_icon (str, optional): Icon class for the delete button; defaults to the global delete_item icon setting.
 
-        heading_level   heading level for each item heading (default: 2)
-        add_label       prefix for the add button label (default: "Add another")
-        delete_label    prefix for the delete button label (default: "Delete")
-        icon_size       size applied to both add and delete icons (default: "xs")
-        add_icon        icon class for the add button; defaults to the global add_item icon setting
-        delete_icon     icon class for the delete button; defaults to the global delete_item icon setting
-
-    See the design system page (components/add-more) for a full interactive demo
+    See the design system page (patterns/add-more) for a full interactive demo
     and implementation guide.
     """
 
@@ -167,6 +185,8 @@ class AddMore(PLOSBaseComponent):
         additional_buttons: list[Button]
         last_action: str | None
         last_index: int | None
+        autofocus_add_button: bool
+        signed_config: str
 
     template_name = "add_more_partial.html"
 
@@ -198,8 +218,19 @@ class AddMore(PLOSBaseComponent):
             if not errors:
                 errors = request.session.pop(session_key_errors, None)
 
-            last_action = request.session.pop(f"add_more_{kwargs.field_name}_last_action", None)
-            last_index = request.session.pop(f"add_more_{kwargs.field_name}_last_index", None)
+            # Pop last action/index so they don't persist on next refresh.
+            # We use the request object to cache them for the duration of this request
+            # in case this component is rendered multiple times.
+            cache_key_action = f"_add_more_{kwargs.field_name}_last_action"
+            cache_key_index = f"_add_more_{kwargs.field_name}_last_index"
+            if hasattr(request, cache_key_action):
+                last_action = getattr(request, cache_key_action)
+                last_index = getattr(request, cache_key_index)
+            else:
+                last_action = request.session.pop(f"add_more_{kwargs.field_name}_last_action", None)
+                last_index = request.session.pop(f"add_more_{kwargs.field_name}_last_index", None)
+                setattr(request, cache_key_action, last_action)
+                setattr(request, cache_key_index, last_index)
         else:
             last_action = None
             last_index = None
@@ -217,14 +248,40 @@ class AddMore(PLOSBaseComponent):
         add_more_items = []
         for i in range(count):
             val = resolved_values[i] if i < len(resolved_values) else {"errors": [], "values": {}}
+
+            # Determine if this item should be autofocused (non-JS)
+            item_autofocus_input = False
+            item_autofocus_heading = False
+            if last_action == "add" and str(last_index) == str(i):
+                item_autofocus_input = True
+            elif last_action and last_action.startswith("delete__") and str(last_index) == str(i):
+                # If we deleted an item, focus the one that took its place
+                item_autofocus_heading = True
+
             add_more_items.append(
                 {
                     "index": str(i),
                     "is_first": i == 0,
                     "errors": val.get("errors", []),
                     "values": val.get("values", {}),
+                    "autofocus_input": item_autofocus_input,
+                    "autofocus_heading": item_autofocus_heading,
                 }
             )
+
+        autofocus_add_button = False
+        if last_action and last_action.startswith("delete__") and last_index is not None and int(last_index) >= count:
+            # If we deleted the last item and it wasn't replaced, focus the add button
+            autofocus_add_button = True
+
+        signed_config = signing.dumps(
+            {
+                "fields": fields,
+                "max_items": kwargs.max_items,
+                "min_items": kwargs.min_items,
+                "count": count,
+            }
+        )
 
         htmx_url = kwargs.htmx_url
         if htmx_url is None:
@@ -262,7 +319,9 @@ class AddMore(PLOSBaseComponent):
             show_save_button=kwargs.show_save_button,
             additional_buttons=kwargs.additional_buttons or [],
             last_action=last_action,
-            last_index=last_index,
+            last_index = last_index,
+            autofocus_add_button = autofocus_add_button,
+            signed_config = signed_config,
         )
 
     def _format_values(self, values: Any, count: int | None, min_items: int) -> tuple[list[dict], list[dict] | None]:
@@ -328,16 +387,21 @@ class AddMore(PLOSBaseComponent):
             if not field_name:
                 return HttpResponse("Missing action name", status=400)
 
-            fields = parse_literal(request.POST.get(f"{field_name}__fields"), [])
-            if not fields:
-                return HttpResponse("Missing or misconfigured field definitions", status=400)
+            signed_config = request.POST.get(f"{field_name}__config")
+            if not signed_config:
+                return HttpResponse("Missing component configuration", status=400)
+
+            try:
+                config = signing.loads(signed_config)
+                fields = config["fields"]
+            except (signing.BadSignature, KeyError):
+                return HttpResponse("Invalid or tampered component configuration", status=400)
 
             action = request.POST.get(f"{field_name}__action", "")
-            config = self._get_config(request, field_name)
-
-            values = self._extract_values_from_post(request, field_name, fields, config["count"])
 
             count = config["count"]
+            values = self._extract_values_from_post(request, field_name, fields, count, config["max_items"])
+
             last_index = None
             if action == "add" and count < config["max_items"]:
                 last_index = count  # Index of the new item
@@ -349,6 +413,14 @@ class AddMore(PLOSBaseComponent):
                 except (IndexError, ValueError):
                     pass
                 values, count = self._handle_delete(action, values, count, config["min_items"])
+
+                # Also handle errors in session when deleting
+                session_key_errors = get_session_key_errors(field_name)
+                errors = request.session.get(session_key_errors)
+                if errors and isinstance(errors, list) and last_index is not None:
+                    if last_index < len(errors):
+                        errors.pop(last_index)
+                        request.session[session_key_errors] = errors
 
             self._persist_to_session(request, field_name, values, action, last_index)
 
@@ -363,21 +435,14 @@ class AddMore(PLOSBaseComponent):
                     return key[: -len("__action")].lower().strip()
             return None
 
-        def _get_config(self, request: HttpRequest, field_name: str) -> dict[str, Any]:
-            try:
-                return {
-                    "count": int(request.POST.get(f"{field_name}__count", 1)),
-                    "max_items": int(request.POST.get(f"{field_name}__max", 10)),
-                    "min_items": int(request.POST.get(f"{field_name}__min", 1)),
-                }
-            except (ValueError, TypeError):
-                return {"count": 1, "max_items": 10, "min_items": 1}
 
         def _extract_values_from_post(
-            self, request: HttpRequest, field_name: str, fields: list[AddMoreField], count: int
+            self, request: HttpRequest, field_name: str, fields: list[AddMoreField], count: int, max_items: int
         ) -> list[dict]:
             values = []
-            for i in range(count):
+            # Safety: cap the iteration by max_items to prevent DoS via massive count
+            safe_count = min(count, max_items)
+            for i in range(safe_count):
                 item_values = {}
                 for field in fields:
                     field_id = field.get("field_id")
@@ -414,9 +479,7 @@ class AddMore(PLOSBaseComponent):
             last_index: int | None = None,
         ) -> None:
             session_key_values = get_session_key_values(field_name)
-            session_key_errors = get_session_key_errors(field_name)
             request.session[session_key_values] = values
-            request.session[session_key_errors] = None  # Clear errors on add/delete
 
             if last_action:
                 request.session[f"add_more_{field_name}_last_action"] = last_action
@@ -443,6 +506,8 @@ class AddMoreItem(PLOSBaseComponent):
         is_first: bool = False
         errors: dict | None = None
         value: dict | None = None
+        autofocus_heading: bool = False
+        autofocus_input: bool = False
 
     Args = Empty
 
@@ -462,6 +527,8 @@ class AddMoreItem(PLOSBaseComponent):
         is_first: bool
         errors: dict
         value: dict
+        autofocus_heading: bool
+        autofocus_input: bool
 
     template_name = "add_more_item.html"
 
@@ -479,4 +546,6 @@ class AddMoreItem(PLOSBaseComponent):
             is_first=kwargs.is_first,
             errors=kwargs.errors or {},
             value=kwargs.value or {},
+            autofocus_heading=kwargs.autofocus_heading,
+            autofocus_input=kwargs.autofocus_input,
         )

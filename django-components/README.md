@@ -122,7 +122,7 @@ uv run playwright install
 Then you can run the Playwright tests using the internal test application:
 
 ```bash
-PYTHONPATH=./design_system:./django-components uv run pytest django-components/tests/playwright/ --ds tests.playwright.test_app.settings
+PYTHONPATH=./django-components uv run pytest django-components/tests/playwright/ --ds tests.playwright.test_app.settings
 ```
 
 ## Linting
