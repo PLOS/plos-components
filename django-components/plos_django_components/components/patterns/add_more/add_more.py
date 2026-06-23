@@ -319,9 +319,9 @@ class AddMore(PLOSBaseComponent):
             show_save_button=kwargs.show_save_button,
             additional_buttons=kwargs.additional_buttons or [],
             last_action=last_action,
-            last_index = last_index,
-            autofocus_add_button = autofocus_add_button,
-            signed_config = signed_config,
+            last_index=last_index,
+            autofocus_add_button=autofocus_add_button,
+            signed_config=signed_config,
         )
 
     def _format_values(self, values: Any, count: int | None, min_items: int) -> tuple[list[dict], list[dict] | None]:
@@ -434,7 +434,6 @@ class AddMore(PLOSBaseComponent):
                 if key.endswith("__action"):
                     return key[: -len("__action")].lower().strip()
             return None
-
 
         def _extract_values_from_post(
             self, request: HttpRequest, field_name: str, fields: list[AddMoreField], count: int, max_items: int

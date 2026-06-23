@@ -1,6 +1,7 @@
 """
 Django settings for the Playwright test application.
 """
+
 import os
 
 from plos_django_components import apps as _plos_apps

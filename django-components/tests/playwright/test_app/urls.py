@@ -1,10 +1,12 @@
 """
 URL configuration for the Playwright test application.
 """
+
 from django.urls import path
 from plos_django_components.components.patterns.add_more.add_more import AddMore
 
 from .views import add_more, text_input
+from .views.icon.icon_views import icon_showcase_view
 
 urlpatterns = [
     path("patterns/add-more/", add_more.add_more_view, name="add_more"),
@@ -15,4 +17,5 @@ urlpatterns = [
     path("components/text-input/attributes/", text_input.text_input_attributes_view, name="text_input_attributes"),
     path("components/text-input/visual/", text_input.text_input_visual_view, name="text_input_visual"),
     path("components/text-input/errors/", text_input.text_input_errors_view, name="text_input_errors"),
+    path("components/icon/showcase/", icon_showcase_view, name="icon_showcase"),
 ]

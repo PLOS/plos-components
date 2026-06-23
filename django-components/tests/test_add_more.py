@@ -4,6 +4,7 @@ Tests for the AddMore pattern.
 This module contains unit tests and property-based tests using Hypothesis to verify
 the logic, session management, and context generation for the plos_add_more component.
 """
+
 from django.core import signing
 from django.http import HttpRequest, QueryDict
 from hypothesis import given
