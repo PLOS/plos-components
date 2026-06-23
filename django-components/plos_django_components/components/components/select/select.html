@@ -21,7 +21,7 @@
     </select>
     {# display var() fallback keeps the chevron hidden if the stylesheet fails to load, avoiding a mispositioned icon in document flow #}
     <span aria-hidden="true" class="plos-select__chevron" style="display: var(--plos-select-show-chevron, none);">
-      {% component "plos_icon_chevron_down" size="sm" %}{% endcomponent %}
+      {% component "plos_icon" icon_name="chevron_down" size="sm" %}{% endcomponent %}
     </span>
   </div>
 </div>

@@ -2,9 +2,18 @@
 A class which defines the icon font types for preset icons as a typed dictionary.
 """
 
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 from typing_extensions import NotRequired
+
+PresetIconName = Literal[
+    "check_circle",
+    "exclamation_circle",
+    "info_circle",
+    "add_item",
+    "delete_item",
+    "chevron_down",
+]
 
 
 class IconFontDictionary(TypedDict):

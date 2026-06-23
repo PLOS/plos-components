@@ -5,9 +5,9 @@
         class="plos-banner{% if severity == 'info' %} plos-banner--info{% endif %}{% if severity == 'warning' %} plos-banner--warning{% endif %}{% if severity == 'problem' %} plos-banner--problem{% endif %}{% if severity == 'success' %} plos-banner--success{% endif %}"
         {% if disabled %} disabled aria-disabled="true"{% endif %}>
     <div class="plos-banner--icon-container">
-        {% if severity == 'success' %}{% component "plos_icon_check_circle" %}{% endcomponent %}{% endif %}
-        {% if severity == 'info' %}{% component "plos_icon_info_circle" %}{% endcomponent %}{% endif %}
-        {% if severity == 'warning' or severity == 'problem' %}{% component "plos_icon_exclamation_circle" %}{% endcomponent %}{% endif %}
+        {% if severity == 'success' %}{% component "plos_icon" icon_name="check_circle" %}{% endcomponent %}{% endif %}
+        {% if severity == 'info' %}{% component "plos_icon" icon_name="info_circle" %}{% endcomponent %}{% endif %}
+        {% if severity == 'warning' or severity == 'problem' %}{% component "plos_icon" icon_name="exclamation_circle" %}{% endcomponent %}{% endif %}
     </div>
     <div class="plos-banner--content">
         {% slot "default" default %}
