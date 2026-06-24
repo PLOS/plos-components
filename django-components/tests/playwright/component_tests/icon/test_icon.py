@@ -17,7 +17,18 @@ AXE_URL = "https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.10.2/axe.min.js"
 
 
 def run_accessibility_check(page: Page):
-    """Inject axe-core and run accessibility checks."""
+    """
+    Inject axe-core and run accessibility checks on the current page.
+
+    This function loads the axe-core accessibility testing library and runs it
+    against the current page, reporting any accessibility violations found.
+
+    Args:
+        page (Page): The Playwright page object to test.
+
+    Returns:
+        list: A list of accessibility violations found by axe-core.
+    """
     # Ensure axe-core is loaded
     page.add_script_tag(url=AXE_URL)
 
@@ -40,7 +51,16 @@ def run_accessibility_check(page: Page):
 
 @pytest.mark.django_db
 def test_icon_basic_rendering(page: Page, live_server):
-    """Test that basic icons render correctly."""
+    """
+    Test that basic icons render correctly.
+
+    This test verifies that the icon component renders the expected HTML elements
+    with the correct CSS classes for preset icons.
+
+    Args:
+        page (Page): The Playwright page object.
+        live_server: The Django live server fixture.
+    """
     url = live_server.url + reverse("icon_showcase")
     page.goto(url)
 
@@ -61,7 +81,16 @@ def test_icon_basic_rendering(page: Page, live_server):
 
 @pytest.mark.django_db
 def test_icon_sizes(page: Page, live_server):
-    """Test that icons render with different sizes."""
+    """
+    Test that icons render with different sizes.
+
+    This test verifies that icons render correctly with all supported size options
+    (xs, sm, md, lg, xl) and that the appropriate inline styles are applied.
+
+    Args:
+        page (Page): The Playwright page object.
+        live_server: The Django live server fixture.
+    """
     url = live_server.url + reverse("icon_showcase")
     page.goto(url)
 
@@ -90,7 +119,16 @@ def test_icon_sizes(page: Page, live_server):
 
 @pytest.mark.django_db
 def test_icon_display_options(page: Page, live_server):
-    """Test that icons render with different display options."""
+    """
+    Test that icons render with different display options.
+
+    This test verifies that icons render correctly with both inline and block
+    display modes, applying the appropriate CSS classes.
+
+    Args:
+        page (Page): The Playwright page object.
+        live_server: The Django live server fixture.
+    """
     url = live_server.url + reverse("icon_showcase")
     page.goto(url)
 
@@ -105,7 +143,16 @@ def test_icon_display_options(page: Page, live_server):
 
 @pytest.mark.django_db
 def test_icon_custom_icon(page: Page, live_server):
-    """Test that custom icons render correctly."""
+    """
+    Test that custom icons render correctly.
+
+    This test verifies that custom icon classes can be used with the icon component
+    and that they render with the correct CSS classes.
+
+    Args:
+        page (Page): The Playwright page object.
+        live_server: The Django live server fixture.
+    """
     url = live_server.url + reverse("icon_showcase")
     page.goto(url)
 
@@ -116,7 +163,16 @@ def test_icon_custom_icon(page: Page, live_server):
 
 @pytest.mark.django_db
 def test_icon_with_field_id(page: Page, live_server):
-    """Test that icons render with field IDs."""
+    """
+    Test that icons render with field IDs.
+
+    This test verifies that custom IDs can be applied to icon elements and
+    that they are correctly set in the rendered HTML.
+
+    Args:
+        page (Page): The Playwright page object.
+        live_server: The Django live server fixture.
+    """
     url = live_server.url + reverse("icon_showcase")
     page.goto(url)
 
@@ -128,7 +184,16 @@ def test_icon_with_field_id(page: Page, live_server):
 
 @pytest.mark.django_db
 def test_icon_accessibility(page: Page, live_server):
-    """Test that icons are accessible."""
+    """
+    Test that icons are accessible.
+
+    This test runs the axe-core accessibility checker to verify that icon
+    components meet accessibility standards.
+
+    Args:
+        page (Page): The Playwright page object.
+        live_server: The Django live server fixture.
+    """
     url = live_server.url + reverse("icon_showcase")
     page.goto(url)
 
@@ -139,7 +204,16 @@ def test_icon_accessibility(page: Page, live_server):
 
 @pytest.mark.django_db
 def test_icon_aria_hidden(page: Page, live_server):
-    """Test that icons have aria-hidden attribute."""
+    """
+    Test that icons have aria-hidden attribute.
+
+    This test verifies that all icons are rendered with the aria-hidden="true"
+    attribute, making them decorative for accessibility purposes.
+
+    Args:
+        page (Page): The Playwright page object.
+        live_server: The Django live server fixture.
+    """
     url = live_server.url + reverse("icon_showcase")
     page.goto(url)
 

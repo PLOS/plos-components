@@ -1,5 +1,8 @@
 """
 Component for rendering an icon from an icon font.
+
+This component renders icons from icon fonts (like Bootstrap Icons) in a consistent and accessible way.
+See README.md for detailed documentation.
 """
 
 from typing import Literal
@@ -49,6 +52,8 @@ class Icon(PLOSBaseComponent):
     Accessibility:
         Icons are rendered with aria-hidden="true" by default, making them decorative.
         For meaningful icons that convey information, provide alternative text in the parent context.
+
+    See README.md for detailed documentation.
     """
 
     template_name = "icon.html"
@@ -61,6 +66,34 @@ class Icon(PLOSBaseComponent):
         display: Literal["inline", "block"] = "inline",
         field_id: str | None = None,
     ):
+        """
+        Process the input parameters and return the context data for rendering the icon.
+
+        This method validates the input parameters and prepares the context data that
+        will be passed to the template for rendering the icon component.
+
+        Args:
+            icon_name (PresetIconName, optional): The name of the preset icon to use.
+                Must be one of the predefined icon names.
+            custom_icon (str, optional): A custom icon class from any icon font.
+                Takes precedence over icon_name if both are provided.
+            size (str, optional): The size of the icon. Must be one of "xs", "sm", "md", "lg", "xl".
+                Defaults to "md" (24px).
+            display (str, optional): The display mode of the icon. Must be either "inline" or "block".
+                Defaults to "inline".
+            field_id (str, optional): A custom ID for the icon element.
+
+        Returns:
+            dict: A dictionary containing the context data for the template:
+                - size_px (int): The size of the icon in pixels.
+                - display_class (str): The CSS class for the display mode.
+                - field_id (str or None): The custom ID for the icon element, if provided.
+                - icon_class (str): The CSS class for the icon from the icon font.
+
+        Raises:
+            ValueError: If an invalid size or display mode is provided, or if neither
+                icon_name nor custom_icon is provided.
+        """
         if size not in SIZE_MAP:
             raise ValueError(f"Invalid icon size '{size}': must be one of {', '.join(SIZE_MAP)}")
         if display not in DISPLAY_MAP:
