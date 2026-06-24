@@ -1,6 +1,7 @@
 """
 Django settings for the core django-components tests.
 """
+
 import os
 
 from plos_django_components.components.components.base.icon_fonts.abstract_icon_font_defaults import IconFontDictionary

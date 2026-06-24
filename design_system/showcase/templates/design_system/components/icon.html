@@ -1,0 +1,153 @@
+{% extends "design_system/base.html" %}
+{% load component_tags %}
+
+{% block ds_title %}Icon – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+  {% component "plos_heading" level=1 %}Icon{% endcomponent %}
+
+  <p class="govuk-body">The icon component renders an icon from an icon font. Icons are decorative by default and use Bootstrap Icons.</p>
+
+  <h2 class="govuk-heading-m">When to use this component</h2>
+  <p class="govuk-body">Use the icon component to add visual context to content, such as indicating success, error, or informational messages.</p>
+
+  <h2 class="govuk-heading-m">When not to use this component</h2>
+  <p class="govuk-body">Do not use icons alone to convey essential information. Always provide text labels or context for screen reader users.</p>
+
+  <h2 class="govuk-heading-m">Accessibility</h2>
+  <p class="govuk-body">Icons are rendered with <code class="code">aria-hidden="true"</code> by default, making them decorative. For meaningful icons that convey information, provide alternative text in the parent context.</p>
+
+  <h2 class="govuk-heading-m">Examples</h2>
+
+  <h3 class="govuk-heading-s">Default icon</h3>
+  <div class="example-demo">
+    {% component "plos_icon" icon_name="check_circle" %}{% endcomponent %}
+  </div>
+  <pre class="code-snippet"><code>{% verbatim %}{% component "plos_icon" icon_name="check_circle" %}{% endcomponent %}{% endverbatim %}</code></pre>
+
+  <h3 class="govuk-heading-s">Icon with custom size</h3>
+  <div class="example-demo">
+    {% component "plos_icon" icon_name="info_circle" size="lg" %}{% endcomponent %}
+  </div>
+  <pre class="code-snippet"><code>{% verbatim %}{% component "plos_icon" icon_name="info_circle" size="lg" %}{% endcomponent %}{% endverbatim %}</code></pre>
+
+  <h3 class="govuk-heading-s">Icon with custom display</h3>
+  <div class="example-demo">
+    {% component "plos_icon" icon_name="exclamation_circle" display="block" %}{% endcomponent %}
+  </div>
+  <pre class="code-snippet"><code>{% verbatim %}{% component "plos_icon" icon_name="exclamation_circle" display="block" %}{% endcomponent %}{% endverbatim %}</code></pre>
+
+  <h3 class="govuk-heading-s">Custom icon</h3>
+  <div class="example-demo">
+    {% component "plos_icon" custom_icon="bi bi-heart-fill" %}{% endcomponent %}
+  </div>
+  <pre class="code-snippet"><code>{% verbatim %}{% component "plos_icon" custom_icon="bi bi-heart-fill" %}{% endcomponent %}{% endverbatim %}</code></pre>
+
+  <h3 class="govuk-heading-s">Icon with field ID</h3>
+  <div class="example-demo">
+    {% component "plos_icon" icon_name="delete_item" field_id="delete-icon-1" %}{% endcomponent %}
+  </div>
+  <pre class="code-snippet"><code>{% verbatim %}{% component "plos_icon" icon_name="delete_item" field_id="delete-icon-1" %}{% endcomponent %}{% endverbatim %}</code></pre>
+
+  <h2 class="govuk-heading-m">Parameters</h2>
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Name</th>
+        <th scope="col" class="govuk-table__header">Type</th>
+        <th scope="col" class="govuk-table__header">Description</th>
+        <th scope="col" class="govuk-table__header">Required</th>
+        <th scope="col" class="govuk-table__header">Default</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">icon_name</td>
+        <td class="govuk-table__cell">PresetIconName</td>
+        <td class="govuk-table__cell">The name of the icon to fetch from the IconFontDictionary. Available options: check_circle, exclamation_circle, info_circle, add_item, delete_item, chevron_down.</td>
+        <td class="govuk-table__cell">Yes (if custom_icon not provided)</td>
+        <td class="govuk-table__cell">None</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">custom_icon</td>
+        <td class="govuk-table__cell">string</td>
+        <td class="govuk-table__cell">The name of the icon from an icon font (e.g., "bi bi-plus-lg"). Takes precedence over icon_name if both are provided.</td>
+        <td class="govuk-table__cell">Yes (if icon_name not provided)</td>
+        <td class="govuk-table__cell">None</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">size</td>
+        <td class="govuk-table__cell">string</td>
+        <td class="govuk-table__cell">Icon size. One of xs, sm, md, lg, xl.</td>
+        <td class="govuk-table__cell">No</td>
+        <td class="govuk-table__cell">md</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">display</td>
+        <td class="govuk-table__cell">string</td>
+        <td class="govuk-table__cell">Defines the CSS display mode. One of inline, block.</td>
+        <td class="govuk-table__cell">No</td>
+        <td class="govuk-table__cell">inline</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">field_id</td>
+        <td class="govuk-table__cell">string</td>
+        <td class="govuk-table__cell">An ID for the icon element.</td>
+        <td class="govuk-table__cell">No</td>
+        <td class="govuk-table__cell">None</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="govuk-heading-m">Size Options</h2>
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Size</th>
+        <th scope="col" class="govuk-table__header">Pixel Value</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">xs</td>
+        <td class="govuk-table__cell">16px</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">sm</td>
+        <td class="govuk-table__cell">20px</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">md</td>
+        <td class="govuk-table__cell">24px</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">lg</td>
+        <td class="govuk-table__cell">32px</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">xl</td>
+        <td class="govuk-table__cell">40px</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="govuk-heading-m">Display Options</h2>
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Display</th>
+        <th scope="col" class="govuk-table__header">Description</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">inline</td>
+        <td class="govuk-table__cell">Allows the icon to sit alongside other HTML elements.</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">block</td>
+        <td class="govuk-table__cell">Places the icon on its own line.</td>
+      </tr>
+    </tbody>
+  </table>
+{% endblock ds_content %}

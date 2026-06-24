@@ -1,6 +1,7 @@
 """
 Views for testing the AddMore pattern in the Playwright test application.
 """
+
 from django.shortcuts import render
 
 

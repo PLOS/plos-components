@@ -10,6 +10,7 @@ from playwright.sync_api import Page, expect
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
+
 @pytest.mark.django_db
 def test_add_more_limit_bypass_attempt(page: Page, live_server):
     """
@@ -66,6 +67,7 @@ def test_add_more_limit_bypass_attempt(page: Page, live_server):
     count = page.locator(".plos-add-more__item").count()
     assert count <= 10
 
+
 @pytest.mark.django_db
 def test_add_more_massive_post_body(page: Page, live_server):
     """
@@ -84,19 +86,20 @@ def test_add_more_massive_post_body(page: Page, live_server):
         "patents__config": signed_config,
         "csrfmiddlewaretoken": csrf_token,
     }
-    for i in range(1200): # Default Django limit is 1000
+    for i in range(1200):  # Default Django limit is 1000
         payload[f"field_{i}"] = "value"
 
-    cookies = {c['name']: c['value'] for c in page.context.cookies()}
+    cookies = {c["name"]: c["value"] for c in page.context.cookies()}
     response = requests.post(
         f"{live_server.url}/patterns/add-more/htmx/",
         data=payload,
         cookies=cookies,
-        headers={"Referer": f"{live_server.url}/patterns/add-more/"}
+        headers={"Referer": f"{live_server.url}/patterns/add-more/"},
     )
 
     # Django returns 400 when TooManyFieldsSent is raised
     assert response.status_code == 400
+
 
 @pytest.mark.django_db
 def test_add_more_rapid_fire_requests(page: Page, live_server):
@@ -107,7 +110,7 @@ def test_add_more_rapid_fire_requests(page: Page, live_server):
 
     signed_config = page.locator('input[name="patents__config"]').get_attribute("value")
     csrf_token = page.locator('input[name="csrfmiddlewaretoken"]').get_attribute("value")
-    cookies = {c['name']: c['value'] for c in page.context.cookies()}
+    cookies = {c["name"]: c["value"] for c in page.context.cookies()}
 
     # Use a session to keep cookies (especially sessionid)
     session = requests.Session()
@@ -124,7 +127,7 @@ def test_add_more_rapid_fire_requests(page: Page, live_server):
                 "patents__config": signed_config,
                 "csrfmiddlewaretoken": csrf_token,
             },
-            headers={"Referer": f"{live_server.url}/patterns/add-more/"}
+            headers={"Referer": f"{live_server.url}/patterns/add-more/"},
         )
         responses.append(resp)
 
