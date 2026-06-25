@@ -16,7 +16,7 @@
                class="govuk-input{% if errors %} govuk-input--error{% endif %}"
                {% if disabled %}disabled{% endif %}
                {% if autofocus %}autofocus{% endif %}
-               {% if value %}value="{{ value }}" {% endif %}
+               {% if value is not None %}value="{{ value }}" {% endif %}
                {% if placeholder %}placeholder="{{ placeholder }}" {% endif %}
                {% if required %}required{% endif %}
                {% if hint or errors %}
