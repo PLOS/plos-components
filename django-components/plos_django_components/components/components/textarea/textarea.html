@@ -23,7 +23,7 @@
             {% if maxlength %}maxlength={{ maxlength }}{% endif %}
             {% if minlength %}minlength={{ minlength }}{% endif %}
             {% if maxlength or hint %}aria-describedby="{% if maxlength %}{{ field_id }}-info {% endif %}{% if hint %}{{ field_id }}-hint{% endif %}"
-            {% endif %}>{% if value or value == 0 %}{{ value }}{% endif %}</textarea>
+            {% endif %}>{% if value is not None %}{{ value }}{% endif %}</textarea>
     {% if maxlength %}
     <div id="{{ field_id }}-info" class="govuk-hint govuk-character-count__message"></div>
     {% endif %}

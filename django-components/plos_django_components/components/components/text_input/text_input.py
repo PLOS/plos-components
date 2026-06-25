@@ -15,7 +15,7 @@ class TextInput(PLOSBaseComponent):
         label,
         name,
         label_size: Literal["large", "medium", "small"] = "small",
-        value: str = "",
+        value: str | None = None,
         placeholder: str = "",
         required: bool = False,
         hint: str | None = None,
