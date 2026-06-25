@@ -36,10 +36,12 @@
                 {{ submission_disclosure }}
             {% endcomponent %}
         {% endif %}
-        {% component "plos_button_group" %}
-            {% component "plos_button" button_type="submit" field_name=button_name field_id=button_id %}
-                {{ button_label }}
+        {% if show_buttons %}
+            {% component "plos_button_group" %}
+                {% component "plos_button" button_type="submit" field_name=button_name field_id=button_id %}
+                    {{ button_label }}
+                {% endcomponent %}
             {% endcomponent %}
-        {% endcomponent %}
+        {% endif %}
     </div>
 </div>
