@@ -25,14 +25,18 @@ class ErrorSummary(PLOSBaseComponent):
 
     Optional parameters:
 
-        title   heading inside the error summary box (default: "There is an issue")
+        title     heading inside the error summary box (default: "There is an issue")
+        field_id  id set on the summary container (default: "error-summary"). Allows forms
+                  to focus on the summary when there are errors (which improves accessibility
+                  for screen readers). A form using action="#error-summary" will auto-focus
+                  on the error summary title
 
     Example usage:
 
         entries = [
             {"label": "Full name", "message": "Enter your full name", "anchor": "id_full_name"},
         ]
-        {% component "plos_error_summary" entries=entries %}{% endcomponent %}
+        {% component "plos_error_summary" entries=entries field_id="error-summary" %}{% endcomponent %}
     """
 
     template_name = "error_summary.html"
@@ -42,6 +46,13 @@ class ErrorSummary(PLOSBaseComponent):
         entries: list[dict] | None = None,
         title: str = "There is an issue",
         compact: bool = False,
+        field_id: str | None = "error-summary",
     ):
         safe_entries = entries or []
-        return {"entries": safe_entries, "title": title, "has_entries": bool(safe_entries), "compact": compact}
+        return {
+            "entries": safe_entries,
+            "title": title,
+            "has_entries": bool(safe_entries),
+            "compact": compact,
+            "field_id": field_id,
+        }
