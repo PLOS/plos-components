@@ -11,6 +11,7 @@ from hypothesis import given
 from hypothesis import strategies as st
 from plos_django_components.components.components.date_input.date_input import (
     DateInput,
+    DateSettingOption,
     DateSettings,
     DateValue,
 )
@@ -78,6 +79,20 @@ class TestDateInput:
         elif "label" in setting and setting["label"] is not None:
             assert result["label"] == setting["label"]
         # If setting exists but doesn't have a label key, the method doesn't set it
+
+    # Property-based tests for merge_setting_option
+    @given(st.text(), st.text(), st.booleans(), st.one_of(st.none(), st.text()))
+    def test_merge_setting_option_property_based(self, default_field_id, default_label, display, default_field_name):
+        """Property-based test for merge_setting_option with various parameters."""
+        # Test with None setting
+        result = DateInput.merge_setting_option(
+            None, display, default_field_id, default_field_name, default_label, "day"
+        )
+        assert result["display"] == display
+        assert result["label"] == default_label
+        assert result["field_id"] == f"{default_field_id}-day"
+        expected_field_name = default_field_name if default_field_name is not None else default_field_id
+        assert result["field_name"] == f"{expected_field_name}-day"
 
     # Tests for merge_settings
     @given(
@@ -170,6 +185,37 @@ class TestDateInput:
             expected_field_name = default_field_name if default_field_name is not None else default_field_id
             assert result["year"]["field_name"] == f"{expected_field_name}-year"
 
+    # Property-based tests for merge_settings with various parameters
+    @given(st.text(), st.one_of(st.none(), st.text()), st.booleans(), st.booleans(), st.booleans())
+    def test_merge_settings_property_based(self, default_field_id, default_field_name, day, month, year):
+        """Property-based test for merge_settings with various parameters."""
+        # Skip empty default_field_id as it would create invalid field IDs
+        if not default_field_id:
+            return
+
+        result = DateInput.merge_settings(None, default_field_id, default_field_name, day, month, year)
+
+        # Check that all three date components are present
+        assert "day" in result
+        assert "month" in result
+        assert "year" in result
+
+        # Check that each component has the correct display value
+        assert result["day"]["display"] == day
+        assert result["month"]["display"] == month
+        assert result["year"]["display"] == year
+
+        # Check that each component has the correct field_id
+        assert result["day"]["field_id"] == f"{default_field_id}-day"
+        assert result["month"]["field_id"] == f"{default_field_id}-month"
+        assert result["year"]["field_id"] == f"{default_field_id}-year"
+
+        # Check that each component has the correct field_name
+        expected_field_name = default_field_name if default_field_name is not None else default_field_id
+        assert result["day"]["field_name"] == f"{expected_field_name}-day"
+        assert result["month"]["field_name"] == f"{expected_field_name}-month"
+        assert result["year"]["field_name"] == f"{expected_field_name}-year"
+
     # Tests for convert_to_date
     @given(st.integers(1, 9999), st.integers(1, 12), st.integers(1, 31))
     def test_convert_to_date_valid(self, year, month, day):
@@ -185,9 +231,14 @@ class TestDateInput:
             assert result.day == day
 
     def test_convert_to_date_invalid(self):
-        """Test that convert_to_date returns None for invalid dates."""
+        """Test that convert_to_date returns a default date for invalid dates."""
         # Test with invalid date (February 30)
-        assert DateInput.convert_to_date(DateValue(year=2023, month=2, day=30)) is None
+        result = DateInput.convert_to_date(DateValue(year=2023, month=2, day=30))
+        assert result is not None
+        assert isinstance(result, date)
+        assert result.year == 1900
+        assert result.month == 1
+        assert result.day == 1
 
     # Tests for convert_from_date
     @given(st.dates())
@@ -205,6 +256,109 @@ class TestDateInput:
         assert result["year"] == date_obj.year
         assert result["month"] == date_obj.month
         assert result["day"] == date_obj.day
+
+    # Additional property-based tests for convert_from_date
+    @given(st.integers(1, 9999), st.integers(1, 12), st.integers(1, 31))
+    def test_convert_from_date_with_components(self, year, month, day):
+        """Test that convert_from_date correctly converts date components."""
+        try:
+            date_obj = date(year, month, day)
+            result = DateInput.convert_from_date(date_obj)
+            assert isinstance(result, dict)
+            assert result["year"] == year
+            assert result["month"] == month
+            assert result["day"] == day
+        except ValueError:
+            # Handle invalid dates like Feb 30
+            pass
+
+    # Tests for convert_any_date_value_to_date
+    @given(st.dates())
+    def test_convert_any_date_value_to_date_with_date_object(self, date_obj):
+        """Test that convert_any_date_value_to_date works with date objects."""
+        result = DateInput.convert_any_date_value_to_date(date_obj)
+        assert isinstance(result, date)
+        assert result == date_obj
+
+    def test_convert_any_date_value_to_date_with_datevalue(self):
+        """Test that convert_any_date_value_to_date works with DateValue objects."""
+        date_value = DateValue(year=2023, month=6, day=15)
+        result = DateInput.convert_any_date_value_to_date(date_value)
+        assert isinstance(result, date)
+        assert result.year == 2023
+        assert result.month == 6
+        assert result.day == 15
+
+    def test_convert_any_date_value_to_date_with_none(self):
+        """Test that convert_any_date_value_to_date works with None."""
+        result = DateInput.convert_any_date_value_to_date(None)
+        assert isinstance(result, date)
+        assert result.year == 1900
+        assert result.month == 1
+        assert result.day == 1
+
+    def test_convert_any_date_value_to_date_with_blank_out_flags(self):
+        """Test that convert_any_date_value_to_date works with blank out flags."""
+        # Test with date object and blank_out_day
+        date_obj = date(2023, 6, 15)
+        result = DateInput.convert_any_date_value_to_date(date_obj, blank_out_day=True)
+        assert isinstance(result, date)
+        assert result.year == 2023
+        assert result.month == 6
+        assert result.day == 1  # Default day
+
+        # Test with date object and blank_out_month
+        result = DateInput.convert_any_date_value_to_date(date_obj, blank_out_month=True)
+        assert isinstance(result, date)
+        assert result.year == 2023
+        assert result.month == 1  # Default month
+        assert result.day == 15
+
+        # Test with date object and blank_out_year
+        result = DateInput.convert_any_date_value_to_date(date_obj, blank_out_year=True)
+        assert isinstance(result, date)
+        assert result.year == 1900  # Default year
+        assert result.month == 6
+        assert result.day == 15
+
+        # Test with DateValue and blank_out_day
+        date_value = DateValue(year=2023, month=6, day=15)
+        result = DateInput.convert_any_date_value_to_date(date_value, blank_out_day=True)
+        assert isinstance(result, date)
+        assert result.year == 2023
+        assert result.month == 6
+        assert result.day == 1  # Default day
+
+        # Test with DateValue and blank_out_month
+        result = DateInput.convert_any_date_value_to_date(date_value, blank_out_month=True)
+        assert isinstance(result, date)
+        assert result.year == 2023
+        assert result.month == 1  # Default month
+        assert result.day == 15
+
+        # Test with DateValue and blank_out_year
+        result = DateInput.convert_any_date_value_to_date(date_value, blank_out_year=True)
+        assert isinstance(result, date)
+        assert result.year == 1900  # Default year
+        assert result.month == 6
+        assert result.day == 15
+
+    # Property-based tests for convert_any_date_value_to_date
+    @given(st.integers(1, 9999), st.integers(1, 12), st.integers(1, 31))
+    def test_convert_any_date_value_to_date_with_datevalue_components(self, year, month, day):
+        """Test that convert_any_date_value_to_date works with DateValue components."""
+        date_value = DateValue(year=year, month=month, day=day)
+        result = DateInput.convert_any_date_value_to_date(date_value)
+        assert isinstance(result, date)
+        # Handle potential invalid dates
+        try:
+            expected = date(year, month, day)
+            assert result == expected
+        except ValueError:
+            # For invalid dates, should return default date
+            assert result.year == 1900
+            assert result.month == 1
+            assert result.day == 1
 
     # Additional tests for failure states and edge cases
 
@@ -460,3 +614,310 @@ class TestDateInput:
         # 2001-06-01 <= 2001-01-01 should be False
         result = DateInput.is_date_before_or_equal(first_date, second_date)
         assert result is False
+
+    # Property-based tests for is_date_before_or_equal
+    @given(
+        st.integers(1900, 2100),
+        st.integers(1, 12),
+        st.integers(1, 28),
+        st.integers(1900, 2100),
+        st.integers(1, 12),
+        st.integers(1, 28),
+    )
+    def test_is_date_before_or_equal_property_based(self, year1, month1, day1, year2, month2, day2):
+        """Property-based test for is_date_before_or_equal with valid dates."""
+        date1 = date(year1, month1, day1)
+        date2 = date(year2, month2, day2)
+        result = DateInput.is_date_before_or_equal(date1, date2)
+        expected = date1 <= date2
+        assert result == expected
+
+    # Property-based tests for is_date_before_or_equal with DateValue objects
+    @given(
+        st.integers(1900, 2100),
+        st.integers(1, 12),
+        st.integers(1, 28),
+        st.integers(1900, 2100),
+        st.integers(1, 12),
+        st.integers(1, 28),
+    )
+    def test_is_date_before_or_equal_datevalue_property_based(self, year1, month1, day1, year2, month2, day2):
+        """Property-based test for is_date_before_or_equal with DateValue objects."""
+        date_value1 = DateValue(year=year1, month=month1, day=day1)
+        date_value2 = DateValue(year=year2, month=month2, day=day2)
+        result = DateInput.is_date_before_or_equal(date_value1, date_value2)
+        # Convert to actual dates for comparison
+        try:
+            date1 = date(year1, month1, day1)
+            date2 = date(year2, month2, day2)
+            expected = date1 <= date2
+            assert result == expected
+        except ValueError:
+            # Handle invalid dates
+            pass
+
+    # Additional tests for get_context_data edge cases
+    def test_get_context_data_edge_cases(self):
+        """Test that convert_any_date_value_to_date works with partial DateValue objects."""
+        # Test with only year
+        date_value = DateValue(year=2023)
+        result = DateInput.convert_any_date_value_to_date(date_value)
+        assert isinstance(result, date)
+        assert result.year == 2023
+        assert result.month == 1  # Default month
+        assert result.day == 1  # Default day
+
+        # Test with only month
+        date_value = DateValue(month=6)
+        result = DateInput.convert_any_date_value_to_date(date_value)
+        assert isinstance(result, date)
+        assert result.year == 1900  # Default year
+        assert result.month == 6
+        assert result.day == 1  # Default day
+
+        # Test with only day
+        date_value = DateValue(day=15)
+        result = DateInput.convert_any_date_value_to_date(date_value)
+        assert isinstance(result, date)
+        assert result.year == 1900  # Default year
+        assert result.month == 1  # Default month
+        assert result.day == 15
+
+        # Test with year and month
+        date_value = DateValue(year=2023, month=6)
+        result = DateInput.convert_any_date_value_to_date(date_value)
+        assert isinstance(result, date)
+        assert result.year == 2023
+        assert result.month == 6
+        assert result.day == 1  # Default day
+
+        # Test with year and day
+        date_value = DateValue(year=2023, day=15)
+        result = DateInput.convert_any_date_value_to_date(date_value)
+        assert isinstance(result, date)
+        assert result.year == 2023
+        assert result.month == 1  # Default month
+        assert result.day == 15
+
+        # Test with month and day
+        date_value = DateValue(month=6, day=15)
+        result = DateInput.convert_any_date_value_to_date(date_value)
+        assert isinstance(result, date)
+        assert result.year == 1900  # Default year
+        assert result.month == 6
+        assert result.day == 15
+
+    # Property-based tests for get_context_data
+    @given(st.text(), st.text(), st.text(), st.booleans(), st.booleans(), st.booleans())
+    def test_get_context_data_property_based(self, field_id, legend, hint, day, month, year):
+        """Property-based test for get_context_data with various parameters."""
+        # Skip empty field_id as it would generate a UUID
+        if not field_id:
+            return
+
+        component = DateInput()
+        context = component.get_context_data(
+            field_id=field_id,
+            legend=legend,
+            hint=hint,
+            day=day,
+            month=month,
+            year=year,
+        )
+
+        assert context["field_id"] == field_id
+        assert context["legend"] == legend
+        assert context["hint"] == hint
+        assert context["day"] == day
+        assert context["month"] == month
+        assert context["year"] == year
+        assert "date_settings" in context
+
+    # Property-based tests for get_context_data with DateValue values
+    @given(st.integers(1, 31), st.integers(1, 12), st.integers(1, 9999))
+    def test_get_context_data_with_datevalue_property_based(self, day_val, month_val, year_val):
+        """Property-based test for get_context_data with DateValue values."""
+        component = DateInput()
+        value = DateValue(day=day_val, month=month_val, year=year_val)
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            value=value,
+            day=True,
+            month=True,
+            year=True,
+        )
+
+        assert context["value_day"] == day_val
+        assert context["value_month"] == month_val
+        assert context["value_year"] == year_val
+
+    # Tests for get_context_data
+    def test_get_context_data_basic(self):
+        """Test that get_context_data works with basic parameters."""
+        component = DateInput()
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            hint="Test Hint",
+            day=True,
+            month=True,
+            year=True,
+        )
+
+        assert context["field_id"] == "test-id"
+        assert context["legend"] == "Test Legend"
+        assert context["hint"] == "Test Hint"
+        assert context["day"] is True
+        assert context["month"] is True
+        assert context["year"] is True
+        assert context["value_day"] is None
+        assert context["value_month"] is None
+        assert context["value_year"] is None
+        assert "date_settings" in context
+
+    def test_get_context_data_with_value_dict(self):
+        """Test that get_context_data works with a value dictionary."""
+        component = DateInput()
+        value = DateValue(year=2023, month=6, day=15)
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            value=value,
+            day=True,
+            month=True,
+            year=True,
+        )
+
+        assert context["value_day"] == 15
+        assert context["value_month"] == 6
+        assert context["value_year"] == 2023
+
+    def test_get_context_data_with_value_string(self):
+        """Test that get_context_data works with a value string."""
+        component = DateInput()
+        value = '{"year": 2023, "month": 6, "day": 15}'
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+        )
+
+        # Set the value after initialization to test string parsing
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            value=value,
+            day=True,
+            month=True,
+            year=True,
+        )
+
+        assert context["value_day"] == 15
+        assert context["value_month"] == 6
+        assert context["value_year"] == 2023
+
+    def test_get_context_data_with_use_field_value_names(self):
+        """Test that get_context_data works with use_field_value_names."""
+        component = DateInput()
+        value = {"-day": 15, "-month": 6, "-year": 2023}
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            value=value,
+        )
+
+        # Set the value after initialization to test field value names
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            value=value,
+            use_field_value_names=True,
+            day=True,
+            month=True,
+            year=True,
+        )
+
+        assert context["value_day"] == 15
+        assert context["value_month"] == 6
+        assert context["value_year"] == 2023
+
+    def test_get_context_data_with_date_settings(self):
+        """Test that get_context_data works with date_settings."""
+        component = DateInput()
+        date_settings = DateSettings(
+            day=DateSettingOption(label="Day", field_id="custom-day", display=True),
+            month=DateSettingOption(label="Month", field_id="custom-month", display=True),
+            year=DateSettingOption(label="Year", field_id="custom-year", display=True),
+        )
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            date_settings=date_settings,
+            day=True,
+            month=True,
+            year=True,
+        )
+
+        assert context["date_settings"]["day"]["label"] == "Day"
+        assert context["date_settings"]["day"]["field_id"] == "custom-day"
+        assert context["date_settings"]["day"]["display"] is True
+        assert context["date_settings"]["month"]["label"] == "Month"
+        assert context["date_settings"]["month"]["field_id"] == "custom-month"
+        assert context["date_settings"]["month"]["display"] is True
+        assert context["date_settings"]["year"]["label"] == "Year"
+        assert context["date_settings"]["year"]["field_id"] == "custom-year"
+        assert context["date_settings"]["year"]["display"] is True
+
+    def test_get_context_data_with_errors(self):
+        """Test that get_context_data works with errors."""
+        component = DateInput()
+        errors = ["Error 1", "Error 2"]
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            errors=errors,
+            day=True,
+            month=True,
+            year=True,
+        )
+
+        assert context["errors"] == errors
+
+    def test_get_context_data_with_legend_size(self):
+        """Test that get_context_data works with different legend sizes."""
+        component = DateInput()
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            legend_size="large",
+            day=True,
+            month=True,
+            year=True,
+        )
+
+        assert context["legend_size"] == "large"
+        assert "govuk-fieldset__legend--l" in context["legend_class"]
+
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            legend_size="medium",
+            day=True,
+            month=True,
+            year=True,
+        )
+
+        assert context["legend_size"] == "medium"
+        assert "govuk-fieldset__legend--m" in context["legend_class"]
+
+        context = component.get_context_data(
+            field_id="test-id",
+            legend="Test Legend",
+            legend_size="small",
+            day=True,
+            month=True,
+            year=True,
+        )
+
+        assert context["legend_size"] == "small"
+        assert "govuk-fieldset__legend--s" in context["legend_class"]

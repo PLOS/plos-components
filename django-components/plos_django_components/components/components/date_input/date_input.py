@@ -1,8 +1,33 @@
 """
-A component function which provides the ability to select a date within a form.
+Date input component for Django forms following GOV.UK Design System patterns.
 
-This module provides:
-- A date input component which provides the ability to select a date within a form
+This module provides a comprehensive date input component that renders separate
+fields for day, month, and year inputs. It supports various configuration options
+for customizing the appearance and behavior of the date input, including:
+
+- Partial date inputs (day, month, or year only)
+- Flexible configuration of individual date components
+- Date validation and conversion utilities
+- Error messaging
+- Custom field IDs and names
+
+The module also includes several utility classes and methods for working with dates:
+- DateValue: TypedDict for representing date values
+- DateSettings: Configuration for date component layouts
+- DateSettingOption: Configuration for individual date components
+- Conversion utilities for transforming between different date representations
+- Date comparison utilities
+
+Usage example:
+    {% component "plos_date_input"
+        field_id="dob"
+        legend="What is your date of birth?"
+        hint="For example, 31 3 1980"
+        day=True
+        month=True
+        year=True
+        value='{"day": 31, "month": 3, "year": 1980}'
+    %}{% endcomponent %}
 """
 
 from ast import literal_eval
@@ -21,9 +46,32 @@ DEFAULT_DATE_MONTH_VALUE: int = 1
 DEFAULT_DATE_YEAR_VALUE: int = 1900
 
 
+def get_default_date_value() -> date:
+    return date(DEFAULT_DATE_YEAR_VALUE, DEFAULT_DATE_MONTH_VALUE, DEFAULT_DATE_DAY_VALUE)
+
+
 class DateSettingOption(TypedDict):
     """
-    This class provides the ability to configure settings of a date more easily.
+    Configuration options for individual date components (day, month, or year).
+
+    This TypedDict defines the configuration options available for each individual
+    date component within the DateInput component. It allows customization of
+    labels, field IDs, field names, and visibility for day, month, and year inputs.
+
+    Attributes:
+        label: The label text for the date component. If not provided, a default will be used.
+        field_id: The HTML ID attribute for the input field. If not provided, a default will be generated.
+        field_name: The HTML name attribute for the input field. If not provided, a default will be generated.
+        display: Whether to display this date component. Defaults to True.
+
+    Example:
+        # Configure only the day component
+        day_setting = DateSettingOption(
+            label="Day of birth",
+            field_id="dob-day",
+            field_name="date_of_birth_day",
+            display=True
+        )
     """
 
     label: NotRequired[str | None]
@@ -34,7 +82,31 @@ class DateSettingOption(TypedDict):
 
 class DateSettings(TypedDict):
     """
-    This class provides the ability to configure each setting individually.
+    Configuration settings for all date components (day, month, and year).
+
+    This TypedDict allows for individual configuration of each date component
+    (day, month, and year) through DateSettingOption objects. Each component
+    can be configured independently, allowing for flexible date input layouts.
+
+    Attributes:
+        day: Configuration for the day input component.
+        month: Configuration for the month input component.
+        year: Configuration for the year input component.
+
+    Example:
+        # Configure all date components with custom settings
+        date_settings = DateSettings(
+            day=DateSettingOption(label="Day", field_id="custom-day", display=True),
+            month=DateSettingOption(label="Month", field_id="custom-month", display=True),
+            year=DateSettingOption(label="Year", field_id="custom-year", display=True)
+        )
+
+        # Configure only year and month (no day)
+        date_settings = DateSettings(
+            day=DateSettingOption(display=False),
+            month=DateSettingOption(label="Month", field_id="month-input"),
+            year=DateSettingOption(label="Year", field_id="year-input")
+        )
     """
 
     day: NotRequired[DateSettingOption | None]
@@ -47,13 +119,25 @@ class DateValue(TypedDict):
     TypedDict representing a date with optional day, month, and year components.
 
     This class represents a date where any of the components can be None,
-    representing a partial date.
+    representing a partial date. It's used for both input values to the component
+    and for date conversion operations.
+
+    Attributes:
+        day: The day component of the date (1-31).
+        month: The month component of the date (1-12).
+        year: The year component of the date.
 
     Examples:
         DateValue(year=2023, month=6, day=15)  # Complete date
         DateValue(year=2023, month=6)          # Missing day
         DateValue(month=6, day=15)             # Missing year
         DateValue(day=15)                      # Missing year and month
+
+    Note:
+        When components are missing or None, default values are used in date conversions:
+        - Default year: 1900
+        - Default month: 1 (January)
+        - Default day: 1
     """
 
     day: NotRequired[int | None]
@@ -63,23 +147,72 @@ class DateValue(TypedDict):
 
 @register("plos_date_input")
 class DateInput(PLOSBaseComponent):
+    """
+    A Django component that provides a date input field for forms.
+
+    This component renders a date input with separate fields for day, month, and year,
+    following the GOV.UK Design System patterns. It supports various configuration
+    options for customizing the appearance and behavior of the date input.
+
+    The component handles:
+    - Partial date inputs (day, month, or year only)
+    - Date validation and conversion
+    - Error messaging
+    - Custom field IDs and names
+    - Flexible configuration of individual date components
+
+    Usage example:
+        {% component "plos_date_input"
+            field_id="dob"
+            legend="What is your date of birth?"
+            hint="For example, 31 3 1980"
+            day=True
+            month=True
+            year=True
+            value='{"day": 31, "month": 3, "year": 1980}'
+        %}{% endcomponent %}
+
+    For more complex configurations, see the date_settings parameter.
+    """
+
     template_name = "date_input.html"
 
     def get_context_data(
-            self,
-            field_id: str | None = None,
-            legend: str | None = None,
-            legend_size: Literal["large", "medium", "small"] = "small",
-            hint: str | None = None,
-            errors: list[str] | None = None,
-            day: bool = True,
-            month: bool = True,
-            year: bool = True,
-            value: DateValue | str | dict | None = None,
-            use_field_value_names: bool = False,
-            field_value_names: dict | None = None,
-            date_settings: DateSettings | None = None,
+        self,
+        field_id: str | None = None,
+        legend: str | None = None,
+        legend_size: Literal["large", "medium", "small"] = "small",
+        hint: str | None = None,
+        errors: list[str] | None = None,
+        day: bool = True,
+        month: bool = True,
+        year: bool = True,
+        value: DateValue | str | dict | None = None,
+        use_field_value_names: bool = False,
+        field_value_names: dict | None = None,
+        date_settings: DateSettings | None = None,
     ):
+        """
+        Prepare the context data for rendering the date input component.
+
+        Args:
+            field_id: Unique identifier for the date input. If not provided, a UUID will be generated.
+            legend: The legend text for the date input fieldset.
+            legend_size: The size of the legend text. Options are "large", "medium", or "small".
+            hint: Optional hint text to display below the legend.
+            errors: List of error messages to display for the date input.
+            day: Whether to show the day input field.
+            month: Whether to show the month input field.
+            year: Whether to show the year input field.
+            value: The initial value for the date input. Can be a DateValue dict, string
+                representation of a dict, or None.
+            use_field_value_names: Whether to use custom field value names for mapping values.
+            field_value_names: Custom field value names mapping configuration.
+            date_settings: Advanced configuration for individual date components (day, month, year).
+
+        Returns:
+            dict: Context data for rendering the template.
+        """
         if field_id is None:
             field_id = f"date-input-{uuid4()}"
 
@@ -137,56 +270,71 @@ class DateInput(PLOSBaseComponent):
 
     @staticmethod
     def merge_settings(
-            settings: DateSettings | None,
-            default_field_id: str,
-            default_field_name: str | None,
-            day: bool,
-            month: bool,
-            year: bool,
+        settings: DateSettings | None,
+        default_field_id: str,
+        default_field_name: str | None,
+        day: bool,
+        month: bool,
+        year: bool,
     ) -> DateSettings:
         """
-        Merge the settings which allows mildly flexible settings.
-        :param settings: The setting item.
-        :param default_field_id: The default field ID.
-        :param default_field_name: The default field name.
-        :param day: If the day item should be displayed.
-        :param month: If the month item should be displayed.
-        :param year: If the year item should be displayed.
-        :return: The merged setting item.
+        Merge user-provided date settings with default values.
+
+        This method combines user-provided DateSettings with default values,
+        ensuring that all date components (day, month, year) have appropriate
+        configuration even when not explicitly specified by the user.
+
+        Args:
+            settings: User-provided date settings. Can be None for default behavior.
+            default_field_id: The base field ID used to generate default IDs for date components.
+            default_field_name: The base field name used to generate default names for date components.
+            day: Whether the day component should be displayed.
+            month: Whether the month component should be displayed.
+            year: Whether the year component should be displayed.
+
+        Returns:
+            DateSettings: A complete DateSettings object with all components configured.
         """
         if settings is None:
             settings = DateSettings()
 
         settings["day"] = DateInput.merge_setting_option(
-                settings.get("day", None), day, default_field_id, default_field_name, "Day", "day"
+            settings.get("day", None), day, default_field_id, default_field_name, "Day", "day"
         )
         settings["month"] = DateInput.merge_setting_option(
-                settings.get("month", None), month, default_field_id, default_field_name, "Month", "month"
+            settings.get("month", None), month, default_field_id, default_field_name, "Month", "month"
         )
         settings["year"] = DateInput.merge_setting_option(
-                settings.get("year", None), year, default_field_id, default_field_name, "Year", "year"
+            settings.get("year", None), year, default_field_id, default_field_name, "Year", "year"
         )
         return settings
 
     @staticmethod
     def merge_setting_option(
-            setting: DateSettingOption | None,
-            display: bool,
-            default_field_id: str,
-            default_field_name: str | None,
-            default_label: str,
-            date_item: Literal["day", "month", "year"],
+        setting: DateSettingOption | None,
+        display: bool,
+        default_field_id: str,
+        default_field_name: str | None,
+        default_label: str,
+        date_item: Literal["day", "month", "year"],
     ) -> DateSettingOption:
         """
-        Merge the settings which allows mildly flexible settings.
+        Merge individual date component settings with default values.
 
-        :param setting: The setting item.
-        :param display: If the item should be displayed.
-        :param default_field_id: The default field ID.
-        :param default_field_name: The default field name.
-        :param default_label: The default field label.
-        :param date_item: The type of date item.
-        :return: Return the merged setting item.
+        This method combines user-provided settings for a single date component
+        (day, month, or year) with default values, ensuring that all required
+        attributes are present even when not explicitly specified by the user.
+
+        Args:
+            setting: User-provided settings for the date component. Can be None for default behavior.
+            display: Whether this date component should be displayed.
+            default_field_id: The base field ID used to generate the default ID for this component.
+            default_field_name: The base field name used to generate the default name for this component.
+            default_label: The default label text for this component.
+            date_item: The type of date component ("day", "month", or "year").
+
+        Returns:
+            DateSettingOption: A complete DateSettingOption object with all attributes configured.
         """
         if setting is None:
             setting = DateSettingOption(display=display, label=default_label)
@@ -208,25 +356,47 @@ class DateInput(PLOSBaseComponent):
     @staticmethod
     def create_default_field_id(field_id: str, date_item: Literal["day", "month", "year"]) -> str:
         """
-        Creates the default field ID for a date item.
-        :param field_id: The field ID for the parent item.
-        :param date_item: Whether this is day, month or year.
-        :return: The default field ID.
+        Create a default field ID for a date component.
+
+        This method generates a standardized field ID for individual date components
+        by appending the date item type to the parent field ID.
+
+        Args:
+            field_id: The base field ID for the date input component.
+            date_item: The type of date component ("day", "month", or "year").
+
+        Returns:
+            str: The generated field ID for the specific date component.
+
+        Example:
+            >>> DateInput.create_default_field_id("date-of-birth", "day")
+            "date-of-birth-day"
         """
         return f"{field_id}-{date_item}"
 
     @staticmethod
     def create_default_field_name(field_name: str, date_item: Literal["day", "month", "year"]) -> str:
         """
-        Creates the default field name for a date item.
-        :param field_name: The field name for the parent item.
-        :param date_item: Whether this is day, month or year.
-        :return: The default field name.
+        Create a default field name for a date component.
+
+        This method generates a standardized field name for individual date components
+        by appending the date item type to the parent field name.
+
+        Args:
+            field_name: The base field name for the date input component.
+            date_item: The type of date component ("day", "month", or "year").
+
+        Returns:
+            str: The generated field name for the specific date component.
+
+        Example:
+            >>> DateInput.create_default_field_name("date_of_birth", "month")
+            "date_of_birth-month"
         """
         return f"{field_name}-{date_item}"
 
     @staticmethod
-    def convert_to_date(date_value: DateValue | None) -> date | None:
+    def convert_to_date(date_value: DateValue | None) -> date:
         """
         Convert a DateValue to a Python date object.
 
@@ -240,17 +410,25 @@ class DateInput(PLOSBaseComponent):
 
         Returns:
             A date object with default values for missing components,
-            or None if conversion fails (e.g., invalid date like Feb 30).
+            or a default date if conversion fails (e.g., invalid date like Feb 30).
+
+        Example:
+            >>> DateInput.convert_to_date(DateValue(year=2023, month=6, day=15))
+            datetime.date(2023, 6, 15)
+
+            >>> DateInput.convert_to_date(DateValue(year=2023, month=6))
+            datetime.date(2023, 6, 1)
         """
         if date_value is None:
             date_value = DateValue()
 
-        # Extract date components with explicit typing
+        # Extract date components
         day_val: int | None = date_value.get("day", None)
         month_val: int | None = date_value.get("month", None)
         year_val: int | None = date_value.get("year", None)
 
-        # Use default values for missing components
+        # Use default values for missing components. The value for "day", "month" or "year" may exist but be set to
+        # "None". So we have to do this even if it's annoying.
         day: int = day_val if day_val is not None else DEFAULT_DATE_DAY_VALUE
         month: int = month_val if month_val is not None else DEFAULT_DATE_MONTH_VALUE
         year: int = year_val if year_val is not None else DEFAULT_DATE_YEAR_VALUE
@@ -258,15 +436,82 @@ class DateInput(PLOSBaseComponent):
         try:
             return date(year, month, day)
         except ValueError:
-            # Handle invalid dates (e.g., February 30)
-            return None
+            # Handle invalid dates (e.g., February 30). This should never happen.
+            return get_default_date_value()
+
+    @staticmethod
+    def convert_any_date_value_to_date(
+        date_value: DateValue | date | None,
+        blank_out_day: bool = False,
+        blank_out_month: bool = False,
+        blank_out_year: bool = False,
+    ) -> date:
+        """
+        Convert any date representation to a date object.
+
+        This method handles multiple input types and can blank out specific components.
+        It's particularly useful for date comparisons where only partial date information
+        is relevant.
+
+        Args:
+            date_value: The date to convert (DateValue, date object, or None).
+            blank_out_day: Whether to blank out the day component.
+            blank_out_month: Whether to blank out the month component.
+            blank_out_year: Whether to blank out the year component.
+
+        Returns:
+            A date object with the converted date.
+
+        Example:
+            >>> from datetime import date
+            >>> DateInput.convert_any_date_value_to_date(date(2023, 6, 15))
+            datetime.date(2023, 6, 15)
+
+            >>> DateInput.convert_any_date_value_to_date(
+            ...     date(2023, 6, 15),
+            ...     blank_out_day=True
+            ... )
+            datetime.date(2023, 6, 1)
+        """
+        # Already a date, so we return.
+        temp_val: DateValue = DateValue()
+        if isinstance(date_value, date):
+            if not blank_out_day and not blank_out_month and not blank_out_year:
+                return date_value
+            else:
+                temp_val["day"] = None if blank_out_day else date_value.day
+                temp_val["month"] = None if blank_out_month else date_value.month
+                temp_val["year"] = None if blank_out_year else date_value.year
+        elif isinstance(date_value, dict):
+            temp_val["day"] = None if blank_out_day else date_value.get("day", None)
+            temp_val["month"] = None if blank_out_month else date_value.get("month", None)
+            temp_val["year"] = None if blank_out_year else date_value.get("year", None)
+        else:
+            temp_val["day"] = DEFAULT_DATE_DAY_VALUE
+            temp_val["month"] = DEFAULT_DATE_MONTH_VALUE
+            temp_val["year"] = DEFAULT_DATE_YEAR_VALUE
+
+        return DateInput.convert_to_date(temp_val)
 
     @staticmethod
     def convert_from_date(date_obj: date) -> DateValue:
         """
         Convert a Python date object to a DateValue.
-        :param date_obj: The date object to convert.
-        :return: A DateValue dictionary with year, month, and day components.
+
+        This method is the inverse of convert_to_date, transforming a standard
+        Python date object into a DateValue TypedDict for use with the DateInput
+        component or other date-related operations.
+
+        Args:
+            date_obj: The date object to convert.
+
+        Returns:
+            DateValue: A DateValue dictionary with year, month, and day components.
+
+        Example:
+            >>> from datetime import date
+            >>> DateInput.convert_from_date(date(2023, 6, 15))
+            {'year': 2023, 'month': 6, 'day': 15}
         """
         return DateValue(year=date_obj.year, month=date_obj.month, day=date_obj.day)
 
@@ -291,14 +536,28 @@ class DateInput(PLOSBaseComponent):
 
         Returns:
             True if first_date is before or equal to second_date, False otherwise.
+
+        Example:
+            >>> from datetime import date
+            >>> DateInput.is_date_before_or_equal(
+            ...     DateValue(year=2023, month=1),
+            ...     DateValue(year=2023, month=12)
+            ... )
+            True
+
+            >>> DateInput.is_date_before_or_equal(
+            ...     date(2023, 6, 15),
+            ...     date(2023, 6, 15)
+            ... )
+            True
         """
         # Handle date objects directly
         if isinstance(first_date, date) and isinstance(second_date, date):
             return first_date <= second_date
 
         # Handle mixed types or DateValue objects
-        first_date_obj: date | None = first_date if isinstance(first_date, date) else None
-        second_date_obj: date | None = second_date if isinstance(second_date, date) else None
+        first_date_obj: date
+        second_date_obj: date
 
         # Initialize variables to track missing components in first_date
         first_day_missing: bool = False
@@ -306,35 +565,19 @@ class DateInput(PLOSBaseComponent):
         first_year_missing: bool = False
 
         # Convert first_date to date object if it's a DateValue
-        if first_date_obj is None and hasattr(first_date, "keys") and hasattr(first_date, "get"):
+        if not isinstance(first_date, date) and hasattr(first_date, "keys") and hasattr(first_date, "get"):
             # Check which components are missing in first_date
-            first_day_missing = first_date.get("day") is None
-            first_month_missing = first_date.get("month") is None
-            first_year_missing = first_date.get("year") is None
+            first_day_missing = first_date.get("day", None) is None
+            first_month_missing = first_date.get("month", None) is None
+            first_year_missing = first_date.get("year", None) is None
 
-            # Convert first_date DateValue to date object
-            first_date_obj = DateInput.convert_to_date(first_date)
-
-        second_date_value: DateValue = DateValue()
-        # Convert second_date to date object if it's a DateValue
-        if second_date_obj is None and hasattr(second_date, "keys") and hasattr(second_date, "get"):
-            # Match second_date's missing components to first_date's
-            second_date_value["day"] = None if first_day_missing else second_date.get("day", None)
-            second_date_value["month"] = None if first_month_missing else second_date.get("month", None)
-            second_date_value["year"] = None if first_year_missing else second_date.get("year", None)
-        elif second_date_obj is not None:
-            second_date_value["day"] = None if first_day_missing else second_date_obj.day
-            second_date_value["month"] = None if first_month_missing else second_date_obj.month
-            second_date_value["year"] = None if first_year_missing else second_date_obj.year
+        # Convert first_date DateValue to date object
+        first_date_obj = DateInput.convert_any_date_value_to_date(first_date)
 
         # Convert the modified second_date
-        second_date_obj = DateInput.convert_to_date(second_date_value)
-
-        # Handle None cases
-        if first_date_obj is None:
-            return False
-        if second_date_obj is None:
-            return True
+        second_date_obj = DateInput.convert_any_date_value_to_date(
+            second_date, first_day_missing, first_month_missing, first_year_missing
+        )
 
         # Perform the comparison
         return first_date_obj <= second_date_obj
