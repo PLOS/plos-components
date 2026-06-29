@@ -9,7 +9,7 @@
             {% endfor %}
         </ul>
     {% else %}
-        <div class="govuk-error-summary" data-module="govuk-error-summary"{% if field_id %} id="{{ field_id }}" tabindex="-1"{% endif %}>
+        <div class="govuk-error-summary" data-module="govuk-error-summary" tabindex="-1"{% if field_id %} id="{{ field_id }}"{% endif %}>
         <div role="alert">
             {% component "plos_heading" level=2 css_class="govuk-error-summary__title" %}{{ title }}{% endcomponent %}
             <div class="govuk-error-summary__body">
