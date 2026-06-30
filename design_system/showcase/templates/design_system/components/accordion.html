@@ -5,77 +5,96 @@
 {% endblock ds_title %}
 
 {% block ds_content %}
-<h1 class="govuk-heading-xl">Accordion</h1>
+{% component "plos_heading" level=1 %}Accordion{% endcomponent %}
 
-<p class="govuk-body">
+{% component "plos_text_box" %}
   Each section is collapsed by default. Pass <code>expanded=True</code> to
   an <code>plos_accordion_section</code> to start it open.
-</p>
-<p class="govuk-body">
+{% endcomponent %}
+{% component "plos_text_box" %}
   Section content is provided via the default slot.
-</p>
-<p class="govuk-body">
+{% endcomponent %}
+{% component "plos_text_box" %}
   Multiple sections can be open at the same time. There is no show/hide all
   control.
-</p>
+{% endcomponent %}
+{% component "plos_text_box" %}
+  By default the accordion does not remember which sections were open. Pass
+  <code>remember_expanded=True</code> to the <code>plos_accordion</code> to
+  persist each section's expanded state in browser local storage, so it is
+  retained across page loads.
+{% endcomponent %}
 
 <hr />
 
-<div style="margin-top: 2rem; margin-bottom: 2rem;">
-  <h2 class="govuk-heading-m">Default state (all sections closed):</h2>
-  {% component "plos_accordion" field_id="conflict-of-interest" %}
-    {% component "plos_accordion_section" heading="What you must declare" %}
-      <p class="govuk-body">This section includes commercial affiliations.</p>
-      <p class="govuk-body">A commercial affiliation is an employment or other relationship with a for-profit organisation that could reasonably be perceived to influence the research.</p>
-      <p class="govuk-body">Examples include:</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li class="govuk-body">Employment by a commercial company</li>
-        <li class="govuk-body">Paid consultancy or advisory roles</li>
-        <li class="govuk-body">Board or leadership roles in a for-profit organisation</li>
-        <li class="govuk-body">Equity interests (for example, owning shares or stock options)</li>
-        <li class="govuk-body">Paid expert testimony</li>
-        <li class="govuk-body">Patent applications (pending or granted)</li>
-        <li class="govuk-body">Travel grants, honoraria, or gifts from commercial organisations</li>
-      </ul>
-      <p class="govuk-body">If an author's affiliation with a commercial organisation was established after the study was conducted, it should still be declared here if it could reasonably be perceived to influence the research.</p>
-      <p class="govuk-body">If you are unsure whether an affiliation should be declared, please include it.</p>
+{% component "plos_heading" level=2 css_class="govuk-heading-m" %}Default state (all sections closed):{% endcomponent %}
+{% component "plos_accordion" field_id="conflict-of-interest" %}
+  {% component "plos_accordion_section" heading="What you must declare" %}
+    {% component "plos_text_box" %}This section includes commercial affiliations.{% endcomponent %}
+    {% component "plos_text_box" %}A commercial affiliation is an employment or other relationship with a for-profit organisation that could reasonably be perceived to influence the research.{% endcomponent %}
+    {% component "plos_text_box" %}Examples include:{% endcomponent %}
+    {% component "plos_bulleted_list" %}
+      {% component "plos_bulleted_list_option" %}Employment by a commercial company{% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Paid consultancy or advisory roles{% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Board or leadership roles in a for-profit organisation{% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Equity interests (for example, owning shares or stock options){% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Paid expert testimony{% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Patent applications (pending or granted){% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Travel grants, honoraria, or gifts from commercial organisations{% endcomponent %}
     {% endcomponent %}
-    {% component "plos_accordion_section" heading="Financial conflicts of interest" %}
-      <p class="govuk-body">Declare any financial relationships with organisations that could be perceived as influencing your research, including employment, consultancies, stock ownership, honoraria, and paid expert testimony.</p>
-    {% endcomponent %}
-    {% component "plos_accordion_section" heading="Non-financial conflicts of interest" %}
-      <p class="govuk-body">Declare any non-financial relationships or activities that could be perceived as influencing your research, including personal or professional relationships, affiliations, and beliefs.</p>
-    {% endcomponent %}
+    {% component "plos_text_box" %}If an author's affiliation with a commercial organisation was established after the study was conducted, it should still be declared here if it could reasonably be perceived to influence the research.{% endcomponent %}
+    {% component "plos_text_box" %}If you are unsure whether an affiliation should be declared, please include it.{% endcomponent %}
   {% endcomponent %}
-</div>
+  {% component "plos_accordion_section" heading="Financial conflicts of interest" %}
+    {% component "plos_text_box" %}Declare any financial relationships with organisations that could be perceived as influencing your research, including employment, consultancies, stock ownership, honoraria, and paid expert testimony.{% endcomponent %}
+  {% endcomponent %}
+  {% component "plos_accordion_section" heading="Non-financial conflicts of interest" %}
+    {% component "plos_text_box" %}Declare any non-financial relationships or activities that could be perceived as influencing your research, including personal or professional relationships, affiliations, and beliefs.{% endcomponent %}
+  {% endcomponent %}
+{% endcomponent %}
 
 <hr />
 
-<div style="margin-top: 2rem; margin-bottom: 2rem;">
-  <h2 class="govuk-heading-m">With one section expanded by default</h2>
-  {% component "plos_accordion" field_id="conflict-of-interest-expanded" %}
-    {% component "plos_accordion_section" heading="What you must declare" expanded=True %}
-      <p class="govuk-body">This section includes commercial affiliations.</p>
-      <p class="govuk-body">A commercial affiliation is an employment or other relationship with a for-profit organisation that could reasonably be perceived to influence the research.</p>
-      <p class="govuk-body">Examples include:</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li class="govuk-body">Employment by a commercial company</li>
-        <li class="govuk-body">Paid consultancy or advisory roles</li>
-        <li class="govuk-body">Board or leadership roles in a for-profit organisation</li>
-        <li class="govuk-body">Equity interests (for example, owning shares or stock options)</li>
-        <li class="govuk-body">Paid expert testimony</li>
-        <li class="govuk-body">Patent applications (pending or granted)</li>
-        <li class="govuk-body">Travel grants, honoraria, or gifts from commercial organisations</li>
-      </ul>
-      <p class="govuk-body">If an author's affiliation with a commercial organisation was established after the study was conducted, it should still be declared here if it could reasonably be perceived to influence the research.</p>
-      <p class="govuk-body">If you are unsure whether an affiliation should be declared, please include it.</p>
+{% component "plos_heading" level=2 css_class="govuk-heading-m" %}With one section expanded by default{% endcomponent %}
+{% component "plos_accordion" field_id="conflict-of-interest-expanded" %}
+  {% component "plos_accordion_section" heading="What you must declare" expanded=True %}
+    {% component "plos_text_box" %}This section includes commercial affiliations.{% endcomponent %}
+    {% component "plos_text_box" %}A commercial affiliation is an employment or other relationship with a for-profit organisation that could reasonably be perceived to influence the research.{% endcomponent %}
+    {% component "plos_text_box" %}Examples include:{% endcomponent %}
+    {% component "plos_bulleted_list" %}
+      {% component "plos_bulleted_list_option" %}Employment by a commercial company{% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Paid consultancy or advisory roles{% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Board or leadership roles in a for-profit organisation{% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Equity interests (for example, owning shares or stock options){% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Paid expert testimony{% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Patent applications (pending or granted){% endcomponent %}
+      {% component "plos_bulleted_list_option" %}Travel grants, honoraria, or gifts from commercial organisations{% endcomponent %}
     {% endcomponent %}
-    {% component "plos_accordion_section" heading="Financial conflicts of interest" %}
-      <p class="govuk-body">Declare any financial relationships with organisations that could be perceived as influencing your research, including employment, consultancies, stock ownership, honoraria, and paid expert testimony.</p>
-    {% endcomponent %}
-    {% component "plos_accordion_section" heading="Non-financial conflicts of interest" %}
-      <p class="govuk-body">Declare any non-financial relationships or activities that could be perceived as influencing your research, including personal or professional relationships, affiliations, and beliefs.</p>
-    {% endcomponent %}
+    {% component "plos_text_box" %}If an author's affiliation with a commercial organisation was established after the study was conducted, it should still be declared here if it could reasonably be perceived to influence the research.{% endcomponent %}
+    {% component "plos_text_box" %}If you are unsure whether an affiliation should be declared, please include it.{% endcomponent %}
   {% endcomponent %}
-</div>
+  {% component "plos_accordion_section" heading="Financial conflicts of interest" %}
+    {% component "plos_text_box" %}Declare any financial relationships with organisations that could be perceived as influencing your research, including employment, consultancies, stock ownership, honoraria, and paid expert testimony.{% endcomponent %}
+  {% endcomponent %}
+  {% component "plos_accordion_section" heading="Non-financial conflicts of interest" %}
+    {% component "plos_text_box" %}Declare any non-financial relationships or activities that could be perceived as influencing your research, including personal or professional relationships, affiliations, and beliefs.{% endcomponent %}
+  {% endcomponent %}
+{% endcomponent %}
+
+<hr />
+
+{% component "plos_heading" level=2 css_class="govuk-heading-m" %}Remembering expanded state across page loads{% endcomponent %}
+{% component "plos_text_box" %}
+  Expand or collapse a section below, then reload the page. Because this
+  accordion is rendered with <code>remember_expanded=True</code>, each
+  section's state is saved to browser local storage and restored on reload.
+{% endcomponent %}
+{% component "plos_text_box" %}
+  Note that the default behaviour of the PLOS Accordion is to not remember expanded state across page loads. This is an opt-in feature.
+{% endcomponent %}
+{% component "plos_accordion" field_id="conflict-of-interest-remembered" remember_expanded=True %}
+  {% component "plos_accordion_section" heading="Open me, then reload the page, I'll stay open" %}
+    {% component "plos_text_box" %}Trust me.{% endcomponent %}
+  {% endcomponent %}
+{% endcomponent %}
 {% endblock ds_content %}

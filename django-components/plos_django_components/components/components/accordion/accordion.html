@@ -1,4 +1,5 @@
-<div class="govuk-accordion" data-module="govuk-accordion"{% if field_id %} id="{{ field_id }}"{% endif %}>
+<!-- For more information about data-remember-expanded, see the PLOS Accordion's python documentation -->
+<div class="govuk-accordion" data-module="govuk-accordion" data-remember-expanded="{{ remember_expanded|yesno:'true,false' }}"{% if field_id %} id="{{ field_id }}"{% endif %}>
   {% for section in sections %}
     <div class="govuk-accordion__section{% if section.expanded %} govuk-accordion__section--expanded{% endif %}">
       <div class="govuk-accordion__section-header">
