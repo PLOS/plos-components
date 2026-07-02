@@ -10,14 +10,17 @@
         </ul>
     {% else %}
         <div class="govuk-error-summary" data-module="govuk-error-summary" tabindex="-1"{% if field_id %} id="{{ field_id }}"{% endif %}>
-        <div role="alert">
-            {% component "plos_heading" level=2 css_class="govuk-error-summary__title" %}{{ title }}{% endcomponent %}
-            <div class="govuk-error-summary__body">
-                <ul class="govuk-list govuk-error-summary__list">
-                    {% for entry in entries %}
-                        <li><a href="#{{ entry.anchor }}" class="govuk-link">{{ entry.label }}: {{ entry.message }}</a></li>
-                    {% endfor %}
-                </ul>
+        <div role="alert" class="plos-error-summary__alert">
+            {% component "plos_icon" icon_name="exclamation_circle" %}{% endcomponent %}
+            <div class="plos-error-summary__content">
+                {% component "plos_heading" level=2 css_class="govuk-error-summary__title" %}{{ title }}{% endcomponent %}
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        {% for entry in entries %}
+                            <li><a href="#{{ entry.anchor }}" class="govuk-link">{{ entry.label }}: {{ entry.message }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
         </div>
