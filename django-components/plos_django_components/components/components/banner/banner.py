@@ -24,13 +24,11 @@ class Banner(PLOSBaseComponent):
 
     def get_context_data(
         self,
-        disabled: bool = False,
         severity: Literal["success", "warning", "info", "problem"] = "info",
         field_id: str | None = None,
         field_name: str | None = None,
     ):
         return {
-            "disabled": disabled,
             "field_id": field_id,
             "field_name": field_name,
             "severity": severity,

@@ -105,3 +105,57 @@
   overflow-x: auto;
   white-space: pre;
 }
+
+/* Typography reference tables (styles/typography pages) */
+.type-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+  font-family: var(--plos-font-family);
+  color: var(--plos-color-text-primary-light);
+  font-size: 1rem;
+}
+
+.type-table th,
+.type-table td {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #e6e6e6;
+  border-right: 1px solid #e6e6e6;
+}
+
+.type-table thead th {
+  font-weight: 700;
+}
+
+.type-table th:last-child,
+.type-table td:last-child {
+  border-right: none;
+}
+
+.type-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.type-table__class {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: var(--plos-color-text-secondary-light);
+}
+
+.type-scale-demo {
+  margin-bottom: 2.5rem;
+  font-family: var(--plos-font-family);
+}
+
+.type-scale-demo > p {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
