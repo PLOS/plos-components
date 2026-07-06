@@ -20,6 +20,7 @@ COMPONENTS = {
     "summary-list",
     "date_input",
     "icon",
+    "text-group",
 }
 
 PATTERNS = {
