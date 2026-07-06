@@ -8,10 +8,8 @@ class TextGroup(PLOSBaseComponent):
     """
     Groups related paragraphs so they read as one block.
 
-    Wraps its slotted content so the body paragraphs inside sit 8px apart, and the
-    group as a whole sits 32px below (the standard between-group gap). Use it around
-    two or more related text boxes that should read together, separated from
-    surrounding content by the 32px rhythm.
+    Wraps its slotted content so the text within sits 16px apart, while the
+    group is separated from surrounding content by the 32px margin-bottom.
 
     Example usage:
 
