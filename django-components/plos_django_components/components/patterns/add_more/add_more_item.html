@@ -1,0 +1,23 @@
+{% load component_tags %}
+<div class="plos-add-more__item" data-item-index="{{ index }}" id="{{ field_name }}-item-{{ index }}">
+  {% component "plos_heading" level=heading_level autofocus=autofocus_heading tabindex="-1" %}{{ item_label|title }} {{ display_index }}{% endcomponent %}
+
+  {% slot "item_content" index=index errors=errors value=value is_first=is_first autofocus_input=autofocus_input %}{% endslot %}
+
+    {% if show_delete %}
+        {% component "plos_button"
+                field_name="{{ field_name }}__action"
+                value="delete__{{ index }}"
+                form_action="{{ htmx_url }}"
+                button_type="submit"
+                action="warning"
+                hx_post="{{ htmx_url }}"
+                hx_target="#{{ field_name }}-add-more"
+                hx_select="#{{ field_name }}-add-more"
+                hx_swap="outerHTML"
+                hx_include="#{{ field_name }}-add-more"
+                hx_disabled_elt="#{{ field_name }}-add-more button" %}
+            {{ delete_label }} {{ item_label }} {{ display_index }}
+        {% endcomponent %}
+  {% endif %}
+</div>

@@ -11,8 +11,9 @@
         {{ hint }}
     </div>
     {% endif %}
+    {% component "plos_error_summary" entries=errors compact="True" %}{% endcomponent %}
     <textarea
-            class="govuk-textarea{% if maxlength %} govuk-js-character-count{% endif %}{% if errors %} govuk-textarea--error{% endif %}"
+            class="govuk-textarea{% if textarea_width_class %} {{ textarea_width_class }}{% endif %}{% if maxlength %} govuk-js-character-count{% endif %}{% if errors %} govuk-textarea--error{% endif %}"
             id="{{ field_id }}"
             name="{{ name }}"
             rows="{{ rows }}"
@@ -22,16 +23,8 @@
             {% if maxlength %}maxlength={{ maxlength }}{% endif %}
             {% if minlength %}minlength={{ minlength }}{% endif %}
             {% if maxlength or hint %}aria-describedby="{% if maxlength %}{{ field_id }}-info {% endif %}{% if hint %}{{ field_id }}-hint{% endif %}"
-            {% endif %}>{% if value %}{{ value }}{% endif %}</textarea>
+            {% endif %}>{% if value is not None %}{{ value }}{% endif %}</textarea>
     {% if maxlength %}
     <div id="{{ field_id }}-info" class="govuk-hint govuk-character-count__message"></div>
-    {% endif %}
-    {% if errors %}
-    {% for error in errors %}
-    <p class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error:</span>
-        {{ error }}
-    </p>
-    {% endfor %}
     {% endif %}
 </div>

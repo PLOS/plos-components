@@ -3,13 +3,23 @@
 {% block ds_title %}Banner – PLOS Design System{% endblock ds_title %}
 
 {% block ds_content %}
-    {% component "plos_heading" level=1 %}
-        Informational Banner
-    {% endcomponent %}
-    {% component "plos_banner" %}{% endcomponent %}
+  {% component "plos_heading" level=1 %}Banner{% endcomponent %}
 
-    {% component "plos_heading" level=1 %}
-        Success Banner
-    {% endcomponent %}
-    {% component "plos_banner" severity="success" %}Successful submission{% endcomponent %}
+  {% component "plos_text_box" %}
+    The banner surfaces a contextual message tied to a <code>severity</code>: <code>success</code>,
+    <code>info</code>, <code>warning</code>, or <code>problem</code>. Each shows a matching icon and
+    background. Pass any content into the slot, use <code>&lt;strong&gt;</code> for the lead sentence.
+  {% endcomponent %}
+
+  {% component "plos_heading" level=2 %}Success{% endcomponent %}
+  {% component "plos_banner" severity="success" %}<strong>Successful submission.</strong> Your manuscript has been received and is now with our editorial team.{% endcomponent %}
+
+  {% component "plos_heading" level=2 %}Info{% endcomponent %}
+  {% component "plos_banner" severity="info" %}<strong>Important.</strong> You must include all the information listed in your Methods section. If any of the details are missing, we will not be able to review or publish your submission. This will cause delays.{% endcomponent %}
+
+  {% component "plos_heading" level=2 %}Warning{% endcomponent %}
+  {% component "plos_banner" severity="warning" %}<strong>We could not verify your institutional affiliation.</strong> Please verify your affiliation to ensure that we can correctly identify any discounts you may be eligible through institutional partnerships.{% endcomponent %}
+
+  {% component "plos_heading" level=2 %}Problem{% endcomponent %}
+  {% component "plos_banner" severity="problem" %}<strong>There is an issue.</strong> Confirm how you have reviewed and approve how <a href="#" class="govuk-link govuk-link--text-colour">this statement</a>.{% endcomponent %}
 {% endblock ds_content %}

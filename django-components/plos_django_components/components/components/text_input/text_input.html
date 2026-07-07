@@ -5,16 +5,7 @@
     {% if hint %}
     <div class="govuk-hint" id="{{id}}-hint">{{ hint }}</div>
     {% endif %}
-    {% if errors %}
-    <div class="govuk-error-message" id="{{id}}-error">
-        {% for error in errors %}
-        <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span> {{ error }}
-        </p>
-        {% endfor %}
-    </div>
-    {% endif %}
-
+    {% component "plos_error_summary" entries=errors compact="True" %}{% endcomponent %}
     <div class="govuk-input__wrapper">
         {% if prefix %}
         <div class="govuk-input__prefix" aria-hidden="true">{{ prefix }}</div>
@@ -22,16 +13,18 @@
         <input type="{{ input_type }}"
                id="{{ id }}"
                name="{{ name }}"
-               class="govuk-input{% if errors %} govuk-input--error{% endif %}"
+               class="govuk-input{% if input_width_class %} {{ input_width_class }}{% endif %}{% if errors %} govuk-input--error{% endif %}"
                {% if disabled %}disabled{% endif %}
-               {% if value %}value="{{ value }}" {% endif %}
+               {% if autofocus %}autofocus{% endif %}
+               {% if value is not None %}value="{{ value }}" {% endif %}
                {% if placeholder %}placeholder="{{ placeholder }}" {% endif %}
                {% if required %}required{% endif %}
                {% if hint or errors %}
-               aria-describedby="{% if hint %}{{ name }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ name }}-error{% endif %}"
+               aria-describedby="{% if hint %}{{ id }}-hint{% endif %}{% if hint and errors %} {% endif %}{% if errors %}{{ id }}-error{% endif %}"
                {% endif %}
                {% if maxlength %}maxlength={{ maxlength }}{% endif %}
-               {% if minlength %}minlength={{ minlength }}{% endif %}>
+               {% if minlength %}minlength={{ minlength }}{% endif %}
+               {% if step %}step="{{ step }}"{% endif %}>
         {% if suffix %}
         <div class="govuk-input__suffix" aria-hidden="true">{{ suffix }}</div>
         {% endif %}

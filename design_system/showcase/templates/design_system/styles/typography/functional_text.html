@@ -5,10 +5,6 @@
 {% endblock ds_title %}
 
 {% block ds_content %}
-  <style>
-    .col-shaded { background-color: #f3f2f1; }
-  </style>
-
   <h1 class="govuk-heading-xl">
     Functional text
   </h1>
@@ -16,96 +12,101 @@
   <h2 class="govuk-heading-l">
     Fieldset legend
   </h2>
-  <p class="govuk-body-s">
-    GOV.UK v6 font-sizes are taken from source (rem, converted to px at 16px base). GOV.UK's line-heights are approximate and computed from unitless ratios. PLOS values are from <code>plos-overrides.min.css</code>. Font-sizes and line-heights are defined in rem, with px equivalents shown for convenience.
+  <p class="govuk-body">
+    Legends reuse the heading type scale: <code>--xl/--l/--m/--s</code> map to
+    <code>heading-xl/l/m/s</code>; the base legend maps to <code>body-s</code>. All are responsive,
+    the type primitives carry both breakpoint values, so the classes reflow automatically.
+    Implemented in <code>plos-overrides.min.css</code>. Sizes are in px.
   </p>
-  <table class="govuk-table">
-    <thead class="govuk-table__head">
-      <tr class="govuk-table__row">
-        <th class="govuk-table__header" rowspan="2">Class</th>
-        <th class="govuk-table__header" rowspan="2">Figma label</th>
-        <th class="govuk-table__header col-shaded" colspan="2">GOV.UK mobile</th>
-        <th class="govuk-table__header" colspan="2">GOV.UK desktop</th>
-        <th class="govuk-table__header col-shaded" colspan="2">PLOS mobile</th>
-        <th class="govuk-table__header" colspan="2">PLOS desktop</th>
-        <th class="govuk-table__header" rowspan="2">Example</th>
-      </tr>
-      <tr class="govuk-table__row">
-        <th class="govuk-table__header col-shaded">font-size</th>
-        <th class="govuk-table__header col-shaded">line-height</th>
-        <th class="govuk-table__header">font-size</th>
-        <th class="govuk-table__header">line-height</th>
-        <th class="govuk-table__header col-shaded">font-size</th>
-        <th class="govuk-table__header col-shaded">line-height</th>
-        <th class="govuk-table__header">font-size</th>
-        <th class="govuk-table__header">line-height</th>
+
+  <h3 class="govuk-heading-m">
+    Large screens
+  </h3>
+  <table class="type-table">
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Font size</th>
+        <th>Line height</th>
+        <th>Weight</th>
       </tr>
     </thead>
-    <tbody class="govuk-table__body">
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-body-s"><code>govuk-fieldset__legend</code></td>
-        <td class="govuk-table__cell govuk-body-s"></td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.1875rem / 19px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">~25px</td>
-        <td class="govuk-table__cell govuk-body-s">1.1875rem / 19px</td>
-        <td class="govuk-table__cell govuk-body-s">~25px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1rem / 16px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.5rem / 24px</td>
-        <td class="govuk-table__cell govuk-body-s">1rem / 16px</td>
-        <td class="govuk-table__cell govuk-body-s">1.5rem / 24px</td>
-        <td class="govuk-table__cell"><fieldset class="govuk-fieldset"><legend class="govuk-fieldset__legend">The quick brown fox</legend></fieldset></td>
+    <tbody>
+      <tr>
+        <td>heading-xl<span class="type-table__class">.govuk-fieldset__legend--xl</span></td>
+        <td>42</td>
+        <td>48</td>
+        <td>bold/700</td>
       </tr>
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-body-s"><code>govuk-fieldset__legend--xl</code></td>
-        <td class="govuk-table__cell govuk-body-s">Legend XL</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">2rem / 32px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">~35px</td>
-        <td class="govuk-table__cell govuk-body-s">3rem / 48px</td>
-        <td class="govuk-table__cell govuk-body-s">~50px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">2rem / 32px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">2.5rem / 40px</td>
-        <td class="govuk-table__cell govuk-body-s">2.625rem / 42px</td>
-        <td class="govuk-table__cell govuk-body-s">3rem / 48px</td>
-        <td class="govuk-table__cell"><fieldset class="govuk-fieldset"><legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">The quick brown fox</legend></fieldset></td>
+      <tr>
+        <td>heading-l<span class="type-table__class">.govuk-fieldset__legend--l</span></td>
+        <td>28</td>
+        <td>36</td>
+        <td>bold/700</td>
       </tr>
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-body-s"><code>govuk-fieldset__legend--l</code></td>
-        <td class="govuk-table__cell govuk-body-s">Legend L</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.6875rem / 27px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">~30px</td>
-        <td class="govuk-table__cell govuk-body-s">2.25rem / 36px</td>
-        <td class="govuk-table__cell govuk-body-s">~40px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.3125rem / 21px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.75rem / 28px</td>
-        <td class="govuk-table__cell govuk-body-s">1.75rem / 28px</td>
-        <td class="govuk-table__cell govuk-body-s">2.25rem / 36px</td>
-        <td class="govuk-table__cell"><fieldset class="govuk-fieldset"><legend class="govuk-fieldset__legend govuk-fieldset__legend--l">The quick brown fox</legend></fieldset></td>
+      <tr>
+        <td>heading-m<span class="type-table__class">.govuk-fieldset__legend--m</span></td>
+        <td>21</td>
+        <td>28</td>
+        <td>bold/700</td>
       </tr>
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-body-s"><code>govuk-fieldset__legend--m</code></td>
-        <td class="govuk-table__cell govuk-body-s">Legend M</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.3125rem / 21px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">~25px</td>
-        <td class="govuk-table__cell govuk-body-s">1.5rem / 24px</td>
-        <td class="govuk-table__cell govuk-body-s">30px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.25rem / 20px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.75rem / 28px</td>
-        <td class="govuk-table__cell govuk-body-s">1.3125rem / 21px</td>
-        <td class="govuk-table__cell govuk-body-s">1.75rem / 28px</td>
-        <td class="govuk-table__cell"><fieldset class="govuk-fieldset"><legend class="govuk-fieldset__legend govuk-fieldset__legend--m">The quick brown fox</legend></fieldset></td>
+      <tr>
+        <td>heading-s<span class="type-table__class">.govuk-fieldset__legend--s</span></td>
+        <td>18</td>
+        <td>28</td>
+        <td>bold/700</td>
       </tr>
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-body-s"><code>govuk-fieldset__legend--s</code></td>
-        <td class="govuk-table__cell govuk-body-s">Legend S</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.1875rem / 19px (inherited)</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">~25px</td>
-        <td class="govuk-table__cell govuk-body-s">1.1875rem / 19px (inherited)</td>
-        <td class="govuk-table__cell govuk-body-s">~25px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.125rem / 18px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.5rem / 24px</td>
-        <td class="govuk-table__cell govuk-body-s">1.125rem / 18px</td>
-        <td class="govuk-table__cell govuk-body-s">1.75rem / 28px</td>
-        <td class="govuk-table__cell"><fieldset class="govuk-fieldset"><legend class="govuk-fieldset__legend govuk-fieldset__legend--s">The quick brown fox</legend></fieldset></td>
+      <tr>
+        <td>body-s<span class="type-table__class">.govuk-fieldset__legend</span></td>
+        <td>16</td>
+        <td>24</td>
+        <td>regular/400</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="govuk-heading-m">
+    Small screens (below 640px width)
+  </h3>
+  <table class="type-table">
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Font size</th>
+        <th>Line height</th>
+        <th>Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>heading-xl<span class="type-table__class">.govuk-fieldset__legend--xl</span></td>
+        <td>32</td>
+        <td>40</td>
+        <td>bold/700</td>
+      </tr>
+      <tr>
+        <td>heading-l<span class="type-table__class">.govuk-fieldset__legend--l</span></td>
+        <td>24</td>
+        <td>28</td>
+        <td>bold/700</td>
+      </tr>
+      <tr>
+        <td>heading-m<span class="type-table__class">.govuk-fieldset__legend--m</span></td>
+        <td>18</td>
+        <td>24</td>
+        <td>bold/700</td>
+      </tr>
+      <tr>
+        <td>heading-s<span class="type-table__class">.govuk-fieldset__legend--s</span></td>
+        <td>16</td>
+        <td>24</td>
+        <td>bold/700</td>
+      </tr>
+      <tr>
+        <td>body-s<span class="type-table__class">.govuk-fieldset__legend</span></td>
+        <td>14</td>
+        <td>20</td>
+        <td>regular/400</td>
       </tr>
     </tbody>
   </table>
@@ -113,43 +114,63 @@
   <h2 class="govuk-heading-l">
     Hint and error message
   </h2>
-  <p class="govuk-body-s">
-    GOV.UK v6 font-sizes are taken from source (rem, converted to px at 16px base). GOV.UK's line-heights are approximate and computed from unitless ratios. PLOS values are from <code>plos-overrides.min.css</code>. These elements are not responsive — font-size and line-height do not change at breakpoints.
+  <p class="govuk-body">
+    Both are responsive: <code>govuk-hint</code> maps to Figma <code>body</code> (18 to 16) and
+    <code>govuk-error-message</code> maps to <code>body-s</code> (16 to 14). Sizes are in px.
   </p>
-  <table class="govuk-table">
-    <thead class="govuk-table__head">
-      <tr class="govuk-table__row">
-        <th class="govuk-table__header" rowspan="2">Class</th>
-        <th class="govuk-table__header" rowspan="2">Figma label</th>
-        <th class="govuk-table__header col-shaded" colspan="2">GOV.UK</th>
-        <th class="govuk-table__header" colspan="2">PLOS</th>
-        <th class="govuk-table__header" rowspan="2">Example</th>
-      </tr>
-      <tr class="govuk-table__row">
-        <th class="govuk-table__header col-shaded">font-size</th>
-        <th class="govuk-table__header col-shaded">line-height</th>
-        <th class="govuk-table__header">font-size</th>
-        <th class="govuk-table__header">line-height</th>
+
+  <h3 class="govuk-heading-m">
+    Large screens
+  </h3>
+  <table class="type-table">
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Font size</th>
+        <th>Line height</th>
+        <th>Weight</th>
       </tr>
     </thead>
-    <tbody class="govuk-table__body">
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-body-s"><code>govuk-hint</code></td>
-        <td class="govuk-table__cell govuk-body-s">Hint</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.1875rem / 19px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">~25px</td>
-        <td class="govuk-table__cell govuk-body-s">1.125rem / 18px</td>
-        <td class="govuk-table__cell govuk-body-s">1.75rem / 28px</td>
-        <td class="govuk-table__cell"><div class="govuk-hint">Select all that apply.</div></td>
+    <tbody>
+      <tr>
+        <td>body<span class="type-table__class">.govuk-hint</span></td>
+        <td>18</td>
+        <td>28</td>
+        <td>regular/400</td>
       </tr>
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-body-s"><code>govuk-error-message</code></td>
-        <td class="govuk-table__cell govuk-body-s">Error</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">1.1875rem / 19px</td>
-        <td class="govuk-table__cell govuk-body-s col-shaded">~25px</td>
-        <td class="govuk-table__cell govuk-body-s">1rem / 16px</td>
-        <td class="govuk-table__cell govuk-body-s">1.5rem / 24px</td>
-        <td class="govuk-table__cell"><p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Enter your full name</p></td>
+      <tr>
+        <td>body-s<span class="type-table__class">.govuk-error-message</span></td>
+        <td>16</td>
+        <td>24</td>
+        <td>bold/700</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="govuk-heading-m">
+    Small screens (below 640px width)
+  </h3>
+  <table class="type-table">
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Font size</th>
+        <th>Line height</th>
+        <th>Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>body<span class="type-table__class">.govuk-hint</span></td>
+        <td>16</td>
+        <td>24</td>
+        <td>regular/400</td>
+      </tr>
+      <tr>
+        <td>body-s<span class="type-table__class">.govuk-error-message</span></td>
+        <td>14</td>
+        <td>20</td>
+        <td>bold/700</td>
       </tr>
     </tbody>
   </table>

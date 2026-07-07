@@ -97,6 +97,7 @@ class CheckAnswers(PLOSBaseComponent):
         button_id: str | None = "accept_and_submit",
         button_name: str = "accept_and_submit",
         button_label: str = "Accept and submit",
+        show_buttons: bool = True,
         sections: list[CheckAnswersSection] | None = None,
     ):
 
@@ -117,4 +118,5 @@ class CheckAnswers(PLOSBaseComponent):
             "button_name": button_name,
             "button_label": button_label,
             "sections": sections,
+            "show_buttons": show_buttons,
         }

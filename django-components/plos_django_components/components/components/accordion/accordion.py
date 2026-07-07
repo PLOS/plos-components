@@ -35,7 +35,14 @@ class _AccordionImpl(PLOSBaseComponent):
 
     template_name = "accordion.html"
 
-    def get_context_data(self, /, *, sections: list[AccordionSectionEntry], field_id: str | None = None):  # noqa: D102
+    def get_context_data(
+        self,
+        /,
+        *,
+        sections: list[AccordionSectionEntry],
+        field_id: str | None = None,
+        remember_expanded: bool = False
+    ):
         sections_with_index = [
             {
                 "heading": section.heading,
@@ -45,7 +52,7 @@ class _AccordionImpl(PLOSBaseComponent):
             }
             for i, section in enumerate(sections)
         ]
-        return {"field_id": field_id, "sections": sections_with_index}
+        return {"field_id": field_id, "sections": sections_with_index, "remember_expanded": remember_expanded}
 
 
 @register("plos_accordion")
@@ -60,7 +67,13 @@ class Accordion(PLOSBaseComponent):
         field_id (str, optional): Sets the id attribute on the accordion container element.
                                   When provided, section heading and content elements also
                                   receive derived ids (e.g. field_id-heading-1).
-
+        remember_expanded (bool, optional, defaults to False): The default is a departure from the
+                                  GOV UK accordion behaviour. The PLOS accordion component will not
+                                  remember the expanded state of sections across page loads unless
+                                  this is set to True. If it is set to True, the state is saved in
+                                  local storage within the browser. Note that `expanded` can still be
+                                  set on individual sections, which controls the original open/closed
+                                  state on page load.
     """
 
     template: t.django_html = """
@@ -70,15 +83,16 @@ class Accordion(PLOSBaseComponent):
     {% endprovide %}
     """
 
-    def get_context_data(self, /, *, field_id: str | None = None):  # noqa: D102
+    def get_context_data(self, /, *, field_id: str | None = None, remember_expanded: bool = False):  # noqa: D102
         # sections is internal state populated by child AccordionSection components via on_render_after
-        return {"field_id": field_id, "sections": []}
+        return {"field_id": field_id, "sections": [], "remember_expanded": remember_expanded}
 
     def on_render_after(self, context, template, rendered) -> str:  # noqa: D102
         return _AccordionImpl.render(
             kwargs={
                 "field_id": context["field_id"],
                 "sections": context["sections"],
+                "remember_expanded": context["remember_expanded"],
             },
             render_dependencies=False,
         )

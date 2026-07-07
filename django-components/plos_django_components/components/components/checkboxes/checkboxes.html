@@ -16,13 +16,7 @@
             {{ hint|escape }}
         </div>
         {% endif %}
-        {% if errors %}
-        <p id="{{ field_id }}-error" class="govuk-error-message">
-            {% for error in errors %}
-            {{ error|escape }}<br>
-            {% endfor %}
-        </p>
-        {% endif %}
+        {% component "plos_error_summary" entries=errors compact="True" %}{% endcomponent %}
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             {% for option in item_options %}
             <div class="govuk-checkboxes__item">

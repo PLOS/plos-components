@@ -25,10 +25,10 @@ class FileUpload(PLOSBaseComponent):
         field_id: str,
         name: str,
         label: str,
-        hint: str | None = None,          # None = not shown
-        multiple: bool = True,            # True = allow multiple file selection
-        accept: str | None = None,        # None = any file type
-        disabled: bool = False,           # False = enabled
+        hint: str | None = None,  # None = not shown
+        multiple: bool = True,  # True = allow multiple file selection
+        accept: str | None = None,  # None = any file type
+        disabled: bool = False,  # False = enabled
         errors: list[str] | None = None,  # None = no errors shown
     ):
         return {

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Icon Component Showcase</title>
+    {% load component_tags %}
+    {% load ds_filters %}
+    {% component_css_dependencies %}
+</head>
+<body>
+    <div class="plos-width-container">
+        <main>
+            <h1>Icon Component Showcase</h1>
+
+            <h2>Basic Icons</h2>
+            <div class="icon-demo">
+                {% component "plos_icon" icon_name="check_circle" %}{% endcomponent %}
+                {% component "plos_icon" icon_name="exclamation_circle" %}{% endcomponent %}
+                {% component "plos_icon" icon_name="info_circle" %}{% endcomponent %}
+            </div>
+
+            <h2>Icons with Different Sizes</h2>
+            <div class="icon-demo">
+                {% component "plos_icon" icon_name="add_item" size="xs" %}{% endcomponent %}
+                {% component "plos_icon" icon_name="add_item" size="sm" %}{% endcomponent %}
+                {% component "plos_icon" icon_name="add_item" size="md" %}{% endcomponent %}
+                {% component "plos_icon" icon_name="add_item" size="lg" %}{% endcomponent %}
+                {% component "plos_icon" icon_name="add_item" size="xl" %}{% endcomponent %}
+            </div>
+
+            <h2>Icons with Display Options</h2>
+            <div class="icon-demo">
+                <p>Inline icon: {% component "plos_icon" icon_name="chevron_down" display="inline" %}{% endcomponent %} and text</p>
+                <div>
+                    <p>Block icon:</p>
+                    {% component "plos_icon" icon_name="chevron_down" display="block" %}{% endcomponent %}
+                </div>
+            </div>
+
+            <h2>Custom Icon</h2>
+            <div class="icon-demo">
+                {% component "plos_icon" custom_icon="bi bi-heart-fill" %}{% endcomponent %}
+            </div>
+
+            <h2>Icon with Field ID</h2>
+            <div class="icon-demo">
+                {% component "plos_icon" icon_name="delete_item" field_id="delete-icon-1" %}{% endcomponent %}
+            </div>
+        </main>
+    </div>
+
+    {% component_js_dependencies %}
+</body>
+</html>

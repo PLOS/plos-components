@@ -3,7 +3,54 @@
 {% block ds_title %}Text Input – PLOS Design System{% endblock ds_title %}
 
 {% block ds_content %}
-  <h1 class="govuk-heading-xl">Text Input</h1>
-  {% component "plos_text_input" label="Full name" name="full_name" %}
+    {% component "plos_error_summary" entries=[{"label": "Full name with error", "message": "Enter your full name", "anchor": "id_full_name_error"}] %}{% endcomponent %}
+  {% component "plos_heading" level=1 %}Text Input{% endcomponent %}
+  {% component "plos_text_input" label="Full name with" name="full_name" %}
   {% endcomponent%}
+
+  {% component "plos_heading" level=1 %}Text Input with Error{% endcomponent %}
+  {% component "plos_text_input" errors=[{"label": "Full name with error", "message": "Enter your full name", "anchor": "id_full_name_error"}] label="Full name with error" name="full_name_error" field_id="id_full_name_errors" %}
+  {% endcomponent%}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  <div id="number-input-step-validation">
+    {% component "plos_heading" level=1 %}Number Input: step validation{% endcomponent %}
+  </div>
+  {% component "plos_error_summary" entries=number_errors %}{% endcomponent %}
+  {% component "plos_text_box" %}
+  HTML inputs of type="number" have a default `step` value of `1`. The PLOS behavior for number inputs does not follow this convention.
+  {% endcomponent %}
+  {% component "plos_text_box" %}
+  The step attribute defaults to "any" when it is not set. This keeps browser-level validation off, so a value such as 1.3 is sent to the backend and PLOS can return on-brand error messages.
+  {% endcomponent %}
+  {% component "plos_text_box" %}
+  We recommend keeping the default step for numbered inputs and not setting a step. If you do set a step (for example step="1"), the browser takes over validation and shows its own non-PLOS error message, blocking submission before the value can reach the backend.
+  {% endcomponent %}
+
+  {% component "plos_heading" level=2 %}With step="1" (not recommended){% endcomponent %}
+  {% component "plos_text_box" %}
+    Type a decimal such as 1.3 into this field and submit. Because step="1" is set, the browser runs its own validation, blocks the post, and shows a non-PLOS message, so the on-brand error below is never reached by a real submission.
+  {% endcomponent %}
+  <form method="post" action="#number-input-step-validation">
+    {% csrf_token %}
+    {% component "plos_text_input" input_type="number" label='How many patents do you have?' name="age_step_one" field_id="id_age_step_one" value=age_step_one_value placeholder="Try 1.3" step="1" errors=age_step_one_errors %}
+    {% endcomponent %}
+    {% component "plos_button" button_type="submit" action="primary" %}
+      {% fill "default" %}Submit{% endfill %}
+    {% endcomponent %}
+  </form>
+
+  {% component "plos_heading" level=2 %}Without step (default "any", recommended){% endcomponent %}
+  {% component "plos_text_box" %}
+    Type the same decimal (1.3) into this field and submit. This example uses the default component behavior of step="any". The value posts to the backend, which returns the on-brand PLOS error shown below.
+  {% endcomponent %}
+  <form method="post" action="#number-input-step-validation">
+    {% csrf_token %}
+    {% component "plos_text_input" input_type="number" label='How many patents do you have?' name="age_step_any" field_id="id_age_step_any" value=age_step_any_value placeholder="Try 1.3" errors=age_step_any_errors %}
+    {% endcomponent %}
+    {% component "plos_button" button_type="submit" action="primary" %}
+      {% fill "default" %}Submit{% endfill %}
+    {% endcomponent %}
+  </form>
 {% endblock ds_content %}

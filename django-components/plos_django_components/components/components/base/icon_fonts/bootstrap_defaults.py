@@ -1,5 +1,12 @@
 """
 Public settings for default bootstrap.
+
+This module provides the default configuration for Bootstrap Icons.
+It defines the default icon mappings and stylesheet information for Bootstrap Icons.
+
+Key components:
+- _create_bootstrap_dictionary: Function to create the default Bootstrap icon dictionary
+- bootstrap: Function to create an IconFontDefaultSettings instance with Bootstrap defaults
 """
 
 from .abstract_icon_font_defaults import IconFontDefaultSettings, IconFontDictionary
@@ -14,6 +21,7 @@ def _create_bootstrap_dictionary() -> IconFontDictionary:
         info_circle="bi bi-info-circle-fill",
         add_item="bi bi-plus-lg",
         delete_item="bi bi-trash3",
+        chevron_down="bi bi-chevron-down",
     )
 
 
@@ -21,7 +29,10 @@ def bootstrap(override_dictionary: IconFontDictionary | None = None) -> IconFont
     """
     Creates a default bootstrap icon font dictionary.
 
-    :param override_dictionary: The dictionary to use for overriding settings, if there is one.
-    :return: A default icon font dictionary.
+    Args:
+        override_dictionary: The dictionary to use for overriding settings, if there is one.
+
+    Returns:
+        A default icon font dictionary configured for Bootstrap Icons.
     """
     return IconFontDefaultSettings(_create_bootstrap_dictionary(), override_dictionary)

@@ -55,24 +55,42 @@ class Button(PLOSBaseComponent):
         icon: str | None = None,
         icon_position: Literal["right", "left"] = "right",
         value: str | None = None,
+        form_action: str | None = None,
         field_id: str | None = None,
         field_name: str | None = None,
+        href: str | None = None,
         hx_post: str | None = None,
         hx_target: str | None = None,
         hx_swap: str | None = None,
         hx_include: str | None = None,
+        hx_select: str | None = None,
+        hx_disabled_elt: str | None = None,
+        hx_sync: str | None = None,
+        autofocus: bool = False,
+        **kwargs,
     ):
-        return {
+        if href == "":
+            href = None
+
+        context = {
             "disabled": disabled,
             "action": action,
             "button_type": button_type,
             "icon": icon,
             "icon_position": icon_position,
             "value": value,
+            "form_action": form_action,
             "field_id": field_id,
             "field_name": field_name,
+            "href": href,
             "hx_post": hx_post,
             "hx_target": hx_target,
             "hx_swap": hx_swap,
             "hx_include": hx_include,
+            "hx_select": hx_select,
+            "hx_disabled_elt": hx_disabled_elt,
+            "hx_sync": hx_sync,
+            "autofocus": autofocus,
         }
+        context.update(kwargs)
+        return context

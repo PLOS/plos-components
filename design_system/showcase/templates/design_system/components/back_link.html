@@ -1,0 +1,56 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}Back Link – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+  {% component "plos_heading" level=1 %}Back Link{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    <code>plos_back_link</code> renders a dynamic back link. Place it
+    above the main content area to let users return to the previous page.
+  {% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}Example{% endcomponent %}
+
+  {% component "plos_back_link" href="#" %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}Custom text{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    Use the <code>text</code> parameter to override the default link text.
+  {% endcomponent %}
+
+  {% component "plos_back_link" href="#" text="Go back" %}{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}Usage{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    Pass the destination URL via <code>href</code>. The link text defaults to
+    "Back" and can be overridden with <code>text</code>.
+  {% endcomponent %}
+
+  <code class="ds-code-block">{% verbatim %}{% component "plos_back_link" href=back_url %}{% endcomponent %}{% endverbatim %}</code>
+
+  {% component "plos_text_box" %}
+    In a template that uses a <code>back_link</code> block:
+  {% endcomponent %}
+
+  <code class="ds-code-block">{% verbatim %}{% block back_link %}
+    {% component "plos_back_link" href=back_url %}{% endcomponent %}
+{% endblock back_link %}{% endverbatim %}</code>
+
+  {% component "plos_text_box" %}
+    Parameters:
+  {% endcomponent %}
+  <ul class="govuk-list govuk-list--bullet">
+    <li><code>href</code>: URL the link points to (default: <code>"#"</code>)</li>
+    <li><code>text</code>: visible link text (default: <code>"Back"</code>)</li>
+  </ul>
+
+{% endblock ds_content %}
