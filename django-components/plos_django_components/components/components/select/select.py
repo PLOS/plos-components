@@ -25,8 +25,6 @@ class Select(PLOSBaseComponent):
         value        pre-selected option value -- takes precedence over option["selected"]
         label_size   "large", "medium", or "small" (default "small")
         hide_label   hides the label visually while keeping it accessible (default False)
-        label_is_page_heading  wraps the label in an <h1> and sizes it as the page
-                     heading, for a page whose only content is this question (default False)
         hint         hint text shown below the label (default None)
         errors       list of dicts with a "message" key (default [])
         field_id     id attribute for the <select>; defaults to "id_{name}"
@@ -49,7 +47,6 @@ class Select(PLOSBaseComponent):
         value: str | None = None,
         label_size: Literal["large", "medium", "small"] = "small",
         hide_label: bool = False,
-        label_is_page_heading: bool = False,
         hint: str | None = None,
         errors: list[dict] | None = None,
         field_id: str | None = None,
@@ -59,7 +56,6 @@ class Select(PLOSBaseComponent):
             "label": label,
             "label_class": label_class_from_size(label_size),
             "hide_label": hide_label,
-            "label_is_page_heading": label_is_page_heading,
             "name": name,
             "options": options or [],
             "value": value,
