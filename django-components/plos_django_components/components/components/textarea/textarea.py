@@ -9,7 +9,7 @@ from typing import Literal
 
 from django_components import register
 
-from ....utils.govuk_helper import label_class_from_size
+from ....utils.govuk_helper import fluid_width_class, label_class_from_size
 from ..base.base_component import PLOSBaseComponent
 
 
@@ -36,12 +36,14 @@ class Textarea(PLOSBaseComponent):
         maxlength: int | None = None,
         minlength: int | None = None,
         errors: list[str] | None = None,
+        width: str | None = None,
     ):
         return {
             "field_id": field_id,
             "name": name,
             "label": label,
             "label_class": label_class_from_size(label_size),
+            "textarea_width_class": fluid_width_class(width),
             "label_size": label_size,
             "hint": hint,
             "placeholder": placeholder,

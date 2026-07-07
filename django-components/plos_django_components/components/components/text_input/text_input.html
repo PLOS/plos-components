@@ -13,7 +13,7 @@
         <input type="{{ input_type }}"
                id="{{ id }}"
                name="{{ name }}"
-               class="govuk-input{% if errors %} govuk-input--error{% endif %}"
+               class="govuk-input{% if input_width_class %} {{ input_width_class }}{% endif %}{% if errors %} govuk-input--error{% endif %}"
                {% if disabled %}disabled{% endif %}
                {% if autofocus %}autofocus{% endif %}
                {% if value is not None %}value="{{ value }}" {% endif %}

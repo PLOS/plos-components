@@ -2,7 +2,7 @@ from typing import Literal
 
 from django_components import register
 
-from ....utils.govuk_helper import label_class_from_size
+from ....utils.govuk_helper import input_width_class, label_class_from_size
 from ..base.base_component import PLOSBaseComponent
 
 
@@ -29,6 +29,7 @@ class TextInput(PLOSBaseComponent):
         step: str | None = None,
         prefix: str | None = None,
         suffix: str | None = None,
+        width: int | str | None = None,
     ):
         # Default `step` attribute to "any" for number inputs if not provided.
         # This removes browser validation as the default for step is `1`,
@@ -50,6 +51,7 @@ class TextInput(PLOSBaseComponent):
         return {
             "label": label,
             "label_class": label_class_from_size(label_size),
+            "input_width_class": input_width_class(width),
             "input_type": input_type,
             "name": name,
             "value": value,
