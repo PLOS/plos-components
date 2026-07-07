@@ -17,7 +17,8 @@ class ErrorSummary(PLOSBaseComponent):
 
     Each entry in `entries` is a dict with three keys:
 
-        label: human-readable label shown before the colon (e.g. "Patent 1")
+        label: human-readable label shown before the colon (e.g. "Patent 1").
+               When empty, only the message is shown, with no label or colon prefix.
         message: the error text (e.g. "Enter a patent number")
         anchor: the id of the target input, without the leading # (e.g. "patent_0")
 

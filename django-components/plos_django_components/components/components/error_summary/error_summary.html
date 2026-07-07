@@ -17,7 +17,7 @@
                 <div class="govuk-error-summary__body">
                     <ul class="govuk-list govuk-error-summary__list">
                         {% for entry in entries %}
-                            <li><a href="#{{ entry.anchor }}" class="govuk-link">{{ entry.label }}: {{ entry.message }}</a></li>
+                            <li><a href="#{{ entry.anchor }}" class="govuk-link">{% if entry.label %}{{ entry.label }}: {% endif %}{{ entry.message }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>

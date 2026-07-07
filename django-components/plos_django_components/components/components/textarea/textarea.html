@@ -13,7 +13,7 @@
     {% endif %}
     {% component "plos_error_summary" entries=errors compact="True" %}{% endcomponent %}
     <textarea
-            class="govuk-textarea{% if maxlength %} govuk-js-character-count{% endif %}{% if errors %} govuk-textarea--error{% endif %}"
+            class="govuk-textarea{% if textarea_width_class %} {{ textarea_width_class }}{% endif %}{% if maxlength %} govuk-js-character-count{% endif %}{% if errors %} govuk-textarea--error{% endif %}"
             id="{{ field_id }}"
             name="{{ name }}"
             rows="{{ rows }}"
