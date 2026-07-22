@@ -159,3 +159,57 @@
   margin-top: 0;
   margin-bottom: 0.75rem;
 }
+
+/* Spacing scale bars (styles/spacing page) */
+.spacing-bar {
+  display: block;
+  height: 1rem;
+  background: var(--plos-color-brand-dark-blue);
+}
+
+/* Annotated spacing demo (styles/spacing page).
+   Bands are positioned by JS from measured gaps; the gutter holds their labels. */
+.spacing-demo {
+  position: relative;
+  padding-left: 5.5rem;
+  margin-bottom: 2.5rem;
+  font-family: var(--plos-font-family);
+}
+
+.spacing-demo__content {
+  border-left: 1px solid var(--plos-color-border-default);
+  padding-left: 1.5rem;
+}
+
+.spacing-demo__markers {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.spacing-demo__gap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  background: var(--plos-color-brand-blue-50);
+  /* inset rather than border, so the band's height stays exactly the measured gap */
+  box-shadow:
+    inset 0 1px 0 var(--plos-color-border-default),
+    inset 0 -1px 0 var(--plos-color-border-default);
+}
+
+.spacing-demo__gap-label {
+  box-sizing: border-box;
+  width: 5.5rem;
+  padding-right: 0.75rem;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--plos-color-text-secondary-light);
+}

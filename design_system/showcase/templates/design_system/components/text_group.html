@@ -7,7 +7,7 @@
 
   {% component "plos_text_box" %}
     <code>plos_text_group</code> groups related paragraphs so they read as one
-    block: 16px between the paragraphs inside the group, and 32px below the group to
+    block: 20px between the paragraphs inside the group, and 48px below the group to
     separate it from the surrounding content.
   {% endcomponent %}
 
@@ -34,17 +34,17 @@
 
   {% component "plos_text_group" %}
     {% component "plos_text_box" %}
-      Inside a text group, paragraphs sit 16px apart so they read as a single block.
+      Inside a text group, paragraphs sit 20px apart so they read as a single block.
     {% endcomponent %}
     {% component "plos_text_box" %}
-      This paragraph is 16px below the previous one.
+      This paragraph is 20px below the previous one.
     {% endcomponent %}
     {% component "plos_text_box" %}
-      The group as a whole has 32px below it before the next section.
+      The group as a whole has 48px below it before the next section.
     {% endcomponent %}
   {% endcomponent %}
 
   {% component "plos_text_box" %}
-    This paragraph follows the group, 32px below it.
+    This paragraph follows the group, 48px below it.
   {% endcomponent %}
 {% endblock ds_content %}
