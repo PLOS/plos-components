@@ -3,5 +3,235 @@
 {% block ds_title %}Spacing – PLOS Design System{% endblock ds_title %}
 
 {% block ds_content %}
-  <h1 class="govuk-heading-xl">Spacing</h1>
+  {% component "plos_heading" level=1 %}Spacing{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    PLOS spacing is a fixed scale built on a 4px base, defined as <code>--plos-spacing-01</code>
+    through <code>--plos-spacing-12</code> in <code>plos-overrides.min.css</code>. Every gap in the
+    interface should be a step on this scale rather than an arbitrary value.
+  {% endcomponent %}
+
+  {% component "plos_heading" level=2 %}Spacing scale{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+  {% component "plos_text_box" %}
+    The bar in each row is drawn using the token itself, so it always reflects the real value.
+  {% endcomponent %}
+
+  <table class="type-table">
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>rem</th>
+        <th>px</th>
+        <th>Scale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>01<span class="type-table__class">--plos-spacing-01</span></td>
+        <td>0.25</td>
+        <td>4</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-01)"></span></td>
+      </tr>
+      <tr>
+        <td>02<span class="type-table__class">--plos-spacing-02</span></td>
+        <td>0.5</td>
+        <td>8</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-02)"></span></td>
+      </tr>
+      <tr>
+        <td>03<span class="type-table__class">--plos-spacing-03</span></td>
+        <td>0.75</td>
+        <td>12</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-03)"></span></td>
+      </tr>
+      <tr>
+        <td>04<span class="type-table__class">--plos-spacing-04</span></td>
+        <td>1</td>
+        <td>16</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-04)"></span></td>
+      </tr>
+      <tr>
+        <td>05<span class="type-table__class">--plos-spacing-05</span></td>
+        <td>1.5</td>
+        <td>24</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-05)"></span></td>
+      </tr>
+      <tr>
+        <td>06<span class="type-table__class">--plos-spacing-06</span></td>
+        <td>2</td>
+        <td>32</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-06)"></span></td>
+      </tr>
+      <tr>
+        <td>07<span class="type-table__class">--plos-spacing-07</span></td>
+        <td>2.5</td>
+        <td>40</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-07)"></span></td>
+      </tr>
+      <tr>
+        <td>08<span class="type-table__class">--plos-spacing-08</span></td>
+        <td>3</td>
+        <td>48</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-08)"></span></td>
+      </tr>
+      <tr>
+        <td>09<span class="type-table__class">--plos-spacing-09</span></td>
+        <td>4</td>
+        <td>64</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-09)"></span></td>
+      </tr>
+      <tr>
+        <td>10<span class="type-table__class">--plos-spacing-10</span></td>
+        <td>5</td>
+        <td>80</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-10)"></span></td>
+      </tr>
+      <tr>
+        <td>11<span class="type-table__class">--plos-spacing-11</span></td>
+        <td>6</td>
+        <td>96</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-11)"></span></td>
+      </tr>
+      <tr>
+        <td>12<span class="type-table__class">--plos-spacing-12</span></td>
+        <td>10</td>
+        <td>160</td>
+        <td><span class="spacing-bar" style="width: var(--plos-spacing-12)"></span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  {% component "plos_heading" level=2 %}Heading spacing{% endcomponent %}
+
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+  {% component "plos_text_box" %}
+    Each heading carries its own space below it, so a heading and the text it introduces read as one
+    unit. The shaded bands below are measured from the rendered page as you see it, not written by
+    hand, so they always show what the CSS is actually doing. Resize the window across 641px to see
+    the values change.
+  {% endcomponent %}
+
+  <div class="spacing-demo" data-spacing-demo>
+    <div class="spacing-demo__markers" aria-hidden="true"></div>
+    <div class="spacing-demo__content">
+      {% component "plos_heading" level=3 css_class="govuk-heading-xl" %}
+        Heading-xl
+      {% endcomponent %}
+      {% component "plos_text_box" %}
+        Prior research in this domain has established a foundation upon which the current
+        investigation builds, though several gaps in the existing.
+      {% endcomponent %}
+
+      {% component "plos_heading" level=3 css_class="govuk-heading-l" %}
+        Heading-l
+      {% endcomponent %}
+      {% component "plos_text_box" %}
+        Section outlines the procedures undertaken to collect and analyse data relevant to the
+        research questions posed at the outset of this study. Participants were selected according
+        to a stratified sampling technique.
+      {% endcomponent %}
+
+      {% component "plos_heading" level=3 css_class="govuk-heading-m" %}
+        Heading-m
+      {% endcomponent %}
+      {% component "plos_text_box" %}
+        Questions posed at the outset of this study. Participants were selected according to a
+        stratified sampling technique designed to ensure representativeness across key demographic
+        variables.
+      {% endcomponent %}
+
+      {% component "plos_heading" level=3 css_class="govuk-heading-s" %}
+        Heading-s
+      {% endcomponent %}
+      {% component "plos_text_box" %}
+        Variables under consideration, though the effect size suggests that additional factors may
+        be moderating this relationship. Further analysis reveals that contextual variables, when
+        controlled for, account for a substantial proportion of the variance observed.
+      {% endcomponent %}
+    </div>
+  </div>
+
+  {% component "plos_text_box" %}
+    Small screens currently use a single value for all four headings. The per-heading small screen
+    values are still to be confirmed from Figma.
+  {% endcomponent %}
+
+  <script>
+    (function () {
+      var root = document.querySelector('[data-spacing-demo]');
+      if (!root) return;
+
+      var content = root.querySelector('.spacing-demo__content');
+      var layer = root.querySelector('.spacing-demo__markers');
+      var HEADINGS =
+        '.govuk-heading-xl, .govuk-heading-l, .govuk-heading-m, .govuk-heading-s';
+
+      // Resolve --plos-spacing-01..12 to px so a measured gap can be named,
+      // rather than restating the scale here a second time.
+      function scale() {
+        var rootStyle = getComputedStyle(document.documentElement);
+        var basePx = parseFloat(rootStyle.fontSize);
+        var steps = [];
+        for (var i = 1; i <= 12; i++) {
+          var label = i < 10 ? '0' + i : String(i);
+          var raw = rootStyle.getPropertyValue('--plos-spacing-' + label).trim();
+          if (!raw) continue;
+          var px = raw.indexOf('rem') !== -1 ? parseFloat(raw) * basePx : parseFloat(raw);
+          steps.push({ label: label, px: Math.round(px) });
+        }
+        return steps;
+      }
+
+      function tokenFor(steps, gap) {
+        for (var i = 0; i < steps.length; i++) {
+          if (steps[i].px === gap) return steps[i].label;
+        }
+        return null;
+      }
+
+      function render() {
+        var steps = scale();
+        layer.innerHTML = '';
+        var rootTop = root.getBoundingClientRect().top;
+
+        Array.prototype.forEach.call(content.querySelectorAll(HEADINGS), function (heading) {
+          var next = heading.nextElementSibling;
+          if (!next) return;
+
+          var headingRect = heading.getBoundingClientRect();
+          var gap = Math.round(next.getBoundingClientRect().top - headingRect.bottom);
+          if (gap <= 0) return;
+
+          var token = tokenFor(steps, gap);
+
+          var band = document.createElement('div');
+          band.className = 'spacing-demo__gap';
+          band.style.top = headingRect.bottom - rootTop + 'px';
+          band.style.height = gap + 'px';
+
+          var label = document.createElement('span');
+          label.className = 'spacing-demo__gap-label';
+          label.textContent = token ? gap + 'px · ' + token : gap + 'px';
+          band.appendChild(label);
+
+          layer.appendChild(band);
+        });
+      }
+
+      var pending;
+      function scheduleRender() {
+        window.clearTimeout(pending);
+        pending = window.setTimeout(render, 100);
+      }
+
+      render();
+      window.addEventListener('resize', scheduleRender);
+      // Web fonts land after first paint and change heading heights.
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+    })();
+  </script>
 {% endblock ds_content %}
