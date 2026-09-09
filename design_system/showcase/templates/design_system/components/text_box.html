@@ -1,0 +1,19 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}
+  Text Box – PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+    {% component "plos_heading" level=1 %}
+        Text Box
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at sapien fermentum, facilisis ante ut, feugiat lectus. Nullam eget est tellus. Mauris quis sapien nec neque ultricies tristique eget in erat. Nam vestibulum nisi vel accumsan vulputate. Aliquam non maximus sapien. Morbi dictum et ante vel tempus. Mauris sit amet tortor orci. Vestibulum hendrerit odio a quam tincidunt laoreet. Nulla ornare nunc sed lacus scelerisque mollis.
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}
+        Proin eu commodo nisl, sit amet rhoncus lectus. Donec vitae turpis venenatis, mattis tellus sagittis, porta magna. Fusce vestibulum orci et dapibus fermentum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam commodo augue a nisi laoreet, ut venenatis quam viverra. Cras ornare porta ipsum. Nunc hendrerit, eros nec malesuada consequat, nisl justo semper tellus, at efficitur mauris tortor non eros.
+    {% endcomponent %}
+{% endblock ds_content %}
