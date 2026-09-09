@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from .utils.page_title import fetch_design_system_title_from_slug
 
-STYLES = {"column-grid", "colour", "spacing", "typography"}
+STYLES = {"column-grid", "colour", "content-design", "spacing", "typography"}
 
 COMPONENTS = {
     "accordion",
@@ -10,6 +10,8 @@ COMPONENTS = {
     "button",
     "text-input",
     "textarea",
+    "text-box",
+    "lists",
     "select",
     "error-summary",
     "file-upload",
