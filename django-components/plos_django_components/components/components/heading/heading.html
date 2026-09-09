@@ -1,5 +1,6 @@
 <{{ tag }} class="{{ css_class }}"
-    {% if autofocus %}autofocus{% endif %}
-    {% if tabindex is not None %}tabindex="{{ tabindex }}"{% endif %}>
-    {% slot "default" default %}{% endslot %}
+   {% if autofocus %}autofocus{% endif %}
+   {% if tabindex is not None %}tabindex="{{ tabindex }}"{% endif %}
+   {% for key, value in kwargs.items %}{% if value is not None %} {{ key }}="{{ value }}"{% endif %}{% endfor %}>
+   {% slot "default" default %}{% endslot %}
 </{{ tag }}>

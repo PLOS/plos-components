@@ -1,0 +1,55 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}
+  Lists – PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+    {% component "plos_heading" level=1 %}
+        Ordered List
+    {% endcomponent %}
+
+    {% component "plos_ordered_list" %}
+        {% component "plos_ordered_list_option" %}First Item{% endcomponent %}
+        {% component "plos_ordered_list_option" %}Second Item{% endcomponent %}
+        {% component "plos_ordered_list_option" %}Third Item{% endcomponent %}
+    {% endcomponent %}
+
+    <br/><br/>
+
+    {% component "plos_heading" level=1 %}
+        Bulleted List
+    {% endcomponent %}
+
+    {% component "plos_bulleted_list" %}
+        {% component "plos_bulleted_list_option" %}An Item{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}Another Item{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}Other Item{% endcomponent %}
+    {% endcomponent %}
+
+    <br/><br/>
+
+    {% component "plos_heading" level=1 %}
+        Nested Lists
+    {% endcomponent %}
+
+    {% component "plos_bulleted_list" %}
+        {% component "plos_bulleted_list_option" %}A List{% endcomponent %}
+
+        {% component "plos_bulleted_list_option" %}
+            {% component "plos_ordered_list" %}
+                {% component "plos_ordered_list_option" %}First Item{% endcomponent %}
+                {% component "plos_ordered_list_option" %}Second Item{% endcomponent %}
+            {% endcomponent %}
+        {% endcomponent %}
+
+        {% component "plos_bulleted_list_option" %}Another List{% endcomponent %}
+
+            {% component "plos_bulleted_list_option" %}
+            {% component "plos_ordered_list" %}
+                {% component "plos_ordered_list_option" %}First Item{% endcomponent %}
+                {% component "plos_ordered_list_option" %}Second Item{% endcomponent %}
+            {% endcomponent %}
+        {% endcomponent %}
+    {% endcomponent %}
+{% endblock ds_content %}

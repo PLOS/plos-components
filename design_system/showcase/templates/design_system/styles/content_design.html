@@ -1,0 +1,187 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}
+    Content Design – PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+    {% component "plos_heading" level=1 id="content-design" %}
+        Content Design
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}This is a guide to structuring digital content focussed on the needs of the user.{% endcomponent %}
+
+    {% component "plos_heading" level=2 id="what-is-content-design" %}What is content design?{% endcomponent %}
+    {% component "plos_text_box" %}Designing content, not creating copy. Good content design allows people to find out what they need to know or do quickly.{% endcomponent %}
+    {% component "plos_text_box" %}People behave differently online compared to reading print, rather than read every word users scan content. They scan because they are task-focussed, even when seeking knowledge they want to acquire it quickly.{% endcomponent %}
+    {% component "plos_text_box" %}Content design always starts with user needs. A user need is something that user will need to do or find out about PLOS.{% endcomponent %}
+
+    <hr/><br/>
+
+    {% component "plos_heading" level=2 id="page-design" %}Page Design{% endcomponent %}
+    {% component "plos_text_box" %}Elements involved in designing content presentation on a page.{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="paragraphs" %}Paragraphs{% endcomponent %}
+    {% component "plos_text_box" %}Divide content up into short paragraphs. Chunked content is easier to absorb as smaller units of content are easier to process, understand and remember. Text divided into distinct visual units helps users scan.{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="sub-headings" %}Sub Headings{% endcomponent %}
+    {% component "plos_text_box" %}If you have a page with several paragraphs, organise the paragraphs with sub-headings. These should indicate what the paragraph is about. This helps users scan page content for what they are looking for.{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="bullet-points" %}Bullet points{% endcomponent %}
+    {% component "plos_text_box" %}Bullets points (and numbered lists) can be used to help break up your content. They often make complex content clearer and easier to read and understand.{% endcomponent %}
+    {% component "plos_text_box" %}A bulleted list can be used in two different ways: as a list within the text, and as a list following a heading. Bullet points are a form of an unordered list, which is used to present items that do not need to be in a specific order. When describing a sequence that must appear in a specific order use an <a class="govuk-link" href="https://www.w3schools.com/html/html_lists_ordered.asp">ordered list</a>.{% endcomponent %}
+
+    {% component "plos_heading" level=4 id="list-within-text" %}List within text{% endcomponent %}
+    {% component "plos_text_box" %}When using bullet points within text, ensure that:{% endcomponent %}
+
+    {% component "plos_bulleted_list" %}
+        {% component "plos_bulleted_list_option" %}you always use a lead in line{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}the bullet points make sense running on from the lead-in line, or form a list that continues the topic of the lead-in line{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}each bullet point only includes one short sentence{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}you use lower case at the start of the bullet point, unless it starts with a <a class="govuk-link" href="https://www.google.com/search?q=proper+nouns&amp;rlz=1C5GCCM_en&amp;oq=proper+nouns&amp;gs_lcrp=EgZjaHJvbWUyDAgAEEUYORixAxiABDIKCAEQABixAxiABDIHCAIQABiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIGCAcQRRg80gEIMjg4MmowajSoAgCwAgE&amp;sourceid=chrome&amp;ie=UTF-8">proper noun</a>{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}there is no punctuation at the end of bullet points and no full stop after the last bullet point{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}if you add <a class="govuk-link" href="https://service-manual.ons.gov.uk/content/formatting-and-punctuation/links">links</a>, they appear within the text and not as the whole bullet point{% endcomponent %}
+    {% endcomponent %}
+
+    <br/>
+
+    {% component "plos_text_box" %}<strong>Example 1: Fragment List (No punctuation)</strong><br>Please bring the following items:{% endcomponent %}
+    {% component "plos_bulleted_list" %}
+        {% component "plos_bulleted_list_option" %}laptop{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}charger{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}notebook{% endcomponent %}
+    {% endcomponent %}
+
+     <br/>
+
+    {% component "plos_text_box" %}<strong>Example 2: Full Sentence List (With punctuation)</strong><br>The project failed because of several factors:{% endcomponent %}
+    {% component "plos_bulleted_list" %}
+        {% component "plos_bulleted_list_option" %}The budget was insufficient for the scope.{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}The team lacked necessary expertise.{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}Deadlines were unrealistic.{% endcomponent %}
+    {% endcomponent %}
+
+    {% component "plos_heading" level=4 id="list-following-a-heading" %}List following a heading{% endcomponent %}
+    {% component "plos_bulleted_list" %}
+        {% component "plos_bulleted_list_option" %}Do not use a lead-in line.{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}Bullet points follow on directly from a heading or subheading.{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}Starts with a capital letter.{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}Finishes with a full stop.{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}Only includes one short sentence.{% endcomponent %}
+    {% endcomponent %}
+
+    {% component "plos_heading" level=3 id="accordions" %}Accordions{% endcomponent %}
+    {% component "plos_text_box" %}The accordion component lets users show and hide sections of related content on a page, this can be helpful for comparing information or scanning a long page. They should not be used for essential information and should not be nested within another accordion.{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="feature-boxes" %}Feature boxes{% endcomponent %}
+    {% component "plos_text_box" %}These allow you to promote a particular part of your content.{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="tools" %}Tools{% endcomponent %}
+    {% component "plos_text_box" %}A content tool is content that users interact with in ways other than reading.{% endcomponent %}
+    {% component "plos_text_box" %}<em>Examples:</em>{% endcomponent %}
+    {% component "plos_bulleted_list" %}
+        {% component "plos_bulleted_list_option" %}<a class="govuk-link" href="https://www.moneysavingexpert.com/mortgages/mortgage-rate-calculator">Calculator, Money Savings Expert website</a>{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}<a class="govuk-link" href="https://www.gov.uk/state-pension-age/y/bus_pass">Birthdate eligibility checker, GOV.UK website</a>{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}<a class="govuk-link" href="https://www.easyjet.com/en">Date picker, Easyjet website</a>{% endcomponent %}
+    {% endcomponent %}
+
+    {% component "plos_heading" level=3 id="images-infographics-and-videos" %}Images, infographics and videos{% endcomponent %}
+    {% component "plos_text_box" %}If you decide to present content as images, infographics and videos, make sure it is inclusively designed:{% endcomponent %}
+    {% component "plos_bulleted_list" %}
+        {% component "plos_bulleted_list_option" %}images, use alt text if the image contains useful information{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}infographics, provide a text version of the infographic{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}videos, provide captions on the video and a full transcript{% endcomponent %}
+    {% endcomponent %}
+
+    <hr/><br/>
+
+    {% component "plos_heading" level=2 id="headings-and-titles" %}Headings and titles{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="specific-descriptive-headings" %}Specific, descriptive headings{% endcomponent %}
+    {% component "plos_text_box" %}Headings need to be meaningful not generic. When users scan your page they notice headings first.{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="font-loaded-headings" %}Font-loaded headings{% endcomponent %}
+    {% component "plos_text_box" %}Use clear, concise, front-loaded headings to make your web content easier for all users to navigate, moving keywords to the front of titles increases the likelihood that they get noticed.{% endcomponent %}
+    {% component "plos_text_box" %}Statements work better than questions in headings, they enable you to put the keyword first.{% endcomponent %}
+    {% component "plos_text_box" %}<em>Example:</em>{% endcomponent %}
+    {% component "plos_text_box" %}&quot;Should you front-load your headings?&quot;{% endcomponent %}
+    {% component "plos_text_box" %}&quot;Front-load your headings.&quot;{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="structuring-pages-with-headings" %}Structuring pages with headings{% endcomponent %}
+    {% component "plos_text_box" %}Considering the user needs for a journey, you can structure those needs into headings on the page to indicate importance or process.{% endcomponent %}
+    {% component "plos_text_box" %}<em>Example:</em>{% endcomponent %}
+    {% component "plos_text_box" %}[Title]{% endcomponent %}
+    {% component "plos_text_box" %}<strong>Apply for a thing</strong>{% endcomponent %}
+    {% component "plos_text_box" %}[Subheadings] {% endcomponent %}
+    {% component "plos_text_box" %}Eligibility{% endcomponent %}
+    {% component "plos_text_box" %}Application{% endcomponent %}
+    {% component "plos_text_box" %}If something goes wrong{% endcomponent %}
+    {% component "plos_text_box" %}Appeal{% endcomponent %}
+    {% component "plos_text_box" %}In the example above, you can see the whole process you need, or may need, to go through.{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="use-sentence-case-for-headings" %}Use sentence case for headings{% endcomponent %}
+    {% component "plos_text_box" %}Sentence case is easier to scan. Proper nouns are an exception.{% endcomponent %}
+    {% component "plos_text_box" %}<em>Examples of proper nouns:</em>{% endcomponent %}
+    {% component "plos_bulleted_list" %}
+        {% component "plos_bulleted_list_option" %}<strong>People:</strong> <em>Serena Williams</em>, <em>Maya Angelou</em>{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}<strong>Places:</strong> <em>London</em>, <em>Mt. Kilimanjaro</em>, <em>U.S. Congress</em>{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}<strong>Organizations/Companies:</strong> <em>Sony</em>, <em>Central Park Zoo</em>{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}<strong>Titles:</strong> <em>Lord of the Rings</em>, <em>Hamlet</em>{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}<strong>Specific days and months:</strong> <em>Monday</em>, <em>January</em>{% endcomponent %}
+    {% endcomponent %}
+
+    {% component "plos_heading" level=3 id="label-headings" %}Label headings{% endcomponent %}
+    {% component "plos_text_box" %}<a class="govuk-link" href="https://www.w3.org/WAI/tutorials/page-structure/headings/">These labels</a> are what screen reading software uses to navigate your page. They also ensure heading size is consistent with heading hierarchy, which helps people understand how important a subsection is when they scan.{% endcomponent %}
+    {% component "plos_text_box" %}<em>Example:</em>{% endcomponent %}
+    {% component "plos_text_box" %}[h1] <strong>Apply for a thing</strong>{% endcomponent %}
+    {% component "plos_text_box" %}[h2] Eligibility {% endcomponent %}
+    {% component "plos_text_box" %}[h2] Application{% endcomponent %}
+    {% component "plos_text_box" %}[h3] Cost{% endcomponent %}
+    {% component "plos_text_box" %}[h3] How to apply{% endcomponent %}
+    {% component "plos_text_box" %}[h2] If something goes wrong{% endcomponent %}
+    {% component "plos_text_box" %}[h2] Appeal{% endcomponent %}
+
+    <hr/><br/>
+
+    {% component "plos_heading" level=2 id="links" %}Links{% endcomponent %}
+    {% component "plos_heading" level=3 id="make-link-text-meaningful" %}Make link text meaningful{% endcomponent %}
+    {% component "plos_text_box" %}Making link text meaningful is useful for people who use screen reading software. You can set it to read out all links on a page to decide which next destination is most relevant for you.{% endcomponent %}
+    {% component "plos_text_box" %}Use descriptive nouns or phrases that clearly state the content the link leads to rather than verbs.{% endcomponent %}
+    {% component "plos_text_box" %}<em>Examples:</em>{% endcomponent %}
+    {% component "plos_text_box" %}“<a class="govuk-link" href="https://plos.org/open-science/">Open Science at PLOS</a>” not “<a class="govuk-link" href="https://plos.org/open-science/">Read more</a>”{% endcomponent %}
+    {% component "plos_text_box" %}“<a class="govuk-link" href="https://plos.org/an-exciting-new-era/">PLOS’s vision for a new era</a>” not “<a class="govuk-link" href="https://plos.org/an-exciting-new-era/">Find out more</a>”{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="front-load-link-text" %}Front-load link text{% endcomponent %}
+    {% component "plos_text_box" %}Start the link with the most important and descriptive information to make it easier to scan and understand.{% endcomponent %}
+    {% component "plos_text_box" %}<em>Examples:</em>{% endcomponent %}
+    {% component "plos_text_box" %}“<a class="govuk-link" href="https://www.google.com/search?q=example+of+front+loaded+text+link&amp;rlz=1C5GCCM_en&amp;oq=example+of+front+loaded+text+link&amp;gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQIRigATIHCAIQIRigAdIBCDk5ODJqMGo3qAIAsAIA&amp;sourceid=chrome&amp;ie=UTF-8">Conference schedule</a>” not “<a class="govuk-link" href="https://www.google.com/search?q=example+of+front+loaded+text+link&amp;rlz=1C5GCCM_en&amp;oq=example+of+front+loaded+text+link&amp;gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQIRigATIHCAIQIRigAdIBCDk5ODJqMGo3qAIAsAIA&amp;sourceid=chrome&amp;ie=UTF-8">Schedule for the conference</a>”{% endcomponent %}
+    {% component "plos_text_box" %}“<a class="govuk-link" href="https://www.google.com/search?q=pay+your+tax&amp;rlz=1C5GCCM_en&amp;oq=pay+your+tax&amp;gs_lcrp=EgZjaHJvbWUqBwgAEAAYgAQyBwgAEAAYgAQyBwgBEAAYgAQyBwgCEAAYgAQyBwgDEAAYgAQyBwgEEAAYgAQyBwgFEAAYgAQyBwgGEAAYgAQyBwgHEAAYgAQyBwgIEAAYgAQyBwgJEAAYgATSAQgzNTU5ajBqN6gCALACAA&amp;sourceid=chrome&amp;ie=UTF-8&amp;zx=1762882784734&amp;no_sw_cr=1">Pay your tax</a>” not “<a class="govuk-link" href="https://www.google.com/search?q=pay+your+tax&amp;rlz=1C5GCCM_en&amp;oq=pay+your+tax&amp;gs_lcrp=EgZjaHJvbWUqBwgAEAAYgAQyBwgAEAAYgAQyBwgBEAAYgAQyBwgCEAAYgAQyBwgDEAAYgAQyBwgEEAAYgAQyBwgFEAAYgAQyBwgGEAAYgAQyBwgHEAAYgAQyBwgIEAAYgAQyBwgJEAAYgATSAQgzNTU5ajBqN6gCALACAA&amp;sourceid=chrome&amp;ie=UTF-8&amp;zx=1762882784734&amp;no_sw_cr=1">Information about how to pay your tax</a>”{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="make-call-to-action-cta-links-and-button-text-specific" %}Make call to action (CTA) links and button text specific{% endcomponent %}
+    {% component "plos_text_box" %}People need to know where the link will take them. Providing specific link text helps them know what to expect.{% endcomponent %}
+    {% component "plos_text_box" %}Generic links such as &quot;more information&quot; or “click here” do not make sense out of context or tell users where a link will take them. Aim for link text to make sense in isolation without reading words around it.{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="start-cta-links-and-button-text-links-with-a-verb" %}Start (CTA) links and button text links with a verb{% endcomponent %}
+    {% component "plos_text_box" %}Calls to action should be direct and use active language. They are there to signpost or encourage the user to take the next step.{% endcomponent %}
+    {% component "plos_text_box" %}<em>Examples:</em>{% endcomponent %}
+    {% component "plos_text_box" %}“Upload your document”{% endcomponent %}
+    {% component "plos_text_box" %}“Submit your details”{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="make-cta-links-and-button-text-links-short" %}Make (CTA) links and button text links short{% endcomponent %}
+    {% component "plos_text_box" %}They should be a concise, actionable phrase.{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="match-the-destination-content" %}Match the destination content{% endcomponent %}
+    {% component "plos_text_box" %}Provide link text that reflects the title of the destination content.{% endcomponent %}
+    {% component "plos_text_box" %}If someone clicks on a link saying &quot;Buy apples&quot; and it takes them to a page titled &quot;Pears&quot; they will be confused at best, frustrated at worst. Even minor differences can puzzle your user.{% endcomponent %}
+
+    <hr/><br/>
+
+    {% component "plos_heading" level=2 id="tone" %}Tone{% endcomponent %}
+    {% component "plos_heading" level=3 id="please-and-thank-you" %}‘please’ and ‘thank you’{% endcomponent %}
+    {% component "plos_text_box" %}Using &quot;please&quot; and &quot;thank you&quot; in UX instructions is generally discouraged in favour of clarity, brevity, and efficiency. While intended to be polite, these words often create unnecessary &quot;fluff&quot; that increases cognitive load and slows users down.{% endcomponent %}
+    {% component "plos_text_box" %}Additionally, “please” can create ambiguity in certain contexts. For example, if a user sees a button that says “Please click here,” they may wonder if clicking the button is actually necessary or if it’s just a suggestion.{% endcomponent %}
+
+    {% component "plos_heading" level=3 id="sorry" %}‘sorry’{% endcomponent %}
+    {% component "plos_text_box" %}Say ‘sorry’ if something serious has gone wrong - for example, the service has stopped working completely. ‘Sorry, there is a technical problem. Please try again in a few moments.’{% endcomponent %}
+    {% component "plos_text_box" %}There’s no need to say ‘sorry’ in validation error messages.{% endcomponent %}
+{% endblock ds_content %}

@@ -6,47 +6,118 @@
 {% endblock ds_title %}
 
 {% block ds_content %}
-    {% component "plos_heading" level=1 %}
-        Primary Button
+    {% component "plos_heading" level=1 id="when-to-use-this-component" %}
+        Button
     {% endcomponent %}
-    <div>
+
+    {% component "plos_heading" level=2 id="when-to-use-this-component" %}
+        When to use this component
+    {% endcomponent %}
+
+    {% component "plos_text_box %}
+        Use the button component to help users carry out an action like starting an application
+        or saving their information. Users generally expect buttons to submit data or take
+        action, and for links to navigate.
+
+        <br/><br/>
+        <a class="govuk-link" href="/styles/content-design#make-call-to-action-cta-links-and-button-text-specific">
+            Make call to action links and button text specific.
+        </a>
+    {% endcomponent %}
+
+    <br/><br/>
+
+    {% component "plos_heading" level=2 id="how-to-use" %}
+        How to use
+    {% endcomponent %}
+
+    {% component "plos_heading" level=3 %}Primary{% endcomponent %}
+
+    {% component "plos_button" %}
+        Primary
+    {% endcomponent %}
+
+    {% component "plos_text_box %}
+        Use this for your main call to action. Use only one primary button on a page (or section of a page) as
+        more than one can confuse users.
+
+        {% component "plos_bulleted_list" %}
+            {% component "plos_bulleted_list_option" %}Align primary buttons to the left of a page{% endcomponent %}
+            {% component "plos_bulleted_list_option" %}Position primary buttons to the left of a button group{% endcomponent %}
+        {% endcomponent %}
+    {% endcomponent %}
+
+    <br/><br/>
+
+    {% component "plos_heading" level=3 %}Secondary{% endcomponent %}
+
+    {% component "plos_button" action="secondary" %}
+        Secondary
+    {% endcomponent %}
+
+    {% component "plos_text_box %}
+        Use a secondary button for most other actions, they should support the main task without
+        competing for attention or priority.
+    {% endcomponent %}
+    {% component "plos_text_box %}
+        Having too many buttons on one page can confuse users. Rather than adding more secondary
+        buttons, consider simplifying the page or splitting it across multiple pages.
+    {% endcomponent %}
+
+    <br/><br/>
+
+    {% component "plos_heading" level=3 %}Disabled{% endcomponent %}
+
+    {% component "plos_button" disabled=True %}
+        Disabled
+    {% endcomponent %}
+
+    {% component "plos_text_box %}
+        Disabled buttons indicate that an action exists but is currently unavailable to the user
+        at their current point in the workflow.
+    {% endcomponent %}
+    {% component "plos_text_box %}
+        Disabled buttons use a grey colour scheme to provide a clear visual distinction from
+        active buttons, signalling to users that the button cannot be interacted with.
+    {% endcomponent %}
+    {% component "plos_banner" severity="info" %}
+        Disabled buttons can confuse users. Only include them if user research shows that they are
+        helpful in your particular use case.
+    {% endcomponent %}
+
+    <br/><br/>
+
+    {% component "plos_heading" level=3 %}Warning{% endcomponent %}
+
+    {% component "plos_button" action="warning" %}
+        Warning
+    {% endcomponent %}
+
+    {% component "plos_heading" level=2 id="grouping-buttons" %}
+        Grouping buttons
+    {% endcomponent %}
+
+    {% component "plos_heading" level=3 %}In-page{% endcomponent %}
+
+    {% component "plos_button_group" %}
         {% component "plos_button" %}
-            Primary
+            Submit
         {% endcomponent %}
-        {% component "plos_button" disabled=True %}
-            Primary - Disabled
-        {% endcomponent %}
-    </div>
-
-    {% component "plos_heading" level=1 %}
-        Primary Button - URL
-    {% endcomponent %}
-    <div>
-        {% component "plos_button" href="#" %}
-            Links to '#'
-        {% endcomponent %}
-    </div>
-
-    {% component "plos_heading" level=1 %}
-        Secondary Button
-    {% endcomponent %}
-    <div>
         {% component "plos_button" action="secondary" %}
-            Secondary
+            Cancel
         {% endcomponent %}
-        {% component "plos_button" action="secondary" disabled=True %}
-            Secondary - Disabled
-        {% endcomponent %}
-    </div>
-    {% component "plos_heading" level=1 %}
-        Warning Button
     {% endcomponent %}
-    <div>
-        {% component "plos_button" action="warning" %}
-            Warning
+
+    <br/><br/>
+
+    {% component "plos_heading" level=3 %}Modal{% endcomponent %}
+
+    {% component "plos_button_group" %}
+        {% component "plos_button" action="secondary" %}
+            Cancel
         {% endcomponent %}
-        {% component "plos_button" action="warning" disabled=True %}
-            Warning - Disabled
+        {% component "plos_button" %}
+            Submit
         {% endcomponent %}
-    </div>
+    {% endcomponent %}
 {% endblock ds_content %}
