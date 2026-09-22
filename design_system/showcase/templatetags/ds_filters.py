@@ -25,6 +25,20 @@ def plos_dictionary_fetch(dictionary: dict | None, index: str | None):
         return ""
 
 
+@register.filter(name="plos_list_fetch")
+def plos_list_fetch(values: list | tuple | None, index: str | int | None):
+    if not values:
+        return ""
+
+    if index is None or index == "":
+        return ""
+
+    try:
+        return values[int(index)]
+    except (IndexError, TypeError, ValueError):
+        return ""
+
+
 @register.filter(name="ds_fake_print")
 def fake_print(printing: str):
     print(printing)

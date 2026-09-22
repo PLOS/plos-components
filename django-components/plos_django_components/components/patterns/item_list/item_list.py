@@ -59,8 +59,8 @@ class ItemList(PLOSBaseComponent):
         add_icon        icon class for the add button; defaults to the global add_item icon setting
         delete_icon     icon class for the delete button; defaults to the global delete_item icon setting
 
-    There is no showcase page for this pattern yet, and `htmx_url` must point at a
-    view that handles the add and delete actions. Both still need to be written.
+    See the design system page (patterns/item-list) for an interactive demo. Its
+    views in the showcase show how to handle the add and delete actions.
     """
 
     template_name = "item_list.html"

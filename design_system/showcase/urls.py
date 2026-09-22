@@ -38,6 +38,11 @@ urlpatterns = [
         name="add_more_htmx",
     ),
     path(
+        "patterns/item-list/htmx/",
+        views.item_list_htmx_update,
+        name="item_list_htmx",
+    ),
+    path(
         "patterns/<str:pattern>/",
         views.design_system_pattern,
         name="design_system_pattern",
