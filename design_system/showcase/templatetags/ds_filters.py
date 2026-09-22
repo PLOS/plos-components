@@ -39,6 +39,17 @@ def plos_list_fetch(values: list | tuple | None, index: str | int | None):
         return ""
 
 
+@register.filter(name="plos_as_list")
+def plos_as_list(value):
+    if value is None or value == "":
+        return []
+
+    if isinstance(value, (list, tuple)):
+        return list(value)
+
+    return [value]
+
+
 @register.filter(name="ds_fake_print")
 def fake_print(printing: str):
     print(printing)

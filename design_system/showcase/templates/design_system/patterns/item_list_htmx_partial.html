@@ -2,20 +2,12 @@
 {% load ds_filters %}
 {% component "plos_item_list" name="patents" item_label="patent" count=count max_items=10 htmx_url=htmx_url errors=errors %}
   {% fill "item" data="slot_data" %}
-    <div class="govuk-form-group{% if slot_data.errors.patent %} govuk-form-group--error{% endif %}">
-      <label class="govuk-label" for="patent_{{ slot_data.index }}">Patent number</label>
-      {% if slot_data.errors.patent %}
-        <p class="govuk-error-message">
-          <span class="govuk-visually-hidden">Error:</span> {{ slot_data.errors.patent }}
-        </p>
-      {% endif %}
-      <input
-        class="govuk-input{% if slot_data.errors.patent %} govuk-input--error{% endif %}"
-        type="text"
-        id="patent_{{ slot_data.index }}"
-        name="patent_{{ slot_data.index }}"
-        value="{{ patent_values|plos_list_fetch:slot_data.index }}"
-      >
-    </div>
+    {% component "plos_text_input"
+      label="Patent number"
+      name="patent_{{ slot_data.index }}"
+      field_id="patent_{{ slot_data.index }}"
+      value=patent_values|plos_list_fetch:slot_data.index
+      errors=slot_data.errors|plos_dictionary_fetch:"patent"|plos_as_list
+    %}{% endcomponent %}
   {% endfill %}
 {% endcomponent %}
