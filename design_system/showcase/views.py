@@ -23,6 +23,7 @@ COMPONENTS = {
     "date_input",
     "icon",
     "text-group",
+    "tag"
 }
 
 PATTERNS = {
