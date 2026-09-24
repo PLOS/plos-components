@@ -63,6 +63,8 @@ def get_js() -> list[str | SafeString]:
 <script type="module">
       import {{ initAll }} from "{primary_js}";
       initAll();
+      // Initialise GOV.UK modules in content swapped in by HTMX
+      document.body.addEventListener("htmx:afterSettle", (event) => initAll({{ scope: event.target }}));
     </script>
                     """
         )

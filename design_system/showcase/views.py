@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from plos_django_components.components.patterns.item_list.logic import apply_action
+from plos_django_components.components.patterns.item_list.logic import apply_action, collapsed_after_action
 
 from .utils.page_title import fetch_design_system_title_from_slug
 
@@ -162,6 +162,7 @@ def item_list_page(request):
     saved = request.session.get(ITEM_LIST_SESSION_KEY, [])
     values = saved or [""]
     errors = None
+    collapsed = []
 
     if request.method == "POST":
         try:
@@ -172,6 +173,7 @@ def item_list_page(request):
         action = request.POST.get("patents__action", "")
         if action:
             values = apply_action(values, action, ITEM_LIST_MAX)
+            collapsed = collapsed_after_action(request.POST, "patents", action)
         else:
             errors = [
                 None if v.strip() else [{"field_id": "patent", "message": "Enter a patent number or application"}]
@@ -181,7 +183,13 @@ def item_list_page(request):
                 saved = values
                 request.session[ITEM_LIST_SESSION_KEY] = saved
 
-    ctx = {"patent_values": values, "errors": errors, "max_items": ITEM_LIST_MAX, "item_list_url": request.path}
+    ctx = {
+        "patent_values": values,
+        "errors": errors,
+        "collapsed": collapsed,
+        "max_items": ITEM_LIST_MAX,
+        "item_list_url": request.path,
+    }
     if request.headers.get("HX-Request"):
         return render(request, "design_system/patterns/item_list_partial.html", ctx)
 

@@ -18,6 +18,12 @@
     requests it renders just the list partial, which the page also includes.
   {% endcomponent %}
 
+  {% component "plos_text_box" %}
+    The add and delete controls are part of this pattern, not variants of
+    <code>plos_button</code>. Their styling (a tinted add button and a red delete
+    link) only applies inside an item list.
+  {% endcomponent %}
+
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
   {% component "plos_heading" level=2 %}Interactive demo{% endcomponent %}
@@ -31,8 +37,10 @@
     {% csrf_token %}
     {% include "design_system/patterns/item_list_partial.html" %}
 
-    {% component "plos_button" button_type="submit" %}
-      {% fill "default" %}Save patents{% endfill %}
+    {% component "plos_button_group" %}
+      {% component "plos_button" button_type="submit" %}
+        {% fill "default" %}Save patents{% endfill %}
+      {% endcomponent %}
     {% endcomponent %}
   </form>
 

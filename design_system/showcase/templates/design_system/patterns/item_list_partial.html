@@ -1,5 +1,5 @@
 {% load component_tags %}
-{% component "plos_item_list" name="patents" item_label="patent" values=patent_values max_items=max_items htmx_url=item_list_url errors=errors %}
+{% component "plos_item_list" name="patents" item_label="patent" values=patent_values max_items=max_items htmx_url=item_list_url errors=errors collapsed=collapsed %}
   {% fill "item" data="slot_data" %}
     {% component "plos_text_input"
       label="Patent number"

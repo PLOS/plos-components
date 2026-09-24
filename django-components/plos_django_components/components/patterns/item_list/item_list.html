@@ -1,55 +1,38 @@
-{% with htmx_target="#"|add:name|add:"-item-list" htmx_field_name=name|add:"__action" %}
-<div id="{{ name }}-item-list" class="plos-item-list" data-item-list>
+{% with htmx_target="#"|add:name|add:"-item-list" %}
+<div id="{{ name }}-item-list" class="plos-item-list" data-item-list="{{ name }}">
   {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
 
   <input type="hidden" name="{{ name }}__count" value="{{ count }}">
 
-  {% for item in items %}
-    <div class="plos-item-list__item" data-item-index="{{ item.index }}" id="{{ name }}-item-{{ item.index }}">
-      {% component "plos_heading" level=heading_level %}{{ item_label|title }} {{ forloop.counter }}{% endcomponent %}
-      {% slot "item" index=item.index value=item.value errors=item.errors %}{% endslot %}
-      {% if count > 1 %}
-        {% with delete_value="delete__"|add:item.index %}
-          {% component "plos_button"
-            button_type="submit"
-            action="warning"
-            field_name=htmx_field_name
-            value=delete_value
-            hx_post=htmx_url
-            hx_target=htmx_target
-            hx_select=htmx_target
-            hx_swap="outerHTML"
-            hx_include=htmx_target
-          %}
-            {% fill "default" %}
-              {% if delete_icon %}{% component "plos_icon" custom_icon=delete_icon size=icon_size %}{% endcomponent %}{% endif %}
+  {% component "plos_accordion" field_id=name|add:"-accordion" %}
+    {% for item in items %}
+      {% component "plos_accordion_section" heading=item.heading expanded=item.expanded %}
+        <div class="plos-item-list__item" data-item-index="{{ item.index }}" id="{{ name }}-item-{{ item.index }}">
+          {% slot "item" index=item.index value=item.value errors=item.errors %}{% endslot %}
+          {% if count > 1 %}
+            <button type="submit" class="plos-item-list__delete-button"
+                    name="{{ name }}__action" value="delete__{{ item.index }}"
+                    hx-post="{{ htmx_url }}" hx-target="{{ htmx_target }}" hx-select="{{ htmx_target }}"
+                    hx-swap="outerHTML" hx-include="{{ htmx_target }}">
+              {% if delete_icon %}{% component "plos_icon" custom_icon=delete_icon size=delete_icon_size %}{% endcomponent %}{% endif %}
               {{ delete_label }} {{ item_label }} {{ forloop.counter }}
-            {% endfill %}
-          {% endcomponent %}
-        {% endwith %}
-      {% endif %}
-    </div>
-  {% endfor %}
+            </button>
+          {% endif %}
+        </div>
+      {% endcomponent %}
+    {% endfor %}
+  {% endcomponent %}
 
   {% if remaining > 0 %}
-    <div data-add-section>
-      {% component "plos_button"
-        button_type="submit"
-        action="secondary"
-        field_name=htmx_field_name
-        value="add"
-        hx_post=htmx_url
-        hx_target=htmx_target
-        hx_select=htmx_target
-        hx_swap="outerHTML"
-        hx_include=htmx_target
-      %}
-        {% fill "default" %}
-          {% if add_icon %}{% component "plos_icon" custom_icon=add_icon size=icon_size %}{% endcomponent %}{% endif %}
-          {{ add_label }} {{ item_label }}
-        {% endfill %}
-      {% endcomponent %}
-      {% component "plos_text_box" %}You can add <span data-remaining-count>{{ remaining }}</span> more {{ item_label_plural }}{% endcomponent %}
+    <div class="plos-item-list__add" data-add-section>
+      <button type="submit" class="plos-item-list__add-button"
+              name="{{ name }}__action" value="add"
+              hx-post="{{ htmx_url }}" hx-target="{{ htmx_target }}" hx-select="{{ htmx_target }}"
+              hx-swap="outerHTML" hx-include="{{ htmx_target }}">
+        {% if add_icon %}{% component "plos_icon" custom_icon=add_icon size=add_icon_size %}{% endcomponent %}{% endif %}
+        {{ add_label }} {{ item_label }}
+      </button>
+      <p class="govuk-body-s plos-item-list__remaining">You can add <span data-remaining-count>{{ remaining }}</span> more {{ item_label_plural }}</p>
     </div>
   {% endif %}
 </div>

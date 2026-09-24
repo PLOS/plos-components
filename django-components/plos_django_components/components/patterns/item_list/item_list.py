@@ -16,8 +16,9 @@ class ItemList(PLOSBaseComponent):
     """
     A dynamic add/delete item list with HTMX progressive enhancement.
 
-    Renders one item per entry in `values`. Add and delete buttons post the
-    surrounding form to `htmx_url`, usually the page's own URL. With HTMX loaded,
+    Renders one accordion section per entry in `values`, headed
+    "{Item label} N". Add and delete buttons post the surrounding form to
+    `htmx_url`, usually the page's own URL. With HTMX loaded,
     `hx-select` picks the outer `<div id="{name}-item-list">` out of the response
     and swaps it in place. Without HTMX the form submits normally. Either way the
     view applies the action with `logic.apply_action` and re-renders the page.
@@ -51,20 +52,33 @@ class ItemList(PLOSBaseComponent):
     linking to #{field_id}_{index}. Errors are rendered inside the HTMX swap
     container so they clear automatically on add/delete swaps.
 
+    Collapsed state: with HTMX, `static/plos_django_components/item_list.js` posts
+    `{name}__collapsed` (the indexes of collapsed items) on every add and delete. Pass
+    `logic.collapsed_after_action(request.POST, name, action)` as `collapsed` so each
+    item keeps its state. Items with errors are always expanded, and every item is
+    expanded on a full page load.
+
     Optional display parameters:
 
-        heading_level   heading level for each item heading (default: 2)
-        add_label       prefix for the add button label (default: "Add another")
-        delete_label    prefix for the delete button label (default: "Delete")
-        icon_size       size applied to both add and delete icons (default: "xs")
-        add_icon        icon class for the add button; defaults to the global add_item icon setting
-        delete_icon     icon class for the delete button; defaults to the global delete_item icon setting
+        add_label         prefix for the add button label (default: "Add another")
+        delete_label      prefix for the delete button label (default: "Delete")
+        add_icon_size     plos_icon size for the add icon (default: "xs", 16px)
+        delete_icon_size  plos_icon size for the delete icon (default: "md", 24px)
+        add_icon          icon class for the add button; defaults to the global add_item icon setting
+        delete_icon       icon class for the delete button; defaults to the global delete_item icon setting
+
+    The add and delete controls belong to this pattern, not to plos_button: they are
+    styled by the `plos-item-list__add-button` and `plos-item-list__delete-button`
+    classes in the item list CSS.
 
     See the design system page (patterns/item-list) for an interactive demo.
     Its view shows how to read the posted values and apply the add and delete actions.
     """
 
     template_name = "item_list.html"
+
+    class Media:
+        js = ["plos_django_components/item_list.js"]
 
     def get_context_data(
         self,
@@ -75,14 +89,16 @@ class ItemList(PLOSBaseComponent):
         htmx_url: str,
         item_label_plural: str | None = None,
         errors: list | None = None,
-        heading_level: int = 2,
+        collapsed: list[int] | None = None,
         add_label: str = "Add another",
         delete_label: str = "Delete",
-        icon_size: str = "xs",
+        add_icon_size: str = "xs",
+        delete_icon_size: str = "md",
         add_icon: str | None = None,
         delete_icon: str | None = None,
     ):
         resolved_errors = errors or []
+        collapsed_indexes = set(collapsed or [])
         count = len(values)
         items = []
         for i, value in enumerate(values):
@@ -90,7 +106,15 @@ class ItemList(PLOSBaseComponent):
             field_errors = resolved_errors[i] if i < len(resolved_errors) else None
             for field_error in field_errors or []:
                 item_errors.setdefault(field_error["field_id"], []).append(field_error["message"])
-            items.append({"index": str(i), "value": value, "errors": item_errors})
+            items.append(
+                {
+                    "index": str(i),
+                    "heading": f"{item_label.capitalize()} {i + 1}",
+                    "value": value,
+                    "errors": item_errors,
+                    "expanded": i not in collapsed_indexes or bool(item_errors),
+                }
+            )
 
         error_summary = [
             {
@@ -111,10 +135,10 @@ class ItemList(PLOSBaseComponent):
             "items": items,
             "htmx_url": htmx_url,
             "error_summary": error_summary,
-            "heading_level": heading_level,
             "add_label": add_label,
             "delete_label": delete_label,
-            "icon_size": icon_size,
+            "add_icon_size": add_icon_size,
+            "delete_icon_size": delete_icon_size,
             "add_icon": add_icon if add_icon is not None else IconFontSetting.get_add_item_icon(),
             "delete_icon": delete_icon if delete_icon is not None else IconFontSetting.get_delete_item_icon(),
         }
