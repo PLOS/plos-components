@@ -1,5 +1,9 @@
 from django.shortcuts import render
-from plos_django_components.components.patterns.item_list.logic import apply_action, collapsed_after_action
+from plos_django_components.components.patterns.item_list.logic import (
+    apply_action,
+    collapsed_after_action,
+    posted_count,
+)
 
 from .utils.page_title import fetch_design_system_title_from_slug
 
@@ -165,10 +169,7 @@ def item_list_page(request):
     collapsed = []
 
     if request.method == "POST":
-        try:
-            count = min(int(request.POST["patents__count"]), ITEM_LIST_MAX)
-        except (KeyError, ValueError):
-            count = 1
+        count = posted_count(request.POST, "patents", ITEM_LIST_MAX)
         values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
         action = request.POST.get("patents__action", "")
         if action:

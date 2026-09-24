@@ -3,6 +3,20 @@ Add and delete mechanics for `plos_item_list`, shared by any view that renders i
 """
 
 
+def posted_count(post, name: str, max_items: int) -> int:
+    """
+    Return how many items the form posted in `{name}__count`, kept between 1 and `max_items`.
+
+    The count comes from the browser, so it is never trusted: a missing, malformed or
+    oversized value can't make the view read more than `max_items` items.
+    """
+    try:
+        count = int(post.get(f"{name}__count", 1))
+    except (TypeError, ValueError):
+        count = 1
+    return max(1, min(count, max_items))
+
+
 def apply_action(values: list, action: str, max_items: int, empty_item="") -> list:
     """
     Return a new list with the `{name}__action` add or delete applied.
