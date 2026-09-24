@@ -5,7 +5,7 @@
 {% endblock ds_title %}
 
 {% block ds_content %}
-    {% component "plos_error_summary" entries=[{"label": "Example", "anchor": "example_4", "message": "Please select an option" }] %}{% endcomponent %}
+    {% component "plos_error_summary" entries=[{"label": "Example", "anchor": "example_5", "message": "Please select an option" }] %}{% endcomponent %}
   <h1 class="govuk-heading-xl">
     Radios
   </h1>
@@ -26,9 +26,17 @@
   {%  endcomponent %}
 
   <h2 class="govuk-heading-m">
-    Selected state:
+    With option hints:
   </h2>
   {% component "plos_radio_selection" name="example_3" %}
+    {%  component "plos_radio_selection_option" hint="This is a hint for option 1" %} Option 1 {% endcomponent %}
+    {%  component "plos_radio_selection_option" hint="This is a hint for option 2" %} Option 2 {% endcomponent %}
+  {%  endcomponent %}
+
+  <h2 class="govuk-heading-m">
+    Selected state:
+  </h2>
+  {% component "plos_radio_selection" name="example_4" %}
     {%  component "plos_radio_selection_option" checked="true" %} Option 1 {% endcomponent %}
     {%  component "plos_radio_selection_option" %} Option 2 {% endcomponent %}
   {%  endcomponent %}
@@ -36,7 +44,7 @@
   <h2 class="govuk-heading-m">
     Error state:
   </h2>
-  {% component "plos_radio_selection" name="example_4" errors=[{"label": "Example", "anchor": "example_4", "message": "Please select an option" }] %}
+  {% component "plos_radio_selection" name="example_5" errors=[{"label": "Example", "anchor": "example_5", "message": "Please select an option" }] %}
     {%  component "plos_radio_selection_option" %} Option 1 {% endcomponent %}
     {%  component "plos_radio_selection_option" %} Option 2 {% endcomponent %}
   {%  endcomponent %}
