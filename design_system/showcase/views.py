@@ -1,6 +1,5 @@
-from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
+from plos_django_components.components.patterns.item_list.logic import apply_action
 
 from .utils.page_title import fetch_design_system_title_from_slug
 
@@ -158,112 +157,37 @@ def add_more_implementation_page(request):
     return render(request, "design_system/patterns/add_more/implementation.html", ctx)
 
 
-def _parse_delete_idx(action):
-    try:
-        return int(action.split("__")[1])
-    except (IndexError, ValueError):
-        return None
-
-
-def _item_list_page_context(request, patent_values=None, patent_errors=None):
-    if patent_values is None:
-        patent_values = request.session.get(ITEM_LIST_SESSION_KEY)
-        if patent_values is None:
-            patent_values = [""]
-            request.session[ITEM_LIST_SESSION_KEY] = patent_values
-
-    ctx = _nav_context_patterns(request, active_section="patterns", active_slug="item-list")
-    ctx["count"] = len(patent_values)
-    ctx["patent_values"] = patent_values
-    ctx["htmx_url"] = reverse("item_list_htmx")
-    if patent_errors is not None:
-        ctx["errors"] = patent_errors
-    return ctx
-
-
 def item_list_page(request):
-    if request.method == "POST" and not request.headers.get("HX-Request"):
-        return _item_list_handle_post(request)
-    return render(request, "design_system/patterns/item_list.html", _item_list_page_context(request))
+    """Render the item list demo. Add and delete re-render the form; only Save persists."""
+    saved = request.session.get(ITEM_LIST_SESSION_KEY, [])
+    values = saved or [""]
+    errors = None
 
+    if request.method == "POST":
+        try:
+            count = min(int(request.POST["patents__count"]), ITEM_LIST_MAX)
+        except (KeyError, ValueError):
+            count = 1
+        values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
+        action = request.POST.get("patents__action", "")
+        if action:
+            values = apply_action(values, action, ITEM_LIST_MAX)
+        else:
+            errors = [
+                None if v.strip() else [{"field_id": "patent", "message": "Enter a patent number or application"}]
+                for v in values
+            ]
+            if not any(errors):
+                saved = values
+                request.session[ITEM_LIST_SESSION_KEY] = saved
 
-def _item_list_handle_post(request):
-    """Handle a full-page POST, used when HTMX is not loaded."""
-    saved = request.session.get(ITEM_LIST_SESSION_KEY, [""])
-    try:
-        count = min(int(request.POST.get("patents__count", len(saved))), ITEM_LIST_MAX)
-    except (ValueError, TypeError):
-        count = len(saved)
-    values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
-    action = request.POST.get("patents__action", "")
-    url = reverse("design_system_pattern", kwargs={"pattern": "item-list"})
+    ctx = {"patent_values": values, "errors": errors, "max_items": ITEM_LIST_MAX, "item_list_url": request.path}
+    if request.headers.get("HX-Request"):
+        return render(request, "design_system/patterns/item_list_partial.html", ctx)
 
-    if action == "add" or action.startswith("delete__"):
-        anchor = "#patents-list-anchor"
-        if action == "add" and count < ITEM_LIST_MAX:
-            values.append("")
-        elif action.startswith("delete__"):
-            idx = _parse_delete_idx(action)
-            if idx is not None:
-                try:
-                    values.pop(idx)
-                except IndexError:
-                    idx = None
-            if not values:
-                values = [""]
-            if idx is not None and idx < len(values):
-                anchor = f"#patents-item-{idx}"
-        request.session[ITEM_LIST_SESSION_KEY] = values
-        return HttpResponseRedirect(f"{url}{anchor}")
-
-    errors = [
-        [{"field_id": "patent", "message": "Enter a patent number or application"}] if not v.strip() else None
-        for v in values
-    ]
-    request.session[ITEM_LIST_SESSION_KEY] = values
-
-    if any(errors):
-        ctx = _item_list_page_context(request, patent_values=values, patent_errors=errors)
-        return render(request, "design_system/patterns/item_list.html", ctx)
-
-    return HttpResponseRedirect(f"{url}#patents-list-anchor")
-
-
-def item_list_htmx_update(request):
-    """Apply an add or delete and return only the list, for the HTMX swap."""
-    if request.method != "POST":
-        return HttpResponse(status=405)
-
-    try:
-        count = min(int(request.POST.get("patents__count", 1)), ITEM_LIST_MAX)
-    except (ValueError, TypeError):
-        count = 1
-    action = request.POST.get("patents__action", "")
-    values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
-
-    if action == "add" and count < ITEM_LIST_MAX:
-        values.append("")
-    elif action.startswith("delete__"):
-        idx = _parse_delete_idx(action)
-        if idx is not None:
-            try:
-                values.pop(idx)
-            except IndexError:
-                pass
-        if not values:
-            values = [""]
-
-    request.session[ITEM_LIST_SESSION_KEY] = values
-
-    return render(
-        request,
-        "design_system/patterns/item_list_htmx_partial.html",
-        {
-            "count": len(values),
-            "patent_values": values,
-            "htmx_url": reverse("item_list_htmx"),
-        },
-    )
+    ctx.update(_nav_context_patterns(request, active_section="patterns", active_slug="item-list"))
+    ctx["saved_patents"] = saved
+    return render(request, "design_system/patterns/item_list.html", ctx)
 
 
 def error_summary_page(request):
@@ -337,8 +261,6 @@ def design_system_component(request, component):
 def design_system_pattern(request, pattern):
     if pattern == "add-more":
         return add_more_htmx_page(request)
-    if pattern == "item-list":
-        return item_list_page(request)
     slug = pattern.replace("-", "_")
     return render(
         request,

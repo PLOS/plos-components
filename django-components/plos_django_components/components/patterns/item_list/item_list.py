@@ -16,18 +16,19 @@ class ItemList(PLOSBaseComponent):
     """
     A dynamic add/delete item list with HTMX progressive enhancement.
 
-    Renders a list of repeating form items. Add and delete buttons submit to
-    `htmx_url` via HTMX, swapping only the outer `<div id="{name}-item-list">`
-    in place. Without HTMX the same buttons submit the surrounding form normally
-    and the page view handles everything.
+    Renders one item per entry in `values`. Add and delete buttons post the
+    surrounding form to `htmx_url`, usually the page's own URL. With HTMX loaded,
+    `hx-select` picks the outer `<div id="{name}-item-list">` out of the response
+    and swaps it in place. Without HTMX the form submits normally. Either way the
+    view applies the action with `logic.apply_action` and re-renders the page.
 
     Each item is rendered via the `item` slot. Use `data="slot_data"` in the
     fill to access per-item variables:
 
         slot_data.index: zero-based item index as a str; use for id/name/for attributes
-        slot_data.is_first: True for the first item
-        slot_data.errors: dict keyed by base field name (e.g. slot_data.errors.patent,
-                           slot_data.errors.coi_description); empty dict when no errors
+        slot_data.value: the entry from `values` for this item (a str, dict, etc.)
+        slot_data.errors: dict of field_id to a list of messages (e.g. slot_data.errors.patent);
+                           empty dict when no errors
 
     HTML id convention: field ids in the fill must follow `{field_id}_{slot_data.index}`
     so the error summary anchors resolve correctly (the component appends _{i} to each
@@ -59,8 +60,8 @@ class ItemList(PLOSBaseComponent):
         add_icon        icon class for the add button; defaults to the global add_item icon setting
         delete_icon     icon class for the delete button; defaults to the global delete_item icon setting
 
-    See the design system page (patterns/item-list) for an interactive demo. Its
-    views in the showcase show how to handle the add and delete actions.
+    See the design system page (patterns/item-list) for an interactive demo.
+    Its view shows how to read the posted values and apply the add and delete actions.
     """
 
     template_name = "item_list.html"
@@ -69,7 +70,7 @@ class ItemList(PLOSBaseComponent):
         self,
         name: str,
         item_label: str,
-        count: int,
+        values: list,
         max_items: int,
         htmx_url: str,
         item_label_plural: str | None = None,
@@ -82,20 +83,15 @@ class ItemList(PLOSBaseComponent):
         delete_icon: str | None = None,
     ):
         resolved_errors = errors or []
+        count = len(values)
+        items = []
+        for i, value in enumerate(values):
+            item_errors = {}
+            field_errors = resolved_errors[i] if i < len(resolved_errors) else None
+            for field_error in field_errors or []:
+                item_errors.setdefault(field_error["field_id"], []).append(field_error["message"])
+            items.append({"index": str(i), "value": value, "errors": item_errors})
 
-        def _item_errors_dict(i):
-            if i >= len(resolved_errors) or not resolved_errors[i]:
-                return {}
-            return {field_error["field_id"]: field_error["message"] for field_error in resolved_errors[i]}
-
-        items = [
-            {
-                "index": str(i),
-                "is_first": i == 0,
-                "errors": _item_errors_dict(i),
-            }
-            for i in range(count)
-        ]
         error_summary = [
             {
                 "label": f"{item_label.capitalize()} {i + 1}",
@@ -111,12 +107,10 @@ class ItemList(PLOSBaseComponent):
             "item_label": item_label,
             "item_label_plural": item_label_plural or f"{item_label}s",
             "count": count,
-            "max_items": max_items,
             "remaining": max_items - count,
             "items": items,
             "htmx_url": htmx_url,
             "error_summary": error_summary,
-            "has_errors": bool(error_summary),
             "heading_level": heading_level,
             "add_label": add_label,
             "delete_label": delete_label,

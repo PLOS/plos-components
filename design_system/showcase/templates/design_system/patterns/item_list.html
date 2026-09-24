@@ -1,5 +1,4 @@
 {% extends "design_system/base.html" %}
-{% load ds_filters %}
 
 {% block ds_title %}
   Item List - PLOS Design System
@@ -11,12 +10,12 @@
   {% component "plos_text_box" %}
     <code>plos_item_list</code> is built with HTMX to enable
     progressive enhancement. HTMX is not required. Without it, add and delete
-    buttons submit the surrounding form normally and the page view handles
-    everything. When HTMX.js is loaded, those same buttons instead POST to
-    <code>htmx_url</code> and swap only the list container in place, without a
-    full page reload. The swap target is the component's outer
-    <code>&lt;div id="{name}-item-list"&gt;</code>; the endpoint must return
-    only that element.
+    buttons submit the surrounding form normally and the page view re-renders
+    the page. When HTMX.js is loaded, those same buttons POST the form to
+    <code>htmx_url</code> (usually the page's own URL) and swap only the
+    component's outer <code>&lt;div id="{name}-item-list"&gt;</code> in place,
+    without a full page reload. The same view serves both cases: for HTMX
+    requests it renders just the list partial, which the page also includes.
   {% endcomponent %}
 
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
@@ -28,37 +27,25 @@
     reload. If you disable JavaScript the form will still work via full POST.
   {% endcomponent %}
 
-  <form method="post" action="{% url 'design_system_pattern' 'item-list' %}" novalidate>
+  <form method="post" action="{{ item_list_url }}#patents-item-list" novalidate>
     {% csrf_token %}
-    {% component "plos_item_list" name="patents" item_label="patent" count=count max_items=10 htmx_url=htmx_url errors=errors %}
-      {% fill "item" data="slot_data" %}
-        {% component "plos_text_input"
-          label="Patent number"
-          name="patent_{{ slot_data.index }}"
-          field_id="patent_{{ slot_data.index }}"
-          value=patent_values|plos_list_fetch:slot_data.index
-          errors=slot_data.errors|plos_dictionary_fetch:"patent"|plos_as_list
-        %}{% endcomponent %}
-      {% endfill %}
-    {% endcomponent %}
+    {% include "design_system/patterns/item_list_partial.html" %}
 
-    {% component "plos_button" button_type="submit" field_name="patents__action" %}
+    {% component "plos_button" button_type="submit" %}
       {% fill "default" %}Save patents{% endfill %}
     {% endcomponent %}
   </form>
 
-  {% with non_empty=patent_values|ds_filter_nonempty %}
-    {% if non_empty %}
-      {% component "plos_inset_text" %}
-        {% component "plos_heading" level=3 css_class="govuk-heading-s" %}Saved patents{% endcomponent %}
-        {% component "plos_bulleted_list" name="saved_patents" %}
-          {% for patent in non_empty %}
-            {% component "plos_bulleted_list_option" %}{{ patent }}{% endcomponent %}
-          {% endfor %}
-        {% endcomponent %}
+  {% if saved_patents %}
+    {% component "plos_inset_text" %}
+      {% component "plos_heading" level=3 css_class="govuk-heading-s" %}Saved patents{% endcomponent %}
+      {% component "plos_bulleted_list" name="saved_patents" %}
+        {% for patent in saved_patents %}
+          {% component "plos_bulleted_list_option" %}{{ patent }}{% endcomponent %}
+        {% endfor %}
       {% endcomponent %}
-    {% endif %}
-  {% endwith %}
+    {% endcomponent %}
+  {% endif %}
 {% endblock ds_content %}
 
 {% block js %}

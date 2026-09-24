@@ -1,0 +1,12 @@
+{% load component_tags %}
+{% component "plos_item_list" name="patents" item_label="patent" values=patent_values max_items=max_items htmx_url=item_list_url errors=errors %}
+  {% fill "item" data="slot_data" %}
+    {% component "plos_text_input"
+      label="Patent number"
+      name="patent_{{ slot_data.index }}"
+      field_id="patent_{{ slot_data.index }}"
+      value=slot_data.value
+      errors=slot_data.errors.patent
+    %}{% endcomponent %}
+  {% endfill %}
+{% endcomponent %}

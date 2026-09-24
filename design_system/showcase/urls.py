@@ -38,9 +38,9 @@ urlpatterns = [
         name="add_more_htmx",
     ),
     path(
-        "patterns/item-list/htmx/",
-        views.item_list_htmx_update,
-        name="item_list_htmx",
+        "patterns/item-list/",
+        views.item_list_page,
+        name="item_list",
     ),
     path(
         "patterns/<str:pattern>/",
