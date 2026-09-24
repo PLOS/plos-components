@@ -39,7 +39,7 @@ def get_js() -> list[str | SafeString]:
     Gets the JS items for the base components.
     """
     templates: list[str | SafeString] = []
-    if primary_js is None:
+    if not primary_js:
         return templates
 
     # Required to make this function appropriately.
