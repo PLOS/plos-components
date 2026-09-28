@@ -1,5 +1,5 @@
 {% load component_tags %}
-{% component "plos_add_more" name="patents" item_label="patent" values=patent_values max_items=max_items htmx_url=add_more_url errors=errors collapsed=collapsed %}
+{% component "plos_add_more" name="patents" item_label="patent" values=patent_values max_items=max_items htmx_url=add_more_url errors=errors collapsed=collapsed last_action=last_action %}
   {% fill "item" data="slot_data" %}
     {% component "plos_text_input"
       label="Patent number"
@@ -7,6 +7,7 @@
       field_id="patent_{{ slot_data.index }}"
       value=slot_data.value
       errors=slot_data.errors.patent
+      autofocus=slot_data.autofocus
     %}{% endcomponent %}
   {% endfill %}
 {% endcomponent %}

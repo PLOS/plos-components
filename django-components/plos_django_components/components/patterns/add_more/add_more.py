@@ -30,6 +30,8 @@ class AddMore(PLOSBaseComponent):
         slot_data.value: the entry from `values` for this item (a str, dict, etc.)
         slot_data.errors: dict of field_id to a list of messages (e.g. slot_data.errors.patent);
                            empty dict when no errors
+        slot_data.autofocus: True when this item's first field should take focus; pass it
+                              as `autofocus` to that field (see "Focus management" below)
 
     HTML id convention: field ids in the fill must follow `{field_id}_{slot_data.index}`
     so the error summary anchors resolve correctly (the component appends _{i} to each
@@ -57,6 +59,17 @@ class AddMore(PLOSBaseComponent):
     `logic.collapsed_after_action(request.POST, name, action)` as `collapsed` so each
     item keeps its state. Items with errors are always expanded, and every item is
     expanded on a full page load.
+
+    Focus management: pass the posted `{name}__action` as `last_action` so focus
+    doesn't drop to the page body after an add or delete. The component renders an
+    `autofocus` attribute, which browsers honour on a full page load and HTMX honours
+    after a swap, so both paths behave the same:
+
+        add          the new item's first field (via `slot_data.autofocus`)
+        delete__N    the first field of the item that moved into position N, or the
+                     add button when the last item was deleted
+
+    The focused item is always expanded so its field can take focus.
 
     Optional display parameters:
 
@@ -90,6 +103,7 @@ class AddMore(PLOSBaseComponent):
         item_label_plural: str | None = None,
         errors: list | None = None,
         collapsed: list[int] | None = None,
+        last_action: str | None = None,
         add_label: str = "Add another",
         delete_label: str = "Delete",
         add_icon_size: str = "xs",
@@ -100,6 +114,7 @@ class AddMore(PLOSBaseComponent):
         resolved_errors = errors or []
         collapsed_indexes = set(collapsed or [])
         count = len(values)
+        focus_index, focus_add_button = self._focus_target(last_action or "", count)
         items = []
         for i, value in enumerate(values):
             item_errors = {}
@@ -112,7 +127,8 @@ class AddMore(PLOSBaseComponent):
                     "heading": f"{item_label.capitalize()} {i + 1}",
                     "value": value,
                     "errors": item_errors,
-                    "expanded": i not in collapsed_indexes or bool(item_errors),
+                    "autofocus": i == focus_index,
+                    "expanded": i not in collapsed_indexes or bool(item_errors) or i == focus_index,
                 }
             )
 
@@ -133,6 +149,7 @@ class AddMore(PLOSBaseComponent):
             "count": count,
             "remaining": max_items - count,
             "items": items,
+            "focus_add_button": focus_add_button,
             "htmx_url": htmx_url,
             "error_summary": error_summary,
             "add_label": add_label,
@@ -142,3 +159,22 @@ class AddMore(PLOSBaseComponent):
             "add_icon": add_icon if add_icon is not None else IconFontSetting.get_add_item_icon(),
             "delete_icon": delete_icon if delete_icon is not None else IconFontSetting.get_delete_item_icon(),
         }
+
+    @staticmethod
+    def _focus_target(last_action: str, count: int) -> tuple[int | None, bool]:
+        """
+        Return (item index to focus, whether to focus the add button) after `last_action`.
+
+        `count` is the number of items after the action was applied.
+        """
+        if last_action == "add":
+            return count - 1, False
+        if last_action.startswith("delete__"):
+            try:
+                deleted = int(last_action.removeprefix("delete__"))
+            except ValueError:
+                return None, False
+            if 0 <= deleted < count:
+                return deleted, False
+            return None, deleted >= 0
+        return None, False

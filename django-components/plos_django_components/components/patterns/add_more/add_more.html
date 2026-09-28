@@ -8,7 +8,7 @@
     {% for item in items %}
       {% component "plos_accordion_section" heading=item.heading expanded=item.expanded %}
         <div class="plos-add-more__item" data-item-index="{{ item.index }}" id="{{ name }}-item-{{ item.index }}">
-          {% slot "item" index=item.index value=item.value errors=item.errors %}{% endslot %}
+          {% slot "item" index=item.index value=item.value errors=item.errors autofocus=item.autofocus %}{% endslot %}
           {% if count > 1 %}
             <button type="submit" class="plos-add-more__delete-button"
                     name="{{ name }}__action" value="delete__{{ item.index }}"
@@ -28,7 +28,7 @@
       <button type="submit" class="plos-add-more__add-button"
               name="{{ name }}__action" value="add"
               hx-post="{{ htmx_url }}" hx-target="{{ htmx_target }}" hx-select="{{ htmx_target }}"
-              hx-swap="outerHTML" hx-include="{{ htmx_target }}">
+              hx-swap="outerHTML" hx-include="{{ htmx_target }}"{% if focus_add_button %} autofocus{% endif %}>
         {% if add_icon %}{% component "plos_icon" custom_icon=add_icon size=add_icon_size %}{% endcomponent %}{% endif %}
         {{ add_label }} {{ item_label }}
       </button>

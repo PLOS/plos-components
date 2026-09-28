@@ -142,6 +142,7 @@ def add_more_page(request):
     values = saved or [""]
     errors = None
     collapsed = []
+    action = ""
 
     if request.method == "POST":
         count = posted_count(request.POST, "patents", ADD_MORE_MAX)
@@ -163,6 +164,7 @@ def add_more_page(request):
         "patent_values": values,
         "errors": errors,
         "collapsed": collapsed,
+        "last_action": action,
         "max_items": ADD_MORE_MAX,
         "add_more_url": request.path,
     }
