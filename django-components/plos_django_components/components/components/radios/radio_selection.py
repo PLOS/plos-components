@@ -153,6 +153,7 @@ class RadioSelectionOption(PLOSBaseComponent):
         /,
         *,
         value: str | None = None,
+        hint: str | None = None,
         errors: list[str] | None = None,
         checked: bool = False,
     ):
@@ -184,6 +185,7 @@ class RadioSelectionOption(PLOSBaseComponent):
             "errors": errors,
             "checked": checked,
             "value": value,
+            "hint": hint,
         }
 
     def on_render_after(self, context, template, content):  # noqa: D102
@@ -193,6 +195,7 @@ class RadioSelectionOption(PLOSBaseComponent):
                 "checked": context["checked"],
                 "value": context["value"],
                 "content": mark_safe(content.strip()),
+                "hint": context["hint"],
                 "errors": context["errors"],
             }
         )
