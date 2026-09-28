@@ -1,7 +1,5 @@
 {% with htmx_target="#"|add:name|add:"-add-more" %}
 <div id="{{ name }}-add-more" class="plos-add-more" data-add-more="{{ name }}">
-  {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
-
   <input type="hidden" name="{{ name }}__count" value="{{ count }}">
 
   {% component "plos_accordion" field_id=name|add:"-accordion" %}
@@ -13,7 +11,7 @@
             <button type="submit" class="plos-add-more__delete-button"
                     name="{{ name }}__action" value="delete__{{ item.index }}"
                     hx-post="{{ htmx_url }}" hx-target="{{ htmx_target }}" hx-select="{{ htmx_target }}"
-                    hx-swap="outerHTML" hx-include="{{ htmx_target }}">
+                    hx-swap="outerHTML" hx-include="{{ htmx_target }}"{% if error_summary_id %} hx-select-oob="#{{ error_summary_id }}"{% endif %}>
               {% if delete_icon %}{% component "plos_icon" custom_icon=delete_icon size=delete_icon_size %}{% endcomponent %}{% endif %}
               {{ delete_label }} {{ item_label }} {{ forloop.counter }}
             </button>
@@ -28,7 +26,7 @@
       <button type="submit" class="plos-add-more__add-button"
               name="{{ name }}__action" value="add"
               hx-post="{{ htmx_url }}" hx-target="{{ htmx_target }}" hx-select="{{ htmx_target }}"
-              hx-swap="outerHTML" hx-include="{{ htmx_target }}"{% if focus_add_button %} autofocus{% endif %}>
+              hx-swap="outerHTML" hx-include="{{ htmx_target }}"{% if error_summary_id %} hx-select-oob="#{{ error_summary_id }}"{% endif %}{% if focus_add_button %} autofocus{% endif %}>
         {% if add_icon %}{% component "plos_icon" custom_icon=add_icon size=add_icon_size %}{% endcomponent %}{% endif %}
         {{ add_label }} {{ item_label }}
       </button>

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from plos_django_components.components.patterns.add_more.logic import (
     apply_action,
     collapsed_after_action,
+    error_summary_entries,
     posted_count,
 )
 
@@ -163,14 +164,12 @@ def add_more_page(request):
     ctx = {
         "patent_values": values,
         "errors": errors,
+        "error_summary": error_summary_entries(errors, "patent"),
         "collapsed": collapsed,
         "last_action": action,
         "max_items": ADD_MORE_MAX,
         "add_more_url": request.path,
     }
-    if request.headers.get("HX-Request"):
-        return render(request, "design_system/patterns/add_more_partial.html", ctx)
-
     ctx.update(_nav_context_patterns(request, active_section="patterns", active_slug="add-more"))
     ctx["saved_patents"] = saved
     return render(request, "design_system/patterns/add_more.html", ctx)

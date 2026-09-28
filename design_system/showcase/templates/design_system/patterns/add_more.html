@@ -14,8 +14,17 @@
     the page. When HTMX.js is loaded, those same buttons POST the form to
     <code>htmx_url</code> (usually the page's own URL) and swap only the
     component's outer <code>&lt;div id="{name}-add-more"&gt;</code> in place,
-    without a full page reload. The same view serves both cases: for HTMX
-    requests it renders just the list partial, which the page also includes.
+    without a full page reload. The same view and template serve both cases.
+  {% endcomponent %}
+
+  {% component "plos_text_box" %}
+    The page owns the error summary, so a form has one summary for all its
+    fields. Build the add more entries with
+    <code>logic.error_summary_entries(errors, item_label)</code>, wrap the
+    page's <code>plos_error_summary</code> in an element that is always
+    rendered, and pass its id as <code>error_summary_id</code>. Add and delete
+    then refresh that element too, so the summary never links to items that
+    have moved or gone.
   {% endcomponent %}
 
   {% component "plos_text_box" %}
@@ -33,9 +42,24 @@
     reload. If you disable JavaScript the form will still work via full POST.
   {% endcomponent %}
 
+  <div id="page-errors">
+    {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
+  </div>
+
   <form method="post" action="{{ add_more_url }}#patents-add-more" novalidate>
     {% csrf_token %}
-    {% include "design_system/patterns/add_more_partial.html" %}
+    {% component "plos_add_more" name="patents" item_label="patent" values=patent_values max_items=max_items htmx_url=add_more_url errors=errors collapsed=collapsed last_action=last_action error_summary_id="page-errors" %}
+      {% fill "item" data="slot_data" %}
+        {% component "plos_text_input"
+          label="Patent number"
+          name="patent_{{ slot_data.index }}"
+          field_id="patent_{{ slot_data.index }}"
+          value=slot_data.value
+          errors=slot_data.errors.patent
+          autofocus=slot_data.autofocus
+        %}{% endcomponent %}
+      {% endfill %}
+    {% endcomponent %}
 
     {% component "plos_button_group" %}
       {% component "plos_button" button_type="submit" %}

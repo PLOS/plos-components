@@ -69,10 +69,15 @@ def test_save_shows_errors_then_saves(page: Page, live_server):
     expect(error_link).to_have_text("Patent 2: Enter a patent number")
     expect(error_link).to_have_attribute("href", "#patent_1")
 
+    add_button(page).click()
+    expect(page.locator("#patent_2")).to_be_visible()
+    expect(page.locator(".govuk-error-summary")).to_have_count(0)
+
     page.locator("#patent_1").fill("Patent-456")
+    page.locator("#patent_2").fill("Patent-789")
     page.get_by_role("button", name="Save").click()
 
-    expect(page.locator("#saved li")).to_have_text(["Patent-123", "Patent-456"])
+    expect(page.locator("#saved li")).to_have_text(["Patent-123", "Patent-456", "Patent-789"])
 
 
 @pytest.mark.django_db

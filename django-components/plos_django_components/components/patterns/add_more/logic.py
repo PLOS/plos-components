@@ -59,3 +59,22 @@ def collapsed_after_action(post, name: str, action: str) -> list[int]:
         if deleted >= 0:
             collapsed = {i - (i > deleted) for i in collapsed if i != deleted}
     return sorted(collapsed)
+
+
+def error_summary_entries(errors: list | None, item_label: str) -> list[dict]:
+    """
+    Return `plos_error_summary` entries for the per-item `errors` passed to `plos_add_more`.
+
+    Each field error becomes "{Item label N}: {message}", linking to `{field_id}_{index}`.
+    Add these to the page's own entries so the form has a single error summary.
+    """
+    return [
+        {
+            "label": f"{item_label.capitalize()} {i + 1}",
+            "message": field_error["message"],
+            "anchor": f"{field_error['field_id']}_{i}",
+        }
+        for i, item_errors in enumerate(errors or [])
+        if item_errors
+        for field_error in item_errors
+    ]

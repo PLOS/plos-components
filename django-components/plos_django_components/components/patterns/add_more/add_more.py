@@ -49,10 +49,20 @@ class AddMore(PLOSBaseComponent):
             ],
         ]
 
-    `field_id` is the base name without the item index. The component builds one
-    error summary entry per field error, formatted as "{Item label N}: {message}",
-    linking to #{field_id}_{index}. Errors are rendered inside the HTMX swap
-    container so they clear automatically on add/delete swaps.
+    `field_id` is the base name without the item index. The component shows these
+    messages inline on each item; it does not render an error summary.
+
+    Error summary: the page owns it, so a form has one summary for all its fields.
+    Build the add more entries with `logic.error_summary_entries(errors, item_label)`
+    and add them to the page's own entries. Wrap the page's `plos_error_summary` in an
+    element that is always rendered, and pass that element's id as `error_summary_id`:
+
+        <div id="page-errors">
+          {% component "plos_error_summary" entries=entries %}{% endcomponent %}
+        </div>
+
+    With HTMX, add and delete then also swap that element from the response
+    (`hx-select-oob`), so a stale summary doesn't outlive the items it links to.
 
     Collapsed state: with HTMX, `static/plos_django_components/add_more.js` posts
     `{name}__collapsed` (the indexes of collapsed items) on every add and delete. Pass
@@ -79,6 +89,7 @@ class AddMore(PLOSBaseComponent):
         delete_icon_size  plos_icon size for the delete icon (default: "md", 24px)
         add_icon          icon class for the add button; defaults to the global add_item icon setting
         delete_icon       icon class for the delete button; defaults to the global delete_item icon setting
+        error_summary_id  id of the page element wrapping the error summary; see "Error summary" above
 
     The add and delete controls belong to this pattern, not to plos_button: they are
     styled by the `plos-add-more__add-button` and `plos-add-more__delete-button`
@@ -110,6 +121,7 @@ class AddMore(PLOSBaseComponent):
         delete_icon_size: str = "md",
         add_icon: str | None = None,
         delete_icon: str | None = None,
+        error_summary_id: str | None = None,
     ):
         resolved_errors = errors or []
         collapsed_indexes = set(collapsed or [])
@@ -132,16 +144,6 @@ class AddMore(PLOSBaseComponent):
                 }
             )
 
-        error_summary = [
-            {
-                "label": f"{item_label.capitalize()} {i + 1}",
-                "message": field_error["message"],
-                "anchor": f"{field_error['field_id']}_{i}",
-            }
-            for i, item_errors in enumerate(resolved_errors)
-            if item_errors
-            for field_error in item_errors
-        ]
         return {
             "name": name,
             "item_label": item_label,
@@ -151,7 +153,7 @@ class AddMore(PLOSBaseComponent):
             "items": items,
             "focus_add_button": focus_add_button,
             "htmx_url": htmx_url,
-            "error_summary": error_summary,
+            "error_summary_id": error_summary_id,
             "add_label": add_label,
             "delete_label": delete_label,
             "add_icon_size": add_icon_size,

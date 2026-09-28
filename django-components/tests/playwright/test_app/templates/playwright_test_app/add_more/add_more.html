@@ -9,9 +9,13 @@
 {% block content %}
   <h1 class="govuk-heading-xl">Add More</h1>
 
+  <div id="page-errors">
+    {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
+  </div>
+
   <form method="post" action="{{ url }}" novalidate>
     {% csrf_token %}
-    {% component "plos_add_more" name="patents" item_label="patent" values=values max_items=max_items htmx_url=url errors=errors collapsed=collapsed last_action=last_action %}
+    {% component "plos_add_more" name="patents" item_label="patent" values=values max_items=max_items htmx_url=url errors=errors collapsed=collapsed last_action=last_action error_summary_id="page-errors" %}
       {% fill "item" data="slot_data" %}
         {% component "plos_text_input"
           label="Patent number"

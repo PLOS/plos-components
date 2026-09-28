@@ -2,6 +2,7 @@ from django.shortcuts import render
 from plos_django_components.components.patterns.add_more.logic import (
     apply_action,
     collapsed_after_action,
+    error_summary_entries,
     posted_count,
 )
 
@@ -32,6 +33,7 @@ def add_more_view(request):
     context = {
         "values": values,
         "errors": errors,
+        "error_summary": error_summary_entries(errors, "patent"),
         "collapsed": collapsed,
         "last_action": action,
         "max_items": MAX_ITEMS,
