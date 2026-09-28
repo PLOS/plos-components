@@ -95,24 +95,24 @@ def test_icon_sizes(page: Page, live_server):
     page.goto(url)
 
     # Check different sizes
-    xs_icon = page.locator(".plos-icon >> i.bi-plus-lg").first
+    xs_icon = page.locator(".plos-icon >> i.bi-plus-circle-fill").first
     expect(xs_icon).to_be_visible()
     # Check the style attribute for size
     expect(xs_icon.locator("..")).to_have_attribute("style", "width: 16px; height: 16px;")
 
-    sm_icon = page.locator(".plos-icon >> i.bi-plus-lg").nth(1)
+    sm_icon = page.locator(".plos-icon >> i.bi-plus-circle-fill").nth(1)
     expect(sm_icon).to_be_visible()
     expect(sm_icon.locator("..")).to_have_attribute("style", "width: 20px; height: 20px;")
 
-    md_icon = page.locator(".plos-icon >> i.bi-plus-lg").nth(2)
+    md_icon = page.locator(".plos-icon >> i.bi-plus-circle-fill").nth(2)
     expect(md_icon).to_be_visible()
     expect(md_icon.locator("..")).to_have_attribute("style", "width: 24px; height: 24px;")
 
-    lg_icon = page.locator(".plos-icon >> i.bi-plus-lg").nth(3)
+    lg_icon = page.locator(".plos-icon >> i.bi-plus-circle-fill").nth(3)
     expect(lg_icon).to_be_visible()
     expect(lg_icon.locator("..")).to_have_attribute("style", "width: 32px; height: 32px;")
 
-    xl_icon = page.locator(".plos-icon >> i.bi-plus-lg").nth(4)
+    xl_icon = page.locator(".plos-icon >> i.bi-plus-circle-fill").nth(4)
     expect(xl_icon).to_be_visible()
     expect(xl_icon.locator("..")).to_have_attribute("style", "width: 40px; height: 40px;")
 
