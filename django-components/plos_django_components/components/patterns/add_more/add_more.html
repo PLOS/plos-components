@@ -1,5 +1,5 @@
-{% with htmx_target="#"|add:name|add:"-item-list" %}
-<div id="{{ name }}-item-list" class="plos-item-list" data-item-list="{{ name }}">
+{% with htmx_target="#"|add:name|add:"-add-more" %}
+<div id="{{ name }}-add-more" class="plos-add-more" data-add-more="{{ name }}">
   {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
 
   <input type="hidden" name="{{ name }}__count" value="{{ count }}">
@@ -7,10 +7,10 @@
   {% component "plos_accordion" field_id=name|add:"-accordion" %}
     {% for item in items %}
       {% component "plos_accordion_section" heading=item.heading expanded=item.expanded %}
-        <div class="plos-item-list__item" data-item-index="{{ item.index }}" id="{{ name }}-item-{{ item.index }}">
+        <div class="plos-add-more__item" data-item-index="{{ item.index }}" id="{{ name }}-item-{{ item.index }}">
           {% slot "item" index=item.index value=item.value errors=item.errors %}{% endslot %}
           {% if count > 1 %}
-            <button type="submit" class="plos-item-list__delete-button"
+            <button type="submit" class="plos-add-more__delete-button"
                     name="{{ name }}__action" value="delete__{{ item.index }}"
                     hx-post="{{ htmx_url }}" hx-target="{{ htmx_target }}" hx-select="{{ htmx_target }}"
                     hx-swap="outerHTML" hx-include="{{ htmx_target }}">
@@ -24,15 +24,15 @@
   {% endcomponent %}
 
   {% if remaining > 0 %}
-    <div class="plos-item-list__add" data-add-section>
-      <button type="submit" class="plos-item-list__add-button"
+    <div class="plos-add-more__add" data-add-section>
+      <button type="submit" class="plos-add-more__add-button"
               name="{{ name }}__action" value="add"
               hx-post="{{ htmx_url }}" hx-target="{{ htmx_target }}" hx-select="{{ htmx_target }}"
               hx-swap="outerHTML" hx-include="{{ htmx_target }}">
         {% if add_icon %}{% component "plos_icon" custom_icon=add_icon size=add_icon_size %}{% endcomponent %}{% endif %}
         {{ add_label }} {{ item_label }}
       </button>
-      <p class="govuk-body-s plos-item-list__remaining">You can add <span data-remaining-count>{{ remaining }}</span> more {{ item_label_plural }}</p>
+      <p class="govuk-body-s plos-add-more__remaining">You can add <span data-remaining-count>{{ remaining }}</span> more {{ item_label_plural }}</p>
     </div>
   {% endif %}
 </div>

@@ -1,5 +1,5 @@
 """
-Add and delete mechanics for `plos_item_list`, shared by any view that renders it.
+Add and delete mechanics for `plos_add_more`, shared by any view that renders it.
 """
 
 
@@ -42,7 +42,7 @@ def collapsed_after_action(post, name: str, action: str) -> list[int]:
     """
     Return the item indexes the browser posted as collapsed, shifted to match `apply_action`.
 
-    The item list script posts `{name}__collapsed` (e.g. "0,2") with each HTMX add or
+    The add more script posts `{name}__collapsed` (e.g. "0,2") with each HTMX add or
     delete. Deleting item N drops N and moves later indexes up by one, so each item keeps
     its own state. New items are not in the set, so they start expanded. Without the
     script (full page loads, no JS) nothing is posted and every item is expanded.

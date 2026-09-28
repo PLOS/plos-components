@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from plos_django_components.components.patterns.item_list.logic import (
+from plos_django_components.components.patterns.add_more.logic import (
     apply_action,
     collapsed_after_action,
     posted_count,
@@ -33,15 +33,10 @@ COMPONENTS = {
 PATTERNS = {
     "add-more",
     "check_answers",
-    "item-list",
 }
 
-ADD_MORE_SUBPAGES = [
-    {"slug": "implementation", "label": "Implementation"},
-]
-
-ITEM_LIST_SESSION_KEY = "ds_item_list_patents"
-ITEM_LIST_MAX = 10
+ADD_MORE_SESSION_KEY = "ds_add_more_patents"
+ADD_MORE_MAX = 10
 
 TYPOGRAPHY_SUBPAGES = [
     {"slug": "headings-body", "label": "Headings and Body"},
@@ -84,8 +79,6 @@ def _nav_context(
                 "label": fetch_design_system_title_from_slug(c),
                 "children": [],
             }
-            if c == "add-more":
-                item["children"] = ADD_MORE_SUBPAGES
             nav_components.append(item)
 
     return {
@@ -96,10 +89,6 @@ def _nav_context(
         "active_subslug": active_subslug,
         "current_path": request.path,
     }
-
-
-def _build_page_context(request):
-    return _nav_context_patterns(request, active_section="patterns", active_slug="add-more")
 
 
 def design_system_index(request):
@@ -147,33 +136,19 @@ def design_system_style(request, page):
     )
 
 
-def add_more_htmx_page(request):
-    return render(request, "design_system/patterns/add_more.html", _build_page_context(request))
-
-
-def add_more_implementation_page(request):
-    ctx = _nav_context_patterns(
-        request,
-        active_section="patterns",
-        active_slug="add-more",
-        active_subslug="implementation",
-    )
-    return render(request, "design_system/patterns/add_more/implementation.html", ctx)
-
-
-def item_list_page(request):
-    """Render the item list demo. Add and delete re-render the form; only Save persists."""
-    saved = request.session.get(ITEM_LIST_SESSION_KEY, [])
+def add_more_page(request):
+    """Render the add more demo. Add and delete re-render the form; only Save persists."""
+    saved = request.session.get(ADD_MORE_SESSION_KEY, [])
     values = saved or [""]
     errors = None
     collapsed = []
 
     if request.method == "POST":
-        count = posted_count(request.POST, "patents", ITEM_LIST_MAX)
+        count = posted_count(request.POST, "patents", ADD_MORE_MAX)
         values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
         action = request.POST.get("patents__action", "")
         if action:
-            values = apply_action(values, action, ITEM_LIST_MAX)
+            values = apply_action(values, action, ADD_MORE_MAX)
             collapsed = collapsed_after_action(request.POST, "patents", action)
         else:
             errors = [
@@ -182,21 +157,21 @@ def item_list_page(request):
             ]
             if not any(errors):
                 saved = values
-                request.session[ITEM_LIST_SESSION_KEY] = saved
+                request.session[ADD_MORE_SESSION_KEY] = saved
 
     ctx = {
         "patent_values": values,
         "errors": errors,
         "collapsed": collapsed,
-        "max_items": ITEM_LIST_MAX,
-        "item_list_url": request.path,
+        "max_items": ADD_MORE_MAX,
+        "add_more_url": request.path,
     }
     if request.headers.get("HX-Request"):
-        return render(request, "design_system/patterns/item_list_partial.html", ctx)
+        return render(request, "design_system/patterns/add_more_partial.html", ctx)
 
-    ctx.update(_nav_context_patterns(request, active_section="patterns", active_slug="item-list"))
+    ctx.update(_nav_context_patterns(request, active_section="patterns", active_slug="add-more"))
     ctx["saved_patents"] = saved
-    return render(request, "design_system/patterns/item_list.html", ctx)
+    return render(request, "design_system/patterns/add_more.html", ctx)
 
 
 def error_summary_page(request):
@@ -269,7 +244,7 @@ def design_system_component(request, component):
 
 def design_system_pattern(request, pattern):
     if pattern == "add-more":
-        return add_more_htmx_page(request)
+        return add_more_page(request)
     slug = pattern.replace("-", "_")
     return render(
         request,
