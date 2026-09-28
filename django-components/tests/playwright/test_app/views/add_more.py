@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from plos_django_components.components.patterns.add_more.logic import (
-    apply_action,
-    collapsed_after_action,
+    apply_add_or_delete,
+    collapsed_after_add_or_delete,
     error_summary_entries,
     posted_count,
 )
@@ -21,8 +21,8 @@ def add_more_view(request):
         values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
         action = request.POST.get("patents__action", "")
         if action:
-            values = apply_action(values, action, MAX_ITEMS)
-            collapsed = collapsed_after_action(request.POST, "patents", action)
+            values = apply_add_or_delete(values, action, MAX_ITEMS)
+            collapsed = collapsed_after_add_or_delete(request.POST, "patents", action)
         else:
             errors = [
                 None if v.strip() else [{"field_id": "patent", "message": "Enter a patent number"}] for v in values
@@ -38,6 +38,6 @@ def add_more_view(request):
         "last_action": action,
         "max_items": MAX_ITEMS,
         "saved": saved,
-        "url": request.path,
+        "add_more_url": request.path,
     }
     return render(request, "playwright_test_app/add_more/add_more.html", context)

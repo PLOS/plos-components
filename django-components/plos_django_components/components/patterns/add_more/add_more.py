@@ -1,14 +1,12 @@
 """
-A component which renders a dynamic, add/delete list of repeating form items.
-
-This module provides:
-- A list component with add and delete controls, enhanced with HTMX for partial page updates.
+A list of repeating form items that people can add to and delete from.
 """
 
 from django_components import register
 
 from ...components.base.base_component import PLOSBaseComponent
 from ...components.base.icon_fonts.base_icon import IconFontSetting
+from .logic import deleted_index
 
 
 @register("plos_add_more")
@@ -16,12 +14,14 @@ class AddMore(PLOSBaseComponent):
     """
     A dynamic add/delete list of repeating items with HTMX progressive enhancement.
 
-    Renders one accordion section per entry in `values`, headed
-    "{Item label} N". Add and delete buttons post the surrounding form to
-    `htmx_url`, usually the page's own URL. With HTMX loaded,
-    `hx-select` picks the outer `<div id="{name}-add-more">` out of the response
-    and swaps it in place. Without HTMX the form submits normally. Either way the
-    view applies the action with `logic.apply_action` and re-renders the page.
+    Renders one accordion section per entry in `values`, headed "{Item label} N".
+    Each add and delete button posts the surrounding form with `{name}__action` set
+    to `add` or `delete__N`. The view reads the posted values, applies the
+    action with `logic.apply_add_or_delete` and re-renders the whole page.
+
+    With HTMX loaded, the buttons post to `htmx_url` (usually the page's own URL) and
+    `hx-select` swaps only the outer `<div id="{name}-add-more">` from that page.
+    Without HTMX the form submits normally and the browser shows the new page.
 
     Each item is rendered via the `item` slot. Use `data="slot_data"` in the
     fill to access per-item variables:
@@ -33,9 +33,8 @@ class AddMore(PLOSBaseComponent):
         slot_data.autofocus: True when this item's first field should take focus; pass it
                               as `autofocus` to that field (see "Focus management" below)
 
-    HTML id convention: field ids in the fill must follow `{field_id}_{slot_data.index}`
-    so the error summary anchors resolve correctly (the component appends _{i} to each
-    field_id when building anchor hrefs).
+    HTML id convention: field ids in the fill must follow `{field_id}_{slot_data.index}`,
+    because `logic.error_summary_entries` links each error to `#{field_id}_{index}`.
 
     Error format for the `errors` prop:
 
@@ -66,7 +65,7 @@ class AddMore(PLOSBaseComponent):
 
     Collapsed state: with HTMX, `static/plos_django_components/add_more.js` posts
     `{name}__collapsed` (the indexes of collapsed items) on every add and delete. Pass
-    `logic.collapsed_after_action(request.POST, name, action)` as `collapsed` so each
+    `logic.collapsed_after_add_or_delete(request.POST, name, action)` as `collapsed` so each
     item keeps its state. Items with errors are always expanded, and every item is
     expanded on a full page load.
 
@@ -89,14 +88,16 @@ class AddMore(PLOSBaseComponent):
         delete_icon_size  plos_icon size for the delete icon (default: "md", 24px)
         add_icon          icon class for the add button; defaults to the global add_item icon setting
         delete_icon       icon class for the delete button; defaults to the global delete_item icon setting
-        error_summary_id  id of the page element wrapping the error summary; see "Error summary" above
+
+    `error_summary_id` is optional too: the id of the page element wrapping the error
+    summary (see "Error summary" above).
 
     The add and delete controls belong to this pattern, not to plos_button: they are
     styled by the `plos-add-more__add-button` and `plos-add-more__delete-button`
     classes in the add more CSS.
 
-    See the design system page (patterns/add-more) for an interactive demo.
-    Its view shows how to read the posted values and apply the add and delete actions.
+    The design system page (patterns/add-more) has a demo and a "How to use it" guide
+    with the template and view code a page needs.
     """
 
     template_name = "add_more.html"
@@ -123,24 +124,24 @@ class AddMore(PLOSBaseComponent):
         delete_icon: str | None = None,
         error_summary_id: str | None = None,
     ):
-        resolved_errors = errors or []
+        errors = errors or []
         collapsed_indexes = set(collapsed or [])
         count = len(values)
         focus_index, focus_add_button = self._focus_target(last_action or "", count)
         items = []
         for i, value in enumerate(values):
-            item_errors = {}
-            field_errors = resolved_errors[i] if i < len(resolved_errors) else None
-            for field_error in field_errors or []:
-                item_errors.setdefault(field_error["field_id"], []).append(field_error["message"])
+            item_errors = errors[i] if i < len(errors) else None
+            messages_by_field = {}
+            for field_error in item_errors or []:
+                messages_by_field.setdefault(field_error["field_id"], []).append(field_error["message"])
             items.append(
                 {
                     "index": str(i),
                     "heading": f"{item_label.capitalize()} {i + 1}",
                     "value": value,
-                    "errors": item_errors,
+                    "errors": messages_by_field,
                     "autofocus": i == focus_index,
-                    "expanded": i not in collapsed_indexes or bool(item_errors) or i == focus_index,
+                    "expanded": i not in collapsed_indexes or bool(messages_by_field) or i == focus_index,
                 }
             )
 
@@ -171,12 +172,9 @@ class AddMore(PLOSBaseComponent):
         """
         if last_action == "add":
             return count - 1, False
-        if last_action.startswith("delete__"):
-            try:
-                deleted = int(last_action.removeprefix("delete__"))
-            except ValueError:
-                return None, False
-            if 0 <= deleted < count:
-                return deleted, False
-            return None, deleted >= 0
-        return None, False
+        deleted = deleted_index(last_action)
+        if deleted is None:
+            return None, False
+        if deleted < count:
+            return deleted, False
+        return None, True

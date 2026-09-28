@@ -1,5 +1,7 @@
 """
-Add and delete mechanics for `plos_add_more`, shared by any view that renders it.
+Server-side helpers for any view that renders `plos_add_more`: reading the posted
+count, applying add and delete, keeping collapsed state, and building error summary
+entries.
 """
 
 
@@ -17,30 +19,41 @@ def posted_count(post, name: str, max_items: int) -> int:
     return max(1, min(count, max_items))
 
 
-def apply_action(values: list, action: str, max_items: int, empty_item="") -> list:
+def deleted_index(action: str) -> int | None:
     """
-    Return a new list with the `{name}__action` add or delete applied.
+    Return N for a `delete__N` action, or None for any other action.
+
+    None also covers a malformed or negative N, so callers never act on a bad index.
+    """
+    if not action.startswith("delete__"):
+        return None
+    try:
+        index = int(action.removeprefix("delete__"))
+    except ValueError:
+        return None
+    return index if index >= 0 else None
+
+
+def apply_add_or_delete(values: list, action: str, max_items: int, empty_item="") -> list:
+    """
+    Return a new list with the posted `{name}__action` applied.
 
     `add` appends `empty_item` while under `max_items`. `delete__N` removes item N when
     it exists. The list never becomes empty; deleting the last item leaves one blank.
     Any other action returns the values unchanged.
     """
     values = list(values)
+    deleted = deleted_index(action)
     if action == "add" and len(values) < max_items:
         values.append(empty_item)
-    elif action.startswith("delete__"):
-        try:
-            idx = int(action.removeprefix("delete__"))
-        except ValueError:
-            idx = -1
-        if 0 <= idx < len(values):
-            values.pop(idx)
+    elif deleted is not None and deleted < len(values):
+        values.pop(deleted)
     return values or [empty_item]
 
 
-def collapsed_after_action(post, name: str, action: str) -> list[int]:
+def collapsed_after_add_or_delete(post, name: str, action: str) -> list[int]:
     """
-    Return the item indexes the browser posted as collapsed, shifted to match `apply_action`.
+    Return the item indexes the browser posted as collapsed, shifted to match `apply_add_or_delete`.
 
     The add more script posts `{name}__collapsed` (e.g. "0,2") with each HTMX add or
     delete. Deleting item N drops N and moves later indexes up by one, so each item keeps
@@ -51,13 +64,9 @@ def collapsed_after_action(post, name: str, action: str) -> list[int]:
         collapsed = {int(i) for i in post.get(f"{name}__collapsed", "").split(",") if i}
     except ValueError:
         return []
-    if action.startswith("delete__"):
-        try:
-            deleted = int(action.removeprefix("delete__"))
-        except ValueError:
-            deleted = -1
-        if deleted >= 0:
-            collapsed = {i - (i > deleted) for i in collapsed if i != deleted}
+    deleted = deleted_index(action)
+    if deleted is not None:
+        collapsed = {i - (i > deleted) for i in collapsed if i != deleted}
     return sorted(collapsed)
 
 

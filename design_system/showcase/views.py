@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from plos_django_components.components.patterns.add_more.logic import (
-    apply_action,
-    collapsed_after_action,
+    apply_add_or_delete,
+    collapsed_after_add_or_delete,
     error_summary_entries,
     posted_count,
 )
@@ -75,12 +75,7 @@ def _nav_context(
     if library is not None:
         nav_components = []
         for c in sorted(library):
-            item = {
-                "slug": c,
-                "label": fetch_design_system_title_from_slug(c),
-                "children": [],
-            }
-            nav_components.append(item)
+            nav_components.append({"slug": c, "label": fetch_design_system_title_from_slug(c)})
 
     return {
         "nav_styles": nav_styles,
@@ -150,8 +145,8 @@ def add_more_page(request):
         values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
         action = request.POST.get("patents__action", "")
         if action:
-            values = apply_action(values, action, ADD_MORE_MAX)
-            collapsed = collapsed_after_action(request.POST, "patents", action)
+            values = apply_add_or_delete(values, action, ADD_MORE_MAX)
+            collapsed = collapsed_after_add_or_delete(request.POST, "patents", action)
         else:
             errors = [
                 None if v.strip() else [{"field_id": "patent", "message": "Enter a patent number or application"}]

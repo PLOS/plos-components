@@ -8,38 +8,31 @@
   {% component "plos_heading" level=1 %}Add More{% endcomponent %}
 
   {% component "plos_text_box" %}
-    <code>plos_add_more</code> is built with HTMX to enable
-    progressive enhancement. HTMX is not required. Without it, add and delete
-    buttons submit the surrounding form normally and the page view re-renders
-    the page. When HTMX.js is loaded, those same buttons POST the form to
-    <code>htmx_url</code> (usually the page's own URL) and swap only the
-    component's outer <code>&lt;div id="{name}-add-more"&gt;</code> in place,
-    without a full page reload. The same view and template serve both cases.
+    <code>plos_add_more</code> shows a list of repeating items, one accordion
+    section per item, that people can add to and delete from. It works without
+    JavaScript. Without HTMX, the add and delete buttons submit the form and the
+    page reloads. With HTMX, the same buttons post the form to
+    <code>htmx_url</code> (usually the page's own URL) and replace only the
+    list, <code>&lt;div id="{name}-add-more"&gt;</code>, so the page doesn't
+    reload. The same view and template handle both.
   {% endcomponent %}
 
   {% component "plos_text_box" %}
-    The page owns the error summary, so a form has one summary for all its
-    fields. Build the add more entries with
-    <code>logic.error_summary_entries(errors, item_label)</code>, wrap the
-    page's <code>plos_error_summary</code> in an element that is always
-    rendered, and pass its id as <code>error_summary_id</code>. Add and delete
-    then refresh that element too, so the summary never links to items that
-    have moved or gone.
-  {% endcomponent %}
-
-  {% component "plos_text_box" %}
-    The add and delete controls are part of this pattern, not variants of
-    <code>plos_button</code>. Their styling (a tinted add button and a red delete
-    link) only applies inside the add more pattern.
+    The add and delete buttons belong to this pattern, not to
+    <code>plos_button</code>. Their styles (a tinted add button and a red,
+    underlined delete link) only apply inside add more. The delete link only
+    shows when there is more than one item, and the add button goes away once
+    the list reaches <code>max_items</code>.
   {% endcomponent %}
 
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-  {% component "plos_heading" level=2 %}Interactive demo{% endcomponent %}
+  {% component "plos_heading" level=2 %}Example{% endcomponent %}
 
   {% component "plos_text_box" %}
-    Add and remove patents below. HTMX will swap the list without a full page
-    reload. If you disable JavaScript the form will still work via full POST.
+    Add and delete patents below, then save. With JavaScript on, the list
+    updates without a page reload. With JavaScript off, each button reloads
+    the page.
   {% endcomponent %}
 
   <div id="page-errors">
@@ -78,6 +71,260 @@
       {% endcomponent %}
     {% endcomponent %}
   {% endif %}
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  {% component "plos_heading" level=2 %}How to use it{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    A page using add more needs a template and a view. The component shows the
+    list. The view decides what add, delete and save do. The example above is
+    built this way.
+  {% endcomponent %}
+
+  {% component "plos_heading" level=3 %}Template{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    Put the component inside your own form, with your own submit button. Fill
+    the <code>item</code> slot with the fields for one item. Set each field's
+    name and id to <code>{field_id}_{slot_data.index}</code> so posted values
+    and error links match the right item.
+  {% endcomponent %}
+
+  <code class="ds-code-block">{% filter force_escape %}{% verbatim %}<div id="page-errors">
+  {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
+</div>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+  {% component "plos_add_more"
+      name="patents"
+      item_label="patent"
+      values=patents
+      max_items=10
+      htmx_url=request.path
+      errors=errors
+      collapsed=collapsed
+      last_action=last_action
+      error_summary_id="page-errors" %}
+    {% fill "item" data="slot_data" %}
+      {% component "plos_text_input"
+          label="Patent number"
+          name="patent_{{ slot_data.index }}"
+          field_id="patent_{{ slot_data.index }}"
+          value=slot_data.value
+          errors=slot_data.errors.patent
+          autofocus=slot_data.autofocus %}{% endcomponent %}
+    {% endfill %}
+  {% endcomponent %}
+
+  {% component "plos_button" button_type="submit" %}Save patents{% endcomponent %}
+</form>{% endverbatim %}{% endfilter %}</code>
+
+  {% component "plos_text_box" %}
+    Inside the fill, <code>slot_data</code> gives you:
+  {% endcomponent %}
+  <ul class="govuk-list govuk-list--bullet">
+    <li><code>index</code>: the item's position as a string, starting at 0, for names and ids</li>
+    <li><code>value</code>: this item's entry from <code>values</code> (a string, or a dict for items with several fields)</li>
+    <li><code>errors</code>: this item's error messages by field, for example <code>slot_data.errors.patent</code></li>
+    <li><code>autofocus</code>: true when this item's first field should take focus after an add or delete; pass it to that field only</li>
+  </ul>
+
+  {% component "plos_heading" level=3 %}View{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    Every button in the form posts to the same view. If
+    <code>patents__action</code> is set, someone pressed add or delete: apply
+    it and render the page again, without validating or saving. If not, they
+    pressed your submit button: validate and save as usual. Always render the
+    whole page. With HTMX, the component takes the list and the error summary
+    from the response. The helpers in
+    <code>plos_django_components.components.patterns.add_more.logic</code>
+    handle the list for you.
+  {% endcomponent %}
+
+  <code class="ds-code-block">{% filter force_escape %}{% verbatim %}from django.shortcuts import redirect, render
+from plos_django_components.components.patterns.add_more.logic import (
+    apply_add_or_delete,
+    collapsed_after_add_or_delete,
+    error_summary_entries,
+    posted_count,
+)
+
+MAX_PATENTS = 10
+
+
+def patents_page(request):
+    patents = [""]  # Or the saved patents
+    errors = None
+    collapsed = []
+    action = ""
+
+    if request.method == "POST":
+        count = posted_count(request.POST, "patents", MAX_PATENTS)
+        patents = [request.POST.get(f"patent_{i}", "") for i in range(count)]
+        action = request.POST.get("patents__action", "")
+        if action:
+            # Add or delete: show the change, don't validate or save
+            patents = apply_add_or_delete(patents, action, MAX_PATENTS)
+            collapsed = collapsed_after_add_or_delete(request.POST, "patents", action)
+        else:
+            # Save: validate each item
+            errors = [
+                None if patent.strip() else [{"field_id": "patent", "message": "Enter a patent number"}]
+                for patent in patents
+            ]
+            if not any(errors):
+                save_patents(patents)
+                return redirect("next_page")
+
+    return render(request, "patents.html", {
+        "patents": patents,
+        "errors": errors,
+        "error_summary": error_summary_entries(errors, "patent"),
+        "collapsed": collapsed,
+        "last_action": action,
+    }){% endverbatim %}{% endfilter %}</code>
+
+  {% component "plos_text_box" %}
+    <code>apply_add_or_delete</code> never returns an empty list: deleting the
+    last item leaves one blank item. For items with several fields, read each
+    item into a dict and pass an empty dict with the same keys as
+    <code>empty_item</code>. <code>errors</code> has one entry per item:
+    <code>None</code> when the item is valid, or a list of
+    <code>{"field_id": ..., "message": ...}</code> dicts, where
+    <code>field_id</code> is the field id without the index.
+  {% endcomponent %}
+
+  {% component "plos_heading" level=3 %}Error summary{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    The page owns the error summary, so a form has one summary for all its
+    fields. The component only shows errors inline.
+    <code>error_summary_entries</code> turns the add more errors into summary
+    entries such as "Patent 2: Enter a patent number". Add them to the page's
+    other entries. Wrap the summary in an element that is always rendered and
+    pass its id as <code>error_summary_id</code>. With HTMX, add and delete then
+    refresh that element too, so the summary never links to items that have
+    moved or gone.
+  {% endcomponent %}
+
+  {% component "plos_heading" level=3 %}JavaScript{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    Load HTMX on the page to update the list without a reload. The component
+    brings its own script, which keeps collapsed items collapsed after an add
+    or delete. Without HTMX, or with JavaScript off, every button submits the
+    form and the page reloads.
+  {% endcomponent %}
+
+  {% component "plos_heading" level=3 %}Posted fields{% endcomponent %}
+
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Field</th>
+        <th scope="col" class="govuk-table__header">Contains</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>{name}__count</code></td>
+        <td class="govuk-table__cell">How many items the form holds. Read it with <code>posted_count</code>, which keeps it between 1 and <code>max_items</code>.</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>{name}__action</code></td>
+        <td class="govuk-table__cell"><code>add</code> or <code>delete__N</code> (N counts from 0) when someone presses add or delete. Your submit button doesn't send it.</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>{name}__collapsed</code></td>
+        <td class="govuk-table__cell">The indexes of collapsed items, such as <code>0,2</code>. Only sent with HTMX requests. Read it with <code>collapsed_after_add_or_delete</code>.</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>{field}_{index}</code></td>
+        <td class="govuk-table__cell">Your own fields, named in the slot fill.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {% component "plos_heading" level=3 %}Parameters{% endcomponent %}
+
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Name</th>
+        <th scope="col" class="govuk-table__header">Description</th>
+        <th scope="col" class="govuk-table__header">Default</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>name</code></td>
+        <td class="govuk-table__cell">Prefix for the posted fields and the list's id. Required.</td>
+        <td class="govuk-table__cell"></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>item_label</code></td>
+        <td class="govuk-table__cell">What one item is called, used in headings ("Patent 1") and button labels. Required.</td>
+        <td class="govuk-table__cell"></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>values</code></td>
+        <td class="govuk-table__cell">One entry per item. Use <code>[""]</code> for one empty item. Required.</td>
+        <td class="govuk-table__cell"></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>max_items</code></td>
+        <td class="govuk-table__cell">The most items allowed. The add button goes away at this number. Required.</td>
+        <td class="govuk-table__cell"></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>htmx_url</code></td>
+        <td class="govuk-table__cell">Where add and delete post with HTMX, usually the page's own URL. Required.</td>
+        <td class="govuk-table__cell"></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>errors</code></td>
+        <td class="govuk-table__cell">Per-item errors, shown inline. Items with errors stay expanded.</td>
+        <td class="govuk-table__cell">None</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>collapsed</code></td>
+        <td class="govuk-table__cell">Indexes of items to render collapsed, from <code>collapsed_after_add_or_delete</code>.</td>
+        <td class="govuk-table__cell">None</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>last_action</code></td>
+        <td class="govuk-table__cell">The posted <code>{name}__action</code>, so focus moves to the new item after an add, or to the next item (or the add button) after a delete.</td>
+        <td class="govuk-table__cell">None</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>error_summary_id</code></td>
+        <td class="govuk-table__cell">Id of the element that wraps the page's error summary. HTMX refreshes it on each add and delete.</td>
+        <td class="govuk-table__cell">None</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>item_label_plural</code></td>
+        <td class="govuk-table__cell">Used in the hint "You can add 3 more patents".</td>
+        <td class="govuk-table__cell"><code>item_label</code> + "s"</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>add_label</code>, <code>delete_label</code></td>
+        <td class="govuk-table__cell">The start of each button label. Add is followed by the item label ("Add another patent"). Delete is followed by the item label and number ("Delete patent 2").</td>
+        <td class="govuk-table__cell">"Add another", "Delete"</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>add_icon</code>, <code>delete_icon</code></td>
+        <td class="govuk-table__cell">Icon classes for the buttons.</td>
+        <td class="govuk-table__cell">The add_item and delete_item icon settings</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>add_icon_size</code>, <code>delete_icon_size</code></td>
+        <td class="govuk-table__cell"><code>plos_icon</code> sizes for the button icons.</td>
+        <td class="govuk-table__cell">"xs", "md"</td>
+      </tr>
+    </tbody>
+  </table>
 {% endblock ds_content %}
 
 {% block js %}

@@ -5,7 +5,7 @@
   {% component "plos_accordion" field_id=name|add:"-accordion" %}
     {% for item in items %}
       {% component "plos_accordion_section" heading=item.heading expanded=item.expanded %}
-        <div class="plos-add-more__item" data-item-index="{{ item.index }}" id="{{ name }}-item-{{ item.index }}">
+        <div class="plos-add-more__item">
           {% slot "item" index=item.index value=item.value errors=item.errors autofocus=item.autofocus %}{% endslot %}
           {% if count > 1 %}
             <button type="submit" class="plos-add-more__delete-button"
@@ -22,7 +22,7 @@
   {% endcomponent %}
 
   {% if remaining > 0 %}
-    <div class="plos-add-more__add" data-add-section>
+    <div class="plos-add-more__add">
       <button type="submit" class="plos-add-more__add-button"
               name="{{ name }}__action" value="add"
               hx-post="{{ htmx_url }}" hx-target="{{ htmx_target }}" hx-select="{{ htmx_target }}"
@@ -30,7 +30,7 @@
         {% if add_icon %}{% component "plos_icon" custom_icon=add_icon size=add_icon_size %}{% endcomponent %}{% endif %}
         {{ add_label }} {{ item_label }}
       </button>
-      <p class="govuk-body-s plos-add-more__remaining">You can add <span data-remaining-count>{{ remaining }}</span> more {{ item_label_plural }}</p>
+      <p class="govuk-body-s plos-add-more__remaining">You can add {{ remaining }} more {{ item_label_plural }}</p>
     </div>
   {% endif %}
 </div>
