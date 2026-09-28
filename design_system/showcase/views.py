@@ -15,6 +15,7 @@ COMPONENTS = {
     "select",
     "error-summary",
     "file-upload",
+    "file-upload-improved",
     "panel",
     "radios",
     "checkboxes",
