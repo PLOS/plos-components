@@ -1,4 +1,10 @@
 from django.shortcuts import render
+from plos_django_components.components.patterns.add_more.logic import (
+    apply_add_or_delete,
+    collapsed_after_add_or_delete,
+    error_summary_entries,
+    posted_count,
+)
 
 from .utils.page_title import fetch_design_system_title_from_slug
 
@@ -30,9 +36,8 @@ PATTERNS = {
     "check_answers",
 }
 
-ADD_MORE_SUBPAGES = [
-    {"slug": "implementation", "label": "Implementation"},
-]
+ADD_MORE_SESSION_KEY = "ds_add_more_patents"
+ADD_MORE_MAX = 10
 
 TYPOGRAPHY_SUBPAGES = [
     {"slug": "headings-body", "label": "Headings and Body"},
@@ -70,14 +75,7 @@ def _nav_context(
     if library is not None:
         nav_components = []
         for c in sorted(library):
-            item = {
-                "slug": c,
-                "label": fetch_design_system_title_from_slug(c),
-                "children": [],
-            }
-            if c == "add-more":
-                item["children"] = ADD_MORE_SUBPAGES
-            nav_components.append(item)
+            nav_components.append({"slug": c, "label": fetch_design_system_title_from_slug(c)})
 
     return {
         "nav_styles": nav_styles,
@@ -87,10 +85,6 @@ def _nav_context(
         "active_subslug": active_subslug,
         "current_path": request.path,
     }
-
-
-def _build_page_context(request):
-    return _nav_context_patterns(request, active_section="patterns", active_slug="add-more")
 
 
 def design_system_index(request):
@@ -138,18 +132,42 @@ def design_system_style(request, page):
     )
 
 
-def add_more_htmx_page(request):
-    return render(request, "design_system/patterns/add_more.html", _build_page_context(request))
+def add_more_page(request):
+    """Render the add more demo. Add and delete re-render the form; only Save persists."""
+    saved = request.session.get(ADD_MORE_SESSION_KEY, [])
+    values = saved or [""]
+    errors = None
+    collapsed = []
+    action = ""
 
+    if request.method == "POST":
+        count = posted_count(request.POST, "patents", ADD_MORE_MAX)
+        values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
+        action = request.POST.get("patents__action", "")
+        if action:
+            values = apply_add_or_delete(values, action, ADD_MORE_MAX)
+            collapsed = collapsed_after_add_or_delete(request.POST, "patents", action)
+        else:
+            errors = [
+                None if v.strip() else [{"field_id": "patent", "message": "Enter a patent number or application"}]
+                for v in values
+            ]
+            if not any(errors):
+                saved = values
+                request.session[ADD_MORE_SESSION_KEY] = saved
 
-def add_more_implementation_page(request):
-    ctx = _nav_context_patterns(
-        request,
-        active_section="patterns",
-        active_slug="add-more",
-        active_subslug="implementation",
-    )
-    return render(request, "design_system/patterns/add_more/implementation.html", ctx)
+    ctx = {
+        "patent_values": values,
+        "errors": errors,
+        "error_summary": error_summary_entries(errors, "patent"),
+        "collapsed": collapsed,
+        "last_action": action,
+        "max_items": ADD_MORE_MAX,
+        "add_more_url": request.path,
+    }
+    ctx.update(_nav_context_patterns(request, active_section="patterns", active_slug="add-more"))
+    ctx["saved_patents"] = saved
+    return render(request, "design_system/patterns/add_more.html", ctx)
 
 
 def error_summary_page(request):
@@ -222,7 +240,7 @@ def design_system_component(request, component):
 
 def design_system_pattern(request, pattern):
     if pattern == "add-more":
-        return add_more_htmx_page(request)
+        return add_more_page(request)
     slug = pattern.replace("-", "_")
     return render(
         request,

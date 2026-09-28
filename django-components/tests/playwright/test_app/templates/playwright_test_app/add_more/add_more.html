@@ -1,70 +1,43 @@
 {#
-  Template for basic AddMore pattern testing.
+  Template for testing the plos_add_more pattern.
   Used by: django-components/tests/playwright/component_tests/add_more/test_add_more.py
 #}
 {% extends "plos_submission_manager/base.html" %}
-{% load ds_filters %}
 
-{% block title %}
-  Add More - Playwright Test
-{% endblock title %}
+{% block title %}Add More Test{% endblock %}
 
 {% block content %}
-    <h1 class="govuk-heading-xl">Add More - Playwright Test</h1>
+  <h1 class="govuk-heading-xl">Add More</h1>
 
-    {% component "plos_add_more"
-        field_name="patents"
-        item_label="patent"
-        fields=[{"field_id": "patent_number", "required": True},
-        {"field_id": "patent_date", "field_value_names":["-day", "-month", "-year"], "required": True}]
-        max_items=10
-        htmx_url="/patterns/add-more/htmx/"
-        heading_level=2
-        min_items=1
-        required=True
-        validation_message="Enter a patent number or application"
-        show_save_button=True
-        save_label="Continue"
-        additional_buttons=[{"label":"Save and return",
-        "field_name": "save_and_return__action",
-        "action": "secondary",
-        "value": ""}]
-    %}
-        {% fill "item" data="slot_data" %}
-            {% component "plos_text_input"
-                    label="Patent reference or number"
-                    hint="The official number or reference used to identify the patent or application"
-                    name="patent_number_{{ slot_data.index }}"
-                    field_id="patent_number_{{ slot_data.index }}"
-                    errors=slot_data.errors
-                    autofocus=slot_data.autofocus
-                    value="{{ slot_data.value|plos_dictionary_fetch:'patent_number' }}" only %}
-            {% endcomponent %}
-            {% component "plos_date_input"
-                    use_field_value_names=True
-                    legend="Patent application filing date"
-                    hint="The date the patent application was first submitted. For example, 27 3 2025."
-                    field_id="patent_date_{{ slot_data.index }}"
-                    errors=slot_data.errors
-                    value="{{ slot_data.value|plos_dictionary_fetch:'patent_date' }}" only %}
-            {% endcomponent %}
-        {% endfill %}
+  <div id="page-errors">
+    {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
+  </div>
+
+  <form method="post" action="{{ add_more_url }}" novalidate>
+    {% csrf_token %}
+    {% component "plos_add_more" name="patents" item_label="patent" values=values max_items=max_items htmx_url=add_more_url errors=errors collapsed=collapsed last_action=last_action error_summary_id="page-errors" %}
+      {% fill "item" data="slot_data" %}
+        {% component "plos_text_input"
+          label="Patent number"
+          name="patent_{{ slot_data.index }}"
+          field_id="patent_{{ slot_data.index }}"
+          value=slot_data.value
+          errors=slot_data.errors.patent
+          autofocus=slot_data.autofocus
+        %}{% endcomponent %}
+      {% endfill %}
     {% endcomponent %}
 
-    {% with non_empty=patent_values|ds_filter_nonempty %}
-      {% if non_empty %}
-        <div class="govuk-inset-text" id="saved-patents" style="margin-top: 1.5rem;">
-          <h3 class="govuk-heading-s">Saved patents</h3>
-          <ul class="govuk-list govuk-list--bullet">
-            {% for patent in non_empty %}
-              <li>{{ patent }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endif %}
-    {% endwith %}
+    <button type="submit" class="govuk-button">Save</button>
+  </form>
+
+  {% if saved %}
+    <ul id="saved">
+      {% for value in saved %}<li>{{ value }}</li>{% endfor %}
+    </ul>
+  {% endif %}
 {% endblock content %}
 
 {% block js %}
-    {% include "admin/core/partials/htmx.html" %}
+  {% include "admin/core/partials/htmx.html" %}
 {% endblock js %}

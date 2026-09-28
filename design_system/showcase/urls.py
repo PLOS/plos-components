@@ -1,5 +1,4 @@
 from django.urls import path
-from plos_django_components.components.patterns.add_more.add_more import AddMore
 
 from . import views
 
@@ -26,16 +25,6 @@ urlpatterns = [
         "components/<str:component>/",
         views.design_system_component,
         name="design_system_component",
-    ),
-    path(
-        "patterns/add-more/implementation/",
-        views.add_more_implementation_page,
-        name="add_more_implementation",
-    ),
-    path(
-        "patterns/add-more/htmx/",
-        AddMore.as_view(),
-        name="add_more_htmx",
     ),
     path(
         "patterns/<str:pattern>/",

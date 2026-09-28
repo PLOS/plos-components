@@ -39,7 +39,7 @@ def get_js() -> list[str | SafeString]:
     Gets the JS items for the base components.
     """
     templates: list[str | SafeString] = []
-    if primary_js is None:
+    if not primary_js:
         return templates
 
     # Required to make this function appropriately.
@@ -63,6 +63,8 @@ def get_js() -> list[str | SafeString]:
 <script type="module">
       import {{ initAll }} from "{primary_js}";
       initAll();
+      // Initialise GOV.UK modules in content swapped in by HTMX
+      document.body.addEventListener("htmx:afterSettle", (event) => initAll({{ scope: event.target }}));
     </script>
                     """
         )
