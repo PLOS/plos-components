@@ -4,10 +4,11 @@ URL configuration for the Playwright test application.
 
 from django.urls import path
 
-from .views import text_input
+from .views import add_more, text_input
 from .views.icon.icon_views import icon_showcase_view
 
 urlpatterns = [
+    path("patterns/add-more/", add_more.add_more_view, name="add_more"),
     path("components/text-input/validation/", text_input.text_input_validation_view, name="text_input_validation"),
     path("components/text-input/types/", text_input.text_input_types_view, name="text_input_types"),
     path("components/text-input/attributes/", text_input.text_input_attributes_view, name="text_input_attributes"),

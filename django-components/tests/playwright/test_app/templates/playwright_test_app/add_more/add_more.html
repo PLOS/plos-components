@@ -1,0 +1,39 @@
+{#
+  Template for testing the plos_add_more pattern.
+  Used by: django-components/tests/playwright/component_tests/add_more/test_add_more.py
+#}
+{% extends "plos_submission_manager/base.html" %}
+
+{% block title %}Add More Test{% endblock %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">Add More</h1>
+
+  <form method="post" action="{{ url }}" novalidate>
+    {% csrf_token %}
+    {% component "plos_add_more" name="patents" item_label="patent" values=values max_items=max_items htmx_url=url errors=errors collapsed=collapsed last_action=last_action %}
+      {% fill "item" data="slot_data" %}
+        {% component "plos_text_input"
+          label="Patent number"
+          name="patent_{{ slot_data.index }}"
+          field_id="patent_{{ slot_data.index }}"
+          value=slot_data.value
+          errors=slot_data.errors.patent
+          autofocus=slot_data.autofocus
+        %}{% endcomponent %}
+      {% endfill %}
+    {% endcomponent %}
+
+    <button type="submit" class="govuk-button">Save</button>
+  </form>
+
+  {% if saved %}
+    <ul id="saved">
+      {% for value in saved %}<li>{{ value }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+{% endblock content %}
+
+{% block js %}
+  {% include "admin/core/partials/htmx.html" %}
+{% endblock js %}
