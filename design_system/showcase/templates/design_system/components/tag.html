@@ -1,0 +1,53 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}
+  Tag – PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+  {% component "plos_heading" level=1 %}Tag{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    Tags are used to indicate the status of something. The following colors are supported:
+  {% endcomponent %}
+
+    {% component "plos_tag"%}
+        Blue (default)
+    {% endcomponent %}
+
+    {% component "plos_tag" color="red"%}
+        Red 
+    {% endcomponent %}
+
+    {% component "plos_tag" color="grey"%}
+        Grey
+    {% endcomponent %}
+
+    {% component "plos_tag" color="green"%}
+        Green
+    {% endcomponent %}
+
+    {% component "plos_tag" color="info"%}
+        Info
+    {% endcomponent %}
+
+    {% component "plos_tag" color="teal"%}
+        Teal
+    {% endcomponent %}
+
+    {% component "plos_tag" color="purple"%}
+        Purple
+    {% endcomponent %}
+
+    {% component "plos_tag" color="magenta"%}
+        Magenta
+    {% endcomponent %}
+
+    {% component "plos_tag" color="orange"%}
+        Orange
+    {% endcomponent %}
+
+    {% component "plos_tag" color="yellow"%}
+        Yellow
+    {% endcomponent %}
+{% endblock ds_content %}
