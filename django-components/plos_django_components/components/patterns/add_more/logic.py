@@ -34,7 +34,7 @@ def deleted_index(action: str) -> int | None:
     return index if index >= 0 else None
 
 
-def apply_add_or_delete(values: list, action: str, max_items: int, empty_item="") -> list:
+def apply_add_or_delete(values: list, action: str, max_items: int, empty_item: str | dict = "") -> list:
     """
     Return a new list with the posted `{name}__action` applied.
 
