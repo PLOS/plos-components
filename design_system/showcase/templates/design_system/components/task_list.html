@@ -1,0 +1,46 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}Task List – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+    {% component "plos_heading" level=1 %}
+        Task List
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}
+        The task list component displays all the tasks a user needs to do, and allows users to easily identify which ones are done and which they still need to do.
+    {% endcomponent %}
+
+    {% component "plos_text_box" %}
+        See the <a href="{% url 'design_system_component' component='tag' %}">tag</a> component for the supported colors.
+    {% endcomponent %}
+
+    {% component "plos_task_list" id="taskList" %}
+        {% component "plos_task_list_item"
+                     label="Default task"
+                     status="Not started" %}
+        {% endcomponent %}
+        {% component "plos_task_list_item"
+                     label="Task with a status color"
+                     status="Not started"
+                     color="magenta" %}
+        {% endcomponent %}
+        {% component "plos_task_list_item" 
+                    label="Task with a transparent status"
+                    status="Completed"
+                    color="transparent" %}
+        {% endcomponent %}
+        {% component "plos_task_list_item"
+                     label="Task with a link"
+                     url="#"
+                     status="In progress"
+                     color="orange" %}
+        {% endcomponent %}
+        {% component "plos_task_list_item" 
+                     label="Task with custom attributes"
+                     status="Completed"
+                     color="green"
+                     attrs={"data-testid": "myTask"} %}
+        {% endcomponent %}
+    {% endcomponent %}
+{% endblock  %}
