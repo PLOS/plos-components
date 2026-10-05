@@ -1,0 +1,10 @@
+<details class="govuk-details" data-module="govuk-details" {% if field_id %} id="{{ field_id }}"{% endif %}>
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text" id="{{ field_id }}-heading">
+      {{ heading }}
+    </span>
+  </summary>
+  <div class="govuk-details__text" id="{{ field_id }}-content">
+    {% slot "default" default %}{% endslot %}
+  </div>
+</details>

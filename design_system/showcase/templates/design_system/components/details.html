@@ -1,0 +1,29 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}
+  Details – PLOS Design System
+{% endblock ds_title %}
+
+{% block ds_content %}
+  {% component "plos_heading" level=1 id="when-to-use-this-component" %}
+        Details
+  {% endcomponent %}
+
+  {% component "plos_details" heading="Text Example" field_id="example_1" %}
+    {%  component "plos_text_box" %} What to include in your cover letter
+      The contribution your manuscript makes to the scientific literature
+      How your work relates to previously published research
+      Your article type (for example, research article, systematic review, meta-analysis, or clinical trial)
+      Any previous correspondence with PLOS about this manuscript
+      Suggested Academic Editors, where appropriate
+      Any opposed reviewers, where applicable {% endcomponent %}
+  {%  endcomponent %}
+
+  {% component "plos_details" heading="Bullet list Example " field_id="example_2" %}
+      {% component "plos_bulleted_list" %}
+        {% component "plos_bulleted_list_option" %}An Item{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}Another Item{% endcomponent %}
+        {% component "plos_bulleted_list_option" %}Other Item{% endcomponent %}
+    {% endcomponent %}
+  {% endcomponent %}
+{% endblock ds_content %}
