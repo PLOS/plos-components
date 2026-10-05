@@ -14,6 +14,7 @@ COMPONENTS = {
     "accordion",
     "back-link",
     "button",
+    "details",
     "text-input",
     "textarea",
     "text-box",
