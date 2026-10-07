@@ -30,7 +30,7 @@
         {% if add_icon %}{% component "plos_icon" custom_icon=add_icon size=add_icon_size %}{% endcomponent %}{% endif %}
         {{ add_label }} {{ item_label }}
       </button>
-      <p class="govuk-body-s plos-add-more__remaining">You can add {{ remaining }} more {{ item_label_plural }}</p>
+      <p class="govuk-body-s plos-add-more__remaining">You can {{ remaining_verb }} {{ remaining }} more {{ item_label_plural }}</p>
     </div>
   {% endif %}
 </div>
