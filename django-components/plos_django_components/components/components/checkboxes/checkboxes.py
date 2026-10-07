@@ -24,6 +24,7 @@ class CheckboxesEntry(NamedTuple):
     content: str
     checked: bool = False
     value: str | None = None
+    exclusive: bool = False
 
 
 @register("_plos_checkboxes")
@@ -157,6 +158,7 @@ class CheckboxesOption(PLOSBaseComponent):
         value: str | None = None,
         errors: list[str] | None = None,
         checked: bool = False,
+        exclusive: bool = False,
     ):
         # Access the list of options registered for parent options component
         # This raises if we're not nested inside the Checkboxes component.
@@ -186,6 +188,7 @@ class CheckboxesOption(PLOSBaseComponent):
             "errors": errors,
             "checked": checked,
             "value": value,
+            "exclusive": exclusive,
         }
 
     def on_render_after(self, context, template, content):  # noqa: D102
@@ -196,5 +199,6 @@ class CheckboxesOption(PLOSBaseComponent):
                 "value": context["value"],
                 "content": mark_safe(content.strip()),
                 "errors": context["errors"],
+                "exclusive": context["exclusive"],
             }
         )
