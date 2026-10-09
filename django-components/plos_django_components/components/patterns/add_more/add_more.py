@@ -84,6 +84,8 @@ class AddMore(PLOSBaseComponent):
 
         remaining_verb    verb in the hint below the add button, as in "You can {verb} 3 more
                           patents" (default: "add")
+        max_reached_text  text shown below the add button once max_items is reached, when the
+                          button is disabled (default: nothing is shown)
         add_label         prefix for the add button label (default: "Add another")
         delete_label      prefix for the delete button label (default: "Delete")
         add_icon_size     plos_icon size for the add icon (default: "xs", 16px)
@@ -116,6 +118,7 @@ class AddMore(PLOSBaseComponent):
         htmx_url: str,
         item_label_plural: str | None = None,
         remaining_verb: str = "add",
+        max_reached_text: str | None = None,
         errors: list | None = None,
         collapsed: list[int] | None = None,
         last_action: str | None = None,
@@ -155,6 +158,7 @@ class AddMore(PLOSBaseComponent):
             "count": count,
             "remaining": max_items - count,
             "remaining_verb": remaining_verb,
+            "max_reached_text": max_reached_text,
             "items": items,
             "focus_add_button": focus_add_button,
             "htmx_url": htmx_url,

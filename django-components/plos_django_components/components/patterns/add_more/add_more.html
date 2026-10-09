@@ -21,17 +21,19 @@
     {% endfor %}
   {% endcomponent %}
 
-  {% if remaining > 0 %}
-    <div class="plos-add-more__add">
-      <button type="submit" class="plos-add-more__add-button"
-              name="{{ name }}__action" value="add"
-              hx-post="{{ htmx_url }}" hx-target="{{ htmx_target }}" hx-select="{{ htmx_target }}"
-              hx-swap="outerHTML" hx-include="{{ htmx_target }}"{% if error_summary_id %} hx-select-oob="#{{ error_summary_id }}"{% endif %}{% if focus_add_button %} autofocus{% endif %}>
-        {% if add_icon %}{% component "plos_icon" custom_icon=add_icon size=add_icon_size %}{% endcomponent %}{% endif %}
-        {{ add_label }} {{ item_label }}
-      </button>
+  <div class="plos-add-more__add">
+    <button type="submit" class="plos-add-more__add-button"
+            name="{{ name }}__action" value="add"
+            hx-post="{{ htmx_url }}" hx-target="{{ htmx_target }}" hx-select="{{ htmx_target }}"
+            hx-swap="outerHTML" hx-include="{{ htmx_target }}"{% if error_summary_id %} hx-select-oob="#{{ error_summary_id }}"{% endif %}{% if remaining <= 0 %} disabled{% elif focus_add_button %} autofocus{% endif %}>
+      {% if add_icon %}{% component "plos_icon" custom_icon=add_icon size=add_icon_size %}{% endcomponent %}{% endif %}
+      {{ add_label }} {{ item_label }}
+    </button>
+    {% if remaining > 0 %}
       <p class="govuk-body-s plos-add-more__remaining">You can {{ remaining_verb }} {{ remaining }} more {{ item_label_plural }}</p>
-    </div>
-  {% endif %}
+    {% elif max_reached_text %}
+      <p class="govuk-body-s plos-add-more__remaining">{{ max_reached_text }}</p>
+    {% endif %}
+  </div>
 </div>
 {% endwith %}

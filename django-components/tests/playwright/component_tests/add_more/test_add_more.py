@@ -47,14 +47,14 @@ def test_delete_item_renumbers_remaining(page: Page, live_server):
 
 
 @pytest.mark.django_db
-def test_add_button_hidden_at_max_items(page: Page, live_server):
+def test_add_button_disabled_at_max_items(page: Page, live_server):
     page.goto(live_server.url + reverse("add_more"))
     add_button(page).click()
     expect(page.locator("#patent_1")).to_be_visible()
     add_button(page).click()
 
     expect(page.locator("#patent_2")).to_be_visible()
-    expect(add_button(page)).to_have_count(0)
+    expect(add_button(page)).to_be_disabled()
 
 
 @pytest.mark.django_db
