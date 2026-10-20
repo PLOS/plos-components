@@ -1,0 +1,38 @@
+{% extends "design_system/base.html" %}
+
+{% comment %}
+title: Panel Summary
+status: missing
+{% endcomment %}
+
+{% block ds_title %}Panel Summary – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+    {% component "plos_heading" level=1 %}
+        Panel Summary
+    {% endcomponent %}
+
+    {% component "plos_panel_summary"
+        field_id="example-panel-summary"
+        title="PLOS One submission"
+        sections=[
+            {
+                "entries": [
+                    {"title": "Manuscript title", "content": "Title not added yet"},
+                    {"title": "Article type", "content": "Opinion"}
+                ]
+            },
+            {
+                "entries": [
+                    {"title": "Manuscript ID", "content": "MN123456"},
+                    {"title": "Your reference", "content": "Guys Thomas Hospital"}
+                ]
+            },
+            {
+                "entries": [
+                    {"title": "Status", "content": "Draft"}
+                ]
+            }
+        ] %}
+    {% endcomponent %}
+{% endblock ds_content %}
