@@ -1,0 +1,10 @@
+<div class="govuk-panel">
+  {% if title %}
+  {% component "plos_heading" level=2 css_class="govuk-heading-l govuk-panel__title" %}
+    {{ title }}
+  {% endcomponent %}
+  {% endif %}
+  <div class="govuk-panel__body">
+    {% slot "default" default %}{% endslot %}
+  </div>
+</div>

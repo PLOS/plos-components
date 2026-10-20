@@ -1,7 +1,18 @@
 {% extends "design_system/base.html" %}
 
+{% comment %}
+title: Panel
+status: missing
+{% endcomment %}
+
 {% block ds_title %}Panel – PLOS Design System{% endblock ds_title %}
 
 {% block ds_content %}
-  <h1 class="govuk-heading-xl">Panel</h1>
+  {% component "plos_heading" level=1 %}
+    Panel
+  {% endcomponent %}
+
+  {% component "plos_panel" field_id="example-panel" title="Here is the panel title" %}
+    Here's some content inside the panel body.
+  {% endcomponent %}
 {% endblock ds_content %}

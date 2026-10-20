@@ -1,0 +1,13 @@
+{% component "plos_panel"
+    field_id="{{ field_id }}"
+    title="{{ title }}" %}
+    {% for section in sections %}
+        {% component "plos_text_group" %}
+            {% for entry in section.entries %}
+                {% component "plos_text_box" %}
+                    <strong>{{ entry.title }}: </strong>{{ entry.content }}
+                {% endcomponent %}
+            {% endfor %}
+        {% endcomponent %}
+    {% endfor %}
+{% endcomponent %}
