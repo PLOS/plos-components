@@ -16,26 +16,29 @@
         {% component "plos_error_summary" entries=errors compact="True" %}{% endcomponent %}
         <div class="govuk-radios" data-module="govuk-radios">
             {% for option in radio_selection_options %}
-                {# generate unique option ids: "fieldname-1" ... "fieldname-N" #}
-                {% with option_id=name|add:"-"|add:forloop.counter|stringformat:"s" %}
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input"
-                        id="{{ option_id }}"
+                        id="{{ option.id }}"
                         name="{{ name }}"
                         type="radio"
                         value="{{ option.value }}"
-                        {% if option.checked %} checked{% endif %}>
+                        {% if option.checked %} checked{% endif %}
+                        {% if option.conditional_content %} data-aria-controls="conditional-{{ option.id }}"{% endif %}>
                         <label class="govuk-label govuk-radios__label"
-                            for="{{ option_id }}">
+                            for="{{ option.id }}">
                             {{ option.content }}
                         </label>
                         {% if option.hint %}
-                            <div id="{{ option_id }}-hint" class="govuk-hint govuk-radios__hint">
+                            <div id="{{ option.id }}-hint" class="govuk-hint govuk-radios__hint">
                                 {{ option.hint|escape }}
                             </div>
                         {% endif %}
                     </div>
-                {% endwith %}
+                    {% if option.conditional_content %}
+                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-{{ option.id }}">
+                        {{ option.conditional_content }}
+                    </div>
+                    {% endif %}
             {% endfor %}
         </div>
     </fieldset>

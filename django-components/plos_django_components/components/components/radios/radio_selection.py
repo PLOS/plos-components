@@ -71,7 +71,8 @@ class RadioSelection(PLOSBaseComponent):
 
     template: t.django_html = """
     {% load component_tags %}
-        {% provide "_plos_radio_selection" radio_selection_options=radio_selection_options errors=errors enabled=True %}
+        {% provide "_plos_radio_selection" radio_selection_options=radio_selection_options errors=errors
+        conditional_contents=conditional_contents enabled=True %}
             {% slot "content" default %}{% endslot %}
         {% endprovide %}
     """
@@ -96,6 +97,7 @@ class RadioSelection(PLOSBaseComponent):
             errors = []
         return {
             "radio_selection_options": [],
+            "conditional_contents": [],
             "name": name,
             "attrs": attrs,
             "content_attrs": content_attrs,
@@ -118,7 +120,20 @@ class RadioSelection(PLOSBaseComponent):
         :param template: The template to render.
         """
         radio_selection_options: list[RadioSelectionOptionEntry] = context["radio_selection_options"]
+        conditional_contents: list[dict] = context["conditional_contents"]
         errors: list[str] = context["errors"]
+        name: str = context["name"]
+
+        # Build a lookup of conditional content keyed by the target option's field id.
+        conditional_lookup: dict[str, str] = {item["for"]: item["content"] for item in conditional_contents}
+
+        # Assign each option a unique id (using its `field_id` if given, otherwise an
+        # auto-generated `name-N`), and attach any conditional content that targets it.
+        for index, option in enumerate(radio_selection_options, start=1):
+            option_id = option.get("field_id") or f"{name}-{index}"
+            option["id"] = option_id
+            option["conditional_content"] = conditional_lookup.get(option_id)
+
         return _RadioSelectionImpl.render(
             kwargs={
                 "radio_selection_options": radio_selection_options,
@@ -156,6 +171,7 @@ class RadioSelectionOption(PLOSBaseComponent):
         hint: str | None = None,
         errors: list[str] | None = None,
         checked: bool = False,
+        field_id: str | None = None,
     ):
         # Access the list of options registered for parent options component
         # This raises if we're not nested inside the RadioSelection component.
@@ -186,6 +202,7 @@ class RadioSelectionOption(PLOSBaseComponent):
             "checked": checked,
             "value": value,
             "hint": hint,
+            "field_id": field_id,
         }
 
     def on_render_after(self, context, template, content):  # noqa: D102
@@ -197,5 +214,59 @@ class RadioSelectionOption(PLOSBaseComponent):
                 "content": mark_safe(content.strip()),
                 "hint": context["hint"],
                 "errors": context["errors"],
+                "field_id": context["field_id"],
+            }
+        )
+
+
+@register("plos_radio_conditional_content")
+class RadioConditionalContent(PLOSBaseComponent):
+    """
+    Use this component to define conditional content that is revealed when a
+    `plos_radio_selection_option` is selected.
+
+    Nest it inside the `plos_radio_selection` component, alongside the
+    `plos_radio_selection_option` components. The ``for_field_id`` argument must
+    match the ``field_id`` of the `plos_radio_selection_option` that this
+    conditional content is associated with.
+    """
+
+    template: t.django_html = """
+    {% load component_tags %}
+        {% provide "_radio_conditional_content" enabled=False %}
+            {% slot "content" default %}{% endslot %}
+        {% endprovide %}
+    """
+
+    def get_context_data(  # noqa: D102
+        self,
+        /,
+        *,
+        for_field_id: str,
+    ):
+        # Access the list of conditional contents registered for the parent selection.
+        # This raises if we're not nested inside the RadioSelection component.
+        radio_selection_ctx = self.inject("_plos_radio_selection")
+
+        # We accessed the _plos_radio_selection context, but we're inside ANOTHER
+        # plos_radio_conditional_content.
+        if not radio_selection_ctx.enabled:
+            raise RuntimeError(
+                f"Component '{self.name}' was called with no parent RadioSelection component. "
+                f"Either wrap '{self.name}' in RadioSelection component, or check if the component "
+                f"is not a descendant of another instance of '{self.name}'"
+            )
+
+        return {
+            "parent_conditional_contents": radio_selection_ctx.conditional_contents,
+            "for_field_id": for_field_id,
+        }
+
+    def on_render_after(self, context, template, content):  # noqa: D102
+        parent_conditional_contents: list[dict] = context["parent_conditional_contents"]
+        parent_conditional_contents.append(
+            {
+                "for": context["for_field_id"],
+                "content": mark_safe(content.strip()),
             }
         )
