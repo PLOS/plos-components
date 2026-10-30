@@ -5,47 +5,72 @@
 {% endblock ds_title %}
 
 {% block ds_content %}
-    {% component "plos_error_summary" entries=[{"label": "Example", "anchor": "example_5", "message": "Please select an option" }] %}{% endcomponent %}
-  <h1 class="govuk-heading-xl">
+{% component "plos_error_summary" entries=[{"label": "Example", "anchor": "example_5", "message": "Please select an option" }] %}{% endcomponent %}
+  {% component "plos_heading" level=1 %}
     Radios
-  </h1>
-  <h2 class="govuk-heading-m">
+  {% endcomponent %}
+  
+  {% component "plos_heading" level=3%}
     Unselected state:
-  </h2>
+  {% endcomponent %}
+
   {% component "plos_radio_selection" name="example_1" %}
     {%  component "plos_radio_selection_option" %} Option 1 {% endcomponent %}
     {%  component "plos_radio_selection_option" %} Option 2 {% endcomponent %}
   {%  endcomponent %}
 
-  <h2 class="govuk-heading-m">
+  
+  {% component "plos_heading" level=3%}
     With hint:
-  </h2>
+  {% endcomponent %}
+
   {% component "plos_radio_selection" name="example_2" hint="This is the second example" %}
     {%  component "plos_radio_selection_option" %} Option 1 {% endcomponent %}
     {%  component "plos_radio_selection_option" %} Option 2 {% endcomponent %}
   {%  endcomponent %}
 
-  <h2 class="govuk-heading-m">
-    With option hints:
-  </h2>
+  
+  {% component "plos_heading" level=3%}
+    With option hin
+  ts:{% endcomponent %}
+
   {% component "plos_radio_selection" name="example_3" %}
     {%  component "plos_radio_selection_option" hint="This is a hint for option 1" %} Option 1 {% endcomponent %}
     {%  component "plos_radio_selection_option" hint="This is a hint for option 2" %} Option 2 {% endcomponent %}
   {%  endcomponent %}
 
-  <h2 class="govuk-heading-m">
+  
+  {% component "plos_heading" level=3%}
     Selected state:
-  </h2>
+  {% endcomponent %}
+
   {% component "plos_radio_selection" name="example_4" %}
     {%  component "plos_radio_selection_option" checked="true" %} Option 1 {% endcomponent %}
     {%  component "plos_radio_selection_option" %} Option 2 {% endcomponent %}
   {%  endcomponent %}
 
-  <h2 class="govuk-heading-m">
+  
+  {% component "plos_heading" level=3%}
     Error state:
-  </h2>
+  {% endcomponent %}
+
   {% component "plos_radio_selection" name="example_5" errors=[{"label": "Example", "anchor": "example_5", "message": "Please select an option" }] %}
     {%  component "plos_radio_selection_option" %} Option 1 {% endcomponent %}
     {%  component "plos_radio_selection_option" %} Option 2 {% endcomponent %}
   {%  endcomponent %}
+
+  {% component "plos_heading" level=3 %}With conditional content:{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    Note that if Javascript is disabled, the conditional content will always be visible.
+  {% endcomponent %}
+
+  {% component "plos_radio_selection" name="example_6" %}
+    {%  component "plos_radio_selection_option" field_id="example_6_option_1" checked="true" %} Option 1 {% endcomponent %}
+    {%  component "plos_radio_conditional_content" for_field_id="example_6_option_1" %}
+        {% component "plos_banner" %}This only shows up when Option 1 is selected.{% endcomponent %}
+    {% endcomponent %}
+    {%  component "plos_radio_selection_option" field_id="example_6_option_2" %} Option 2 {% endcomponent %}
+  {%  endcomponent %}
+
 {% endblock ds_content %}
