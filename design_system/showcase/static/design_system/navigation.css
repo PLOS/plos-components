@@ -106,6 +106,27 @@
   white-space: pre;
 }
 
+/* Long lines and wide tables scroll inside their own box, not the page */
+.code-snippet,
+.ds-table-scroll {
+  overflow-x: auto;
+}
+
+.code-snippet {
+  margin-bottom: var(--plos-spacing-06);
+}
+
+.code-snippet:focus-visible,
+.ds-table-scroll:focus-visible {
+  outline: 2px solid var(--plos-color-messaging-focus);
+  outline-offset: 2px;
+}
+
+p code,
+li code {
+  overflow-wrap: anywhere;
+}
+
 /* Typography reference tables (styles/typography pages) */
 .type-table {
   width: 100%;
