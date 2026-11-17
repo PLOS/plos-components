@@ -15,6 +15,7 @@ class Heading(PLOSBaseComponent):
                                    when a non-default heading style is needed (for example,
                                    govuk-error-summary__title inside the error summary box).
                                    When omitted, the level-based default is used.
+        field_id (str, optional): The heading's id.
         kwargs (dict, optional): Other optional params
 
     """
@@ -25,6 +26,7 @@ class Heading(PLOSBaseComponent):
             self,
             level: int = 1,
             css_class: str | None = None,
+            field_id: str | None = None,
             **kwargs: dict | None
     ):  # noqa: D102
         # Validate heading level
@@ -41,6 +43,7 @@ class Heading(PLOSBaseComponent):
         context = {
             "tag": f"h{level}",
             "css_class": css_class if css_class is not None else heading_classes[level],
+            "field_id": field_id,
         }
         if kwargs:
             context.update(kwargs)

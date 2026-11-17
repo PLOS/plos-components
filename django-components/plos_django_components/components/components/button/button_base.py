@@ -23,6 +23,10 @@ class Button(PLOSBaseComponent):
     element, enabling partial page updates without a full page reload. Omit
     all four for a plain form submit button.
 
+    `form_novalidate` skips browser validation when the button submits.
+    `command` and `command_for` set the invoker command attributes, for example
+    to close a `<dialog>`.
+
     Example usage::
 
         {# Plain form submit #}
@@ -67,6 +71,9 @@ class Button(PLOSBaseComponent):
         hx_disabled_elt: str | None = None,
         hx_sync: str | None = None,
         autofocus: bool = False,
+        form_novalidate: bool = False,
+        command: str | None = None,
+        command_for: str | None = None,
         **kwargs,
     ):
         if href == "":
@@ -91,6 +98,9 @@ class Button(PLOSBaseComponent):
             "hx_disabled_elt": hx_disabled_elt,
             "hx_sync": hx_sync,
             "autofocus": autofocus,
+            "form_novalidate": form_novalidate,
+            "command": command,
+            "command_for": command_for,
         }
         context.update(kwargs)
         return context
