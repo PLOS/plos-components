@@ -13,7 +13,7 @@
 
   {% component "plos_heading" level=2 %}Spacing scale{% endcomponent %}
 
-  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+  {% component "plos_section_break" size="m" / %}
 
   {% component "plos_text_box" %}
     The bar in each row is drawn using the token itself, so it always reflects the real value.
@@ -108,7 +108,7 @@
 
   {% component "plos_heading" level=2 %}Heading spacing{% endcomponent %}
 
-  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+  {% component "plos_section_break" size="m" / %}
 
   {% component "plos_text_box" %}
     Each heading carries its own space below it, so a heading and the text it introduces read as one

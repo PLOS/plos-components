@@ -1,0 +1,43 @@
+{% extends "design_system/base.html" %}
+
+{% block ds_title %}Section Break – PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+  {% component "plos_heading" level=1 %}Section Break{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    <code>plos_section_break</code> renders a horizontal rule that separates
+    sections of content on a page.
+  {% endcomponent %}
+
+  {% component "plos_section_break" / %}
+
+  {% component "plos_heading" level=2 %}Sizes{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    The <code>size</code> parameter sets the space above and below the rule.
+  {% endcomponent %}
+
+  {% component "plos_text_box" %}<code>size="m"</code>{% endcomponent %}
+  {% component "plos_section_break" size="m" / %}
+
+  {% component "plos_text_box" %}<code>size="l"</code> (default){% endcomponent %}
+  {% component "plos_section_break" / %}
+
+  {% component "plos_text_box" %}<code>size="xl"</code>{% endcomponent %}
+  {% component "plos_section_break" size="xl" / %}
+
+  {% component "plos_heading" level=2 %}Usage{% endcomponent %}
+
+  <code class="ds-code-block">{% verbatim %}{% component "plos_section_break" / %}
+{% component "plos_section_break" size="m" / %}
+{% component "plos_section_break" size="xl" visible=False / %}{% endverbatim %}</code>
+
+  {% component "plos_text_box" %}
+    Parameters:
+  {% endcomponent %}
+  <ul class="govuk-list govuk-list--bullet">
+    <li><code>size</code>: vertical spacing, one of <code>"m"</code>, <code>"l"</code>, <code>"xl"</code>, or <code>""</code> for none (default: <code>"l"</code>)</li>
+    <li><code>visible</code>: draw a visible rule; set to <code>False</code> for spacing only (default: <code>True</code>)</li>
+  </ul>
+{% endblock ds_content %}
