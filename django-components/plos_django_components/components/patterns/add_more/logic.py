@@ -19,19 +19,29 @@ def posted_count(post, name: str, max_items: int) -> int:
     return max(1, min(count, max_items))
 
 
+def _action_index(action: str, verb: str) -> int | None:
+    """Return N for a `{verb}__N` action, or None for a malformed or negative N or any other action."""
+    if not action.startswith(f"{verb}__"):
+        return None
+    try:
+        index = int(action.removeprefix(f"{verb}__"))
+    except ValueError:
+        return None
+    return index if index >= 0 else None
+
+
 def deleted_index(action: str) -> int | None:
     """
     Return N for a `delete__N` action, or None for any other action.
 
     None also covers a malformed or negative N, so callers never act on a bad index.
     """
-    if not action.startswith("delete__"):
-        return None
-    try:
-        index = int(action.removeprefix("delete__"))
-    except ValueError:
-        return None
-    return index if index >= 0 else None
+    return _action_index(action, "delete")
+
+
+def cancelled_index(action: str) -> int | None:
+    """Return N for a `cancel__N` action (Cancel on item N's delete confirmation without JS), or None."""
+    return _action_index(action, "cancel")
 
 
 def apply_add_or_delete(values: list, action: str, max_items: int, empty_item: str | dict = "") -> list:
@@ -40,7 +50,7 @@ def apply_add_or_delete(values: list, action: str, max_items: int, empty_item: s
 
     `add` appends `empty_item` while under `max_items`. `delete__N` removes item N when
     it exists. The list never becomes empty; deleting the last item leaves one blank.
-    Any other action returns the values unchanged.
+    Any other action, like `cancel__N`, returns the values unchanged.
     """
     values = list(values)
     deleted = deleted_index(action)

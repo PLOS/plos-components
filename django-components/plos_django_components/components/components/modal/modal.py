@@ -37,6 +37,8 @@ class Modal(PLOSBaseComponent):
             response, like deleting something. Turns on `describe_body`. Not
             for long content or forms. Without JavaScript the content is a
             group.
+        trigger_class (str): Classes that replace the trigger's button style,
+            for patterns with their own trigger, like add more's delete link.
         trigger_label (str): The trigger's plain-text name, for the line
             without JavaScript that says "To cancel, select <trigger_label>
             again". Defaults to `trigger`. Pass it when you fill the `trigger`
@@ -96,6 +98,7 @@ class Modal(PLOSBaseComponent):
         alert: bool = False,
         trigger: str | None = None,
         trigger_action: Literal["primary", "secondary", "warning"] = "primary",
+        trigger_class: str | None = None,
         trigger_label: str | None = None,
         cancel_label: str = "Cancel",
         cancel_field_name: str | None = None,
@@ -114,7 +117,7 @@ class Modal(PLOSBaseComponent):
             "describe_body": describe_body or alert,
             "alert": alert,
             "trigger": trigger,
-            "trigger_class": BUTTON_CLASSES[trigger_action],
+            "trigger_class": trigger_class or BUTTON_CLASSES[trigger_action],
             "trigger_label": trigger_label or trigger,
             "cancel_label": cancel_label,
             "cancel_field_name": cancel_field_name,

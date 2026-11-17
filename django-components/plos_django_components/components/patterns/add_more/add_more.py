@@ -6,7 +6,14 @@ from django_components import register
 
 from ...components.base.base_component import PLOSBaseComponent
 from ...components.base.icon_fonts.base_icon import IconFontSetting
-from .logic import deleted_index
+from .logic import cancelled_index, deleted_index
+
+CONFIRM_DELETE_TEXT = "This action cannot be undone."
+
+
+def default_confirm_delete_title(item_label: str) -> str:
+    """Return the default delete confirmation title."""
+    return f"Are you sure you want to delete this {item_label}?"
 
 
 @register("plos_add_more")
@@ -77,6 +84,7 @@ class AddMore(PLOSBaseComponent):
         add          the new item's first field (via `slot_data.autofocus`)
         delete__N    the first field of the item that moved into position N, or the
                      add button when the last item was deleted
+        cancel__N    item N's delete link (Cancel on its confirmation, without JS)
 
     The focused item is always expanded so its field can take focus.
 
@@ -96,6 +104,25 @@ class AddMore(PLOSBaseComponent):
     `error_summary_id` is optional too: the id of the page element wrapping the error
     summary (see "Error summary" above).
 
+    Delete confirmation: by default the delete link asks the user to confirm before
+    deleting. Pass `confirm_delete=False` to delete straight away.
+
+        confirm_delete_title  confirmation title (default: "Are you sure you want to delete
+                              this {item_label}?")
+        confirm_delete_text   confirmation text (default: "This action cannot be undone.")
+
+    With JavaScript, the link opens a `plos_modal` (an `alertdialog`). Without it,
+    the confirmation opens inline below the link (see plos_modal), and its
+    Cancel button posts `cancel__N`, which reloads the page with the confirmation
+    closed. Either way its delete button posts `delete__N`. `apply_add_or_delete`
+    leaves the list unchanged for `cancel__N`, so the view needs nothing extra.
+
+    Enter: pressing Enter in a field clicks the form's first submit button. The
+    component starts with a hidden submit button named `enter_submits` ("continue" by
+    default), so Enter posts that instead of a delete button. Set it to the name of the
+    page's main submit button, or None when an earlier submit button already handles
+    Enter. The delete confirmations leave theirs out, as this one comes first.
+
     The add and delete controls belong to this pattern, not to plos_button: they are
     styled by the `plos-add-more__add-button` and `plos-add-more__delete-button`
     classes in the add more CSS.
@@ -107,7 +134,8 @@ class AddMore(PLOSBaseComponent):
     template_name = "add_more.html"
 
     class Media:
-        js = ["plos_django_components/add_more.js"]
+        # modal.js too: with confirm_delete, the first modal can arrive in an HTMX swap
+        js = ["plos_django_components/add_more.js", "plos_django_components/modal.js"]
 
     def get_context_data(
         self,
@@ -129,11 +157,16 @@ class AddMore(PLOSBaseComponent):
         add_icon: str | None = None,
         delete_icon: str | None = None,
         error_summary_id: str | None = None,
+        confirm_delete: bool = True,
+        confirm_delete_title: str | None = None,
+        confirm_delete_text: str = CONFIRM_DELETE_TEXT,
+        enter_submits: str | None = "continue",
     ):
         errors = errors or []
         collapsed_indexes = set(collapsed or [])
         count = len(values)
         focus_index, focus_add_button = self._focus_target(last_action or "", count)
+        focus_delete_index = cancelled_index(last_action or "")
         items = []
         for i, value in enumerate(values):
             item_errors = errors[i] if i < len(errors) else None
@@ -147,6 +180,7 @@ class AddMore(PLOSBaseComponent):
                     "value": value,
                     "errors": messages_by_field,
                     "autofocus": i == focus_index,
+                    "focus_delete": i == focus_delete_index,
                     "expanded": i not in collapsed_indexes or bool(messages_by_field) or i == focus_index,
                 }
             )
@@ -162,7 +196,11 @@ class AddMore(PLOSBaseComponent):
             "items": items,
             "focus_add_button": focus_add_button,
             "htmx_url": htmx_url,
-            "error_summary_id": error_summary_id,
+            "error_summary_oob": f"#{error_summary_id}" if error_summary_id else None,
+            "confirm_delete": confirm_delete,
+            "confirm_delete_title": confirm_delete_title or default_confirm_delete_title(item_label),
+            "confirm_delete_text": confirm_delete_text,
+            "enter_submits": enter_submits,
             "add_label": add_label,
             "delete_label": delete_label,
             "add_icon_size": add_icon_size,
