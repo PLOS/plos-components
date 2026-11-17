@@ -112,12 +112,19 @@
 
     {% component "plos_heading" level=3 %}Modal{% endcomponent %}
 
+    {% component "plos_text_box" %}
+        A modal adds its own Cancel button. Within the modal, buttons are aligned to
+        the right on large screens and stacked (with Cancel on top) on small screens.
+
+        See the <a class="govuk-link" href="/components/modal/">modal component</a>.
+    {% endcomponent %}
+
     {% component "plos_button_group" %}
         {% component "plos_button" action="secondary" %}
             Cancel
         {% endcomponent %}
-        {% component "plos_button" %}
-            Submit
+        {% component "plos_button" action="warning" %}
+            Deactivate
         {% endcomponent %}
     {% endcomponent %}
 {% endblock ds_content %}

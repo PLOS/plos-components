@@ -34,6 +34,7 @@ COMPONENTS = {
     "text-group",
     "tag",
     "task-list",
+    "modal",
 }
 
 PATTERNS = {
@@ -230,12 +231,21 @@ def text_input_page(request):
     return render(request, "design_system/components/text_input.html", ctx)
 
 
+def modal_page(request):
+    """Render the modal docs. The confirmation demo posts back here and nothing is saved."""
+    ctx = _nav_context_components(request, active_section="components", active_slug="modal")
+    ctx["deactivated"] = request.POST.get("deactivate") == "yes"
+    return render(request, "design_system/components/modal.html", ctx)
+
+
 def design_system_component(request, component):
     slug = component.replace("-", "_")
     if component == "error-summary":
         return error_summary_page(request)
     if component == "text-input":
         return text_input_page(request)
+    if component == "modal":
+        return modal_page(request)
     return render(
         request,
         f"design_system/components/{slug}.html",
