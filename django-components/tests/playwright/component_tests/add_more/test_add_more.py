@@ -39,6 +39,7 @@ def test_delete_item_renumbers_remaining(page: Page, live_server):
     page.locator("#patent_1").fill("Patent-456")
 
     page.get_by_role("button", name="Delete patent 1").click()
+    page.get_by_role("alertdialog").get_by_role("button", name="Delete patent 1").click()
 
     expect(page.locator("#patent_0")).to_have_value("Patent-456")
     expect(page.locator("#patent_0")).to_be_focused()
@@ -91,7 +92,31 @@ def test_add_and_delete_without_javascript(browser: Browser, live_server):
     expect(page.locator("#patent_1")).to_be_visible()
     expect(page.locator("#patent_0")).to_have_value("Patent-123")
 
-    page.get_by_role("button", name="Delete patent 1").click()
+    # Without JavaScript the confirmation opens inline below the delete link
+    page.locator("summary", has_text="Delete patent 1").click()
+    # Cancel reloads the page with the confirmation closed and focus on the delete link
+    page.locator("#patents-delete-0").get_by_role("button", name="Cancel").click()
+    expect(page.locator("#patents-delete-0")).to_be_hidden()
+    expect(page.locator("summary", has_text="Delete patent 1")).to_be_focused()
+    expect(page.locator("#patent_1")).to_be_visible()
+    expect(page.locator("#patent_0")).to_have_value("Patent-123")
+
+    page.locator("summary", has_text="Delete patent 1").click()
+    page.locator("#patents-delete-0").get_by_role("button", name="Delete patent 1").click()
     expect(page.locator("#patent_1")).to_have_count(0)
     expect(page.locator("#patent_0")).to_have_value("")
+    context.close()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("javascript", [True, False])
+def test_enter_in_a_field_saves_instead_of_deleting(browser: Browser, live_server, javascript):
+    context = browser.new_context(java_script_enabled=javascript)
+    page = context.new_page()
+    page.goto(live_server.url + reverse("add_more"))
+    page.locator("#patent_0").fill("Patent-123")
+    add_button(page).click()
+    page.locator("#patent_1").fill("Patent-456")
+    page.locator("#patent_1").press("Enter")
+    expect(page.locator("#saved li")).to_have_text(["Patent-123", "Patent-456"])
     context.close()

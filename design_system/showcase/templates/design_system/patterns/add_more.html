@@ -27,21 +27,28 @@
 
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-  {% component "plos_heading" level=2 %}Example{% endcomponent %}
+  {% component "plos_heading" level=2 field_id="examples" %}Examples{% endcomponent %}
 
   {% component "plos_text_box" %}
-    Add and delete patents below, then save. With JavaScript on, the list
+    Add and delete items below, then save. With JavaScript on, the list
     updates without a page reload. With JavaScript off, each button reloads
-    the page.
+    the page. The two examples are separate forms.
   {% endcomponent %}
 
-  <div id="page-errors">
-    {% component "plos_error_summary" entries=error_summary %}{% endcomponent %}
+  {% component "plos_heading" level=3 %}Confirm before deleting{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    By default, the delete link asks the user to confirm in a
+    <a class="govuk-link" href="/components/modal/">modal</a> before deleting.
+  {% endcomponent %}
+
+  <div id="patent-errors">
+    {% component "plos_error_summary" entries=patents.error_summary %}{% endcomponent %}
   </div>
 
-  <form method="post" action="{{ add_more_url }}#patents-add-more" novalidate>
+  <form method="post" action="{{ add_more_url }}" novalidate>
     {% csrf_token %}
-    {% component "plos_add_more" name="patents" item_label="patent" values=patent_values max_items=max_items htmx_url=add_more_url errors=errors collapsed=collapsed last_action=last_action error_summary_id="page-errors" %}
+    {% component "plos_add_more" name="patents" item_label="patent" values=patents.values max_items=max_items htmx_url=add_more_url errors=patents.errors collapsed=patents.collapsed last_action=patents.last_action error_summary_id="patent-errors" %}
       {% fill "item" data="slot_data" %}
         {% component "plos_text_input"
           label="Patent number"
@@ -55,18 +62,62 @@
     {% endcomponent %}
 
     {% component "plos_button_group" %}
-      {% component "plos_button" button_type="submit" %}
+      {% component "plos_button" button_type="submit" field_name="continue" form_action="{{ add_more_url }}#patent-errors" %}
         {% fill "default" %}Save patents{% endfill %}
       {% endcomponent %}
     {% endcomponent %}
   </form>
 
-  {% if saved_patents %}
+  {% if patents.just_saved %}
     {% component "plos_inset_text" %}
-      {% component "plos_heading" level=3 css_class="govuk-heading-s" %}Saved patents{% endcomponent %}
+      {% component "plos_heading" level=4 css_class="govuk-heading-s" %}Saved patents{% endcomponent %}
       {% component "plos_bulleted_list" name="saved_patents" %}
-        {% for patent in saved_patents %}
+        {% for patent in patents.saved %}
           {% component "plos_bulleted_list_option" %}{{ patent }}{% endcomponent %}
+        {% endfor %}
+      {% endcomponent %}
+    {% endcomponent %}
+  {% endif %}
+
+  {% component "plos_heading" level=3 css_class="govuk-heading-m govuk-!-margin-top-9" %}Delete straight away{% endcomponent %}
+
+  {% component "plos_text_box" %}
+    With <code>confirm_delete=False</code>, the delete link
+    deletes the item immediately.
+  {% endcomponent %}
+
+  <div id="author-errors">
+    {% component "plos_error_summary" entries=authors.error_summary %}{% endcomponent %}
+  </div>
+
+  <form method="post" action="{{ add_more_url }}" novalidate>
+    {% csrf_token %}
+    {% component "plos_add_more" name="authors" item_label="author" values=authors.values max_items=max_items htmx_url=add_more_url errors=authors.errors collapsed=authors.collapsed last_action=authors.last_action error_summary_id="author-errors" confirm_delete=False %}
+      {% fill "item" data="slot_data" %}
+        {% component "plos_text_input"
+          label="Author name"
+          name="author_{{ slot_data.index }}"
+          field_id="author_{{ slot_data.index }}"
+          value=slot_data.value
+          errors=slot_data.errors.author
+          autofocus=slot_data.autofocus
+        %}{% endcomponent %}
+      {% endfill %}
+    {% endcomponent %}
+
+    {% component "plos_button_group" %}
+      {% component "plos_button" button_type="submit" field_name="continue" form_action="{{ add_more_url }}#author-errors" %}
+        {% fill "default" %}Save authors{% endfill %}
+      {% endcomponent %}
+    {% endcomponent %}
+  </form>
+
+  {% if authors.just_saved %}
+    {% component "plos_inset_text" %}
+      {% component "plos_heading" level=4 css_class="govuk-heading-s" %}Saved authors{% endcomponent %}
+      {% component "plos_bulleted_list" name="saved_authors" %}
+        {% for author in authors.saved %}
+          {% component "plos_bulleted_list_option" %}{{ author }}{% endcomponent %}
         {% endfor %}
       {% endcomponent %}
     {% endcomponent %}
@@ -117,7 +168,7 @@
     {% endfill %}
   {% endcomponent %}
 
-  {% component "plos_button" button_type="submit" %}Save patents{% endcomponent %}
+  {% component "plos_button" button_type="submit" field_name="continue" %}Save patents{% endcomponent %}
 </form>{% endverbatim %}{% endfilter %}</code>
 
   {% component "plos_text_box" %}
@@ -220,6 +271,7 @@ def patents_page(request):
 
   {% component "plos_heading" level=3 %}Posted fields{% endcomponent %}
 
+  <div class="ds-table-scroll" tabindex="0" role="region" aria-label="Posted fields">
   <table class="govuk-table">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
@@ -234,7 +286,7 @@ def patents_page(request):
       </tr>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell"><code>{name}__action</code></td>
-        <td class="govuk-table__cell"><code>add</code> or <code>delete__N</code> (N counts from 0) when someone presses add or delete. Your submit button doesn't send it.</td>
+        <td class="govuk-table__cell"><code>add</code> or <code>delete__N</code> (N counts from 0) when someone presses add or delete, or <code>cancel__N</code> when they cancel a delete confirmation without JavaScript.</td>
       </tr>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell"><code>{name}__collapsed</code></td>
@@ -246,9 +298,11 @@ def patents_page(request):
       </tr>
     </tbody>
   </table>
+  </div>
 
   {% component "plos_heading" level=3 %}Parameters{% endcomponent %}
 
+  <div class="ds-table-scroll" tabindex="0" role="region" aria-label="Add more parameters">
   <table class="govuk-table">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
@@ -295,7 +349,7 @@ def patents_page(request):
       </tr>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell"><code>last_action</code></td>
-        <td class="govuk-table__cell">The posted <code>{name}__action</code>, so focus moves to the new item after an add, or to the next item (or the add button) after a delete.</td>
+        <td class="govuk-table__cell">The posted <code>{name}__action</code>, so focus moves to the new item after an add, or to the next item (or the add button) after a delete. After <code>cancel__N</code>, focus goes back to item N's delete link.</td>
         <td class="govuk-table__cell">None</td>
       </tr>
       <tr class="govuk-table__row">
@@ -328,8 +382,24 @@ def patents_page(request):
         <td class="govuk-table__cell"><code>plos_icon</code> sizes for the button icons.</td>
         <td class="govuk-table__cell">"xs", "md"</td>
       </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>confirm_delete</code></td>
+        <td class="govuk-table__cell">Ask for confirmation before deleting (see <a class="govuk-link" href="#examples">Examples</a>). Pass <code>False</code> to delete straight away.</td>
+        <td class="govuk-table__cell">True</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>confirm_delete_title</code>, <code>confirm_delete_text</code></td>
+        <td class="govuk-table__cell">The modal title and body. The modal's buttons are Cancel and <code>delete_label</code>.</td>
+        <td class="govuk-table__cell">"Are you sure you want to delete this {item_label}?", "This action cannot be undone."</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><code>enter_submits</code></td>
+        <td class="govuk-table__cell">The name of the hidden submit button that Enter in a field clicks (see Enter key above). <code>None</code> leaves it out.</td>
+        <td class="govuk-table__cell">"continue"</td>
+      </tr>
     </tbody>
   </table>
+  </div>
 {% endblock ds_content %}
 
 {% block js %}

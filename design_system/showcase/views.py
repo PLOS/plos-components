@@ -42,8 +42,7 @@ PATTERNS = {
     "check_answers",
 }
 
-ADD_MORE_SESSION_KEY = "ds_add_more_patents"
-ADD_MORE_MAX = 10
+ADD_MORE_MAX = 3
 
 TYPOGRAPHY_SUBPAGES = [
     {"slug": "headings-body", "label": "Headings and Body"},
@@ -138,41 +137,52 @@ def design_system_style(request, page):
     )
 
 
-def add_more_page(request):
-    """Render the add more demo. Add and delete re-render the form; only Save persists."""
-    saved = request.session.get(ADD_MORE_SESSION_KEY, [])
+def _add_more_demo(request, name, field, label, message):
+    """Run one add more demo list. Only the list whose form was posted handles the POST."""
+    session_key = f"ds_add_more_{name}"
+    saved = request.session.get(session_key, [])
     values = saved or [""]
     errors = None
     collapsed = []
     action = ""
+    just_saved = False
 
-    if request.method == "POST":
-        count = posted_count(request.POST, "patents", ADD_MORE_MAX)
-        values = [request.POST.get(f"patent_{i}", "") for i in range(count)]
-        action = request.POST.get("patents__action", "")
+    if request.method == "POST" and f"{name}__count" in request.POST:
+        count = posted_count(request.POST, name, ADD_MORE_MAX)
+        values = [request.POST.get(f"{field}_{i}", "") for i in range(count)]
+        action = request.POST.get(f"{name}__action", "")
         if action:
             values = apply_add_or_delete(values, action, ADD_MORE_MAX)
-            collapsed = collapsed_after_add_or_delete(request.POST, "patents", action)
+            collapsed = collapsed_after_add_or_delete(request.POST, name, action)
         else:
-            errors = [
-                None if v.strip() else [{"field_id": "patent", "message": "Enter a patent number or application"}]
-                for v in values
-            ]
+            errors = [None if v.strip() else [{"field_id": field, "message": message}] for v in values]
             if not any(errors):
                 saved = values
-                request.session[ADD_MORE_SESSION_KEY] = saved
+                request.session[session_key] = saved
+                just_saved = True
 
-    ctx = {
-        "patent_values": values,
+    return {
+        "values": values,
         "errors": errors,
-        "error_summary": error_summary_entries(errors, "patent"),
+        "error_summary": error_summary_entries(errors, label),
         "collapsed": collapsed,
         "last_action": action,
+        "saved": saved,
+        # Only show "Saved" after a save, not after add, delete or cancel reloads the page
+        "just_saved": just_saved,
+    }
+
+
+def add_more_page(request):
+    """Render the add more demos. Add and delete re-render the form; only Save persists."""
+    patents = _add_more_demo(request, "patents", "patent", "patent", "Enter a patent number or application")
+    ctx = {
+        "patents": patents,
+        "authors": _add_more_demo(request, "authors", "author", "author", "Enter an author name"),
         "max_items": ADD_MORE_MAX,
         "add_more_url": request.path,
     }
     ctx.update(_nav_context_patterns(request, active_section="patterns", active_slug="add-more"))
-    ctx["saved_patents"] = saved
     return render(request, "design_system/patterns/add_more.html", ctx)
 
 
