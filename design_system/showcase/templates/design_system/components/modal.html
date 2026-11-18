@@ -1,0 +1,134 @@
+{% extends "design_system/base.html" %}
+{% load component_tags %}
+
+{% block ds_title %}Modal - PLOS Design System{% endblock ds_title %}
+
+{% block ds_content %}
+  {% component "plos_heading" level=1 %}Modal{% endcomponent %}
+
+  {% component "plos_text_box" %}The PLOS modal displays on top of the main screen and blocks interaction with the underlying application until the user completes an action or dismisses it. It renders its own trigger and Cancel button.{% endcomponent %}
+
+  {% component "plos_heading" level=2 css_class="govuk-heading-m" %}With and without JavaScript{% endcomponent %}
+  {% component "plos_text_box" %}The modal works with JavaScript on or off. It starts as a <code class="code">&lt;details&gt;</code>, which works with HTML alone, and the component's script turns it into a <code class="code">&lt;dialog&gt;</code> when JavaScript runs.{% endcomponent %}
+
+  {% component "plos_banner" severity="info" %}<strong>Note.</strong> This is a conservative approach. Once invoker commands are widely adopted, we could deprecate this component in favour of a plain <code class="code">&lt;dialog&gt;</code>, which works without JavaScript and needs a much simpler component.{% endcomponent %}
+
+  {% component "plos_heading" level=2 css_class="govuk-heading-m" %}Examples:{% endcomponent %}
+  {% if deactivated %}
+    {% component "plos_inset_text" %}Account deactivated. This is a demo, so nothing was saved.{% endcomponent %}
+  {% endif %}
+
+  <form method="post" action="#confirm" id="confirm" novalidate>
+    {% csrf_token %}
+    {% component "plos_modal" field_id="modal-deactivate" title="Deactivate account" size="sm" alert=True trigger="Deactivate account" trigger_action="warning" %}
+      {% fill "default" %}
+        {% component "plos_text_box" %}Are you sure you want to deactivate your account? This action cannot be undone{% endcomponent %}
+      {% endfill %}
+      {% fill "actions" %}
+        {% component "plos_button" action="warning" button_type="submit" field_name="deactivate" value="yes" %}
+          Deactivate
+        {% endcomponent %}
+      {% endfill %}
+    {% endcomponent %}
+  </form>
+
+  <pre class="code-snippet" tabindex="0" role="region" aria-label="Confirm a destructive action code"><code>{% verbatim %}{% component "plos_modal" field_id="deactivate" title="Deactivate account" alert=True
+    trigger="Deactivate account" trigger_action="warning" %}
+  {% fill "default" %}
+    {% component "plos_text_box" %}Are you sure you want to deactivate your account?{% endcomponent %}
+  {% endfill %}
+  {% fill "actions" %}
+    {% component "plos_button" action="warning" button_type="submit" field_name="deactivate" value="yes" %}
+      Deactivate
+    {% endcomponent %}
+  {% endfill %}
+{% endcomponent %}{% endverbatim %}</code></pre>
+
+  {% component "plos_heading" level=2 css_class="govuk-heading-m" %}Sizes{% endcomponent %}
+  {% component "plos_text_box" %}Width is a percentage of the viewport and changes by breakpoint. Height grows with the content up to a maximum, after which the body scrolls. On small screens every size is full screen.{% endcomponent %}
+
+  <div class="ds-table-scroll" tabindex="0" role="region" aria-label="Modal sizes">
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Size</th>
+        <th scope="col" class="govuk-table__header">xl</th>
+        <th scope="col" class="govuk-table__header">lg</th>
+        <th scope="col" class="govuk-table__header">md</th>
+        <th scope="col" class="govuk-table__header">sm</th>
+        <th scope="col" class="govuk-table__header">xs</th>
+        <th scope="col" class="govuk-table__header">Max height</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">lg</td>
+        <td class="govuk-table__cell">72%</td>
+        <td class="govuk-table__cell">72%</td>
+        <td class="govuk-table__cell">84%</td>
+        <td class="govuk-table__cell">96%</td>
+        <td class="govuk-table__cell">100%</td>
+        <td class="govuk-table__cell">96%</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">md</td>
+        <td class="govuk-table__cell">48%</td>
+        <td class="govuk-table__cell">48%</td>
+        <td class="govuk-table__cell">60%</td>
+        <td class="govuk-table__cell">84%</td>
+        <td class="govuk-table__cell">100%</td>
+        <td class="govuk-table__cell">84%</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">sm</td>
+        <td class="govuk-table__cell">36%</td>
+        <td class="govuk-table__cell">36%</td>
+        <td class="govuk-table__cell">42%</td>
+        <td class="govuk-table__cell">60%</td>
+        <td class="govuk-table__cell">100%</td>
+        <td class="govuk-table__cell">72%</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">xs</td>
+        <td class="govuk-table__cell">24%</td>
+        <td class="govuk-table__cell">24%</td>
+        <td class="govuk-table__cell">32%</td>
+        <td class="govuk-table__cell">48%</td>
+        <td class="govuk-table__cell">100%</td>
+        <td class="govuk-table__cell">48%</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  {% component "plos_modal" field_id="modal-size-xs" title="Extra small modal" size="xs" trigger="Open xs" trigger_action="secondary" %}
+    {% component "plos_text_box" %}This modal uses the xs size.{% endcomponent %}
+  {% endcomponent %}
+
+  {% component "plos_modal" field_id="modal-size-sm" title="Small modal" size="sm" trigger="Open sm" trigger_action="secondary" %}
+    {% component "plos_text_box" %}This modal uses the sm size.{% endcomponent %}
+  {% endcomponent %}
+
+  {% component "plos_modal" field_id="modal-size-md" title="Medium modal" size="md" trigger="Open md" trigger_action="secondary" %}
+    {% component "plos_text_box" %}This modal uses the md size.{% endcomponent %}
+  {% endcomponent %}
+
+  {% component "plos_modal" field_id="modal-size-lg" title="Large modal" size="lg" trigger="Open lg" trigger_action="secondary" %}
+    {% component "plos_text_box" %}This modal uses the lg size.{% endcomponent %}
+  {% endcomponent %}
+
+  {% component "plos_heading" level=2 css_class="govuk-heading-m" %}Long content{% endcomponent %}
+  {% component "plos_text_box" %}When the content is taller than the maximum height, the body scrolls and the title and buttons stay in place.{% endcomponent %}
+
+  {% component "plos_modal" field_id="modal-long" title="Terms of submission" size="md" trigger="Open long content" trigger_action="secondary" cancel_label="Close" %}
+    {% fill "default" %}
+      {% for _ in "123456789" %}
+        {% component "plos_text_box" %}By submitting your manuscript you confirm that the work is original, has not been published elsewhere and is not under consideration by another journal. All authors have approved the submission and agree to its publication if accepted.{% endcomponent %}
+      {% endfor %}
+    {% endfill %}
+  {% endcomponent %}
+
+  {% component "plos_heading" level=2 css_class="govuk-heading-m" id="enter-key" %}Enter key{% endcomponent %}
+  {% component "plos_text_box" %}Pressing Enter in a field clicks the form's first submit button, even one inside a closed modal. The modal starts with a hidden submit button named <code class="code">enter_submits</code> (<code class="code">continue</code> by default), so Enter never presses the confirm button. Set it to the name of your main submit button so Enter does what that button does. Pass <code class="code">None</code> when the modal is not in a form, or when an earlier hidden button already handles Enter.{% endcomponent %}
+
+{% endblock ds_content %}

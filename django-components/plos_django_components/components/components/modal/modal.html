@@ -1,0 +1,42 @@
+{# Stops Enter in a field from pressing the confirm button. Enter clicks the form's first submit button, so this hidden one, named like the page's main button, comes first #}
+{% if enter_submits %}<button type="submit" name="{{ enter_submits }}" hidden></button>{% endif %}
+
+{# Without JS a disclosure; modal.js replaces it with a <button> and a <dialog>, adds the <template> buttons and removes [data-plos-modal-no-js] and the no-JS Cancel #}
+<details class="plos-modal-trigger" data-plos-modal name="plos-modal">
+  <summary class="{{ trigger_class }}"{% if trigger_autofocus %} autofocus{% endif %}>{% slot "trigger" %}{{ trigger }}{% endslot %}</summary>
+  <div id="{{ field_id }}"
+       class="plos-modal plos-modal--{{ size }} plos-modal--inline"
+       role="group"
+       aria-labelledby="{{ field_id }}-title"
+       {% if describe_body %}aria-describedby="{{ field_id }}-description"{% endif %}
+       {% if alert %}data-alert{% endif %}
+       {% if describe_body %}data-describe-body{% endif %}>
+    <div class="plos-modal__header">
+      {% component "plos_heading" level=heading_level css_class="govuk-heading-l plos-modal__title" tabindex="-1" field_id=title_id %}{{ title }}{% endcomponent %}
+      <template data-plos-modal-js>
+        <button type="button"
+                class="plos-modal__close"
+                command="close"
+                commandfor="{{ field_id }}">
+          {% component "plos_icon" custom_icon="bi bi-x-lg" size="sm" %}{% endcomponent %}
+          <span class="govuk-visually-hidden">Close</span>
+        </button>
+      </template>
+    </div>
+    <div class="plos-modal__body"{% if describe_body %} id="{{ field_id }}-description"{% endif %}>
+      {% slot "default" default %}{% endslot %}
+      {% if trigger_label and not cancel_field_name %}
+        <div data-plos-modal-no-js>{% component "plos_text_box" %}To cancel, select {{ trigger_label }} again{% endcomponent %}</div>
+      {% endif %}
+    </div>
+    {% component "plos_button_group" css_class="plos-modal__actions" %}
+      {% if cancel_field_name %}
+        {% component "plos_button" action="secondary" button_type="submit" field_name=cancel_field_name value=cancel_value form_novalidate=True field_id=no_js_cancel_id %}{{ cancel_label }}{% endcomponent %}
+      {% endif %}
+      <template data-plos-modal-js>
+        {% component "plos_button" action="secondary" command="close" command_for=modal_id %}{{ cancel_label }}{% endcomponent %}
+      </template>
+      {% slot "actions" %}{% endslot %}
+    {% endcomponent %}
+  </div>
+</details>
