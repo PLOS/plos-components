@@ -21,7 +21,8 @@ class AddMore(PLOSBaseComponent):
     """
     A dynamic add/delete list of repeating items with HTMX progressive enhancement.
 
-    Renders one accordion section per entry in `values`, headed "{Item label} N".
+    Renders one accordion section per entry in `values`, headed "{Item label} N". A single
+    item is rendered on its own, without the accordion or its heading.
     Each add and delete button posts the surrounding form with `{name}__action` set
     to `add` or `delete__N`. The view reads the posted values, applies the
     action with `logic.apply_add_or_delete` and re-renders the whole page.
@@ -70,11 +71,12 @@ class AddMore(PLOSBaseComponent):
     With HTMX, add and delete then also swap that element from the response
     (`hx-select-oob`), so a stale summary doesn't outlive the items it links to.
 
-    Collapsed state: with HTMX, `static/plos_django_components/add_more.js` posts
-    `{name}__collapsed` (the indexes of collapsed items) on every add and delete. Pass
+    Collapsed state: when `last_action` is empty (a page load or a save), only the first
+    item is expanded. After an add or delete, with HTMX, `static/plos_django_components/add_more.js`
+    posts `{name}__collapsed` (the indexes of collapsed items). Pass
     `logic.collapsed_after_add_or_delete(request.POST, name, action)` as `collapsed` so each
-    item keeps its state. Items with errors are always expanded, and every item is
-    expanded on a full page load.
+    item keeps its state and new items start expanded. Items with errors are always expanded.
+    This relies on the view passing `last_action`.
 
     Focus management: pass the posted `{name}__action` as `last_action` so focus
     doesn't drop to the page body after an add or delete. The component renders an
@@ -163,8 +165,11 @@ class AddMore(PLOSBaseComponent):
         enter_submits: str | None = "continue",
     ):
         errors = errors or []
-        collapsed_indexes = set(collapsed or [])
         count = len(values)
+        if last_action:
+            collapsed_indexes = set(collapsed or [])
+        else:
+            collapsed_indexes = set(range(1, count))
         focus_index, focus_add_button = self._focus_target(last_action or "", count)
         focus_delete_index = cancelled_index(last_action or "")
         items = []

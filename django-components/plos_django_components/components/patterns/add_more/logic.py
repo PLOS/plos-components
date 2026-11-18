@@ -68,7 +68,7 @@ def collapsed_after_add_or_delete(post, name: str, action: str) -> list[int]:
     The add more script posts `{name}__collapsed` (e.g. "0,2") with each HTMX add or
     delete. Deleting item N drops N and moves later indexes up by one, so each item keeps
     its own state. New items are not in the set, so they start expanded. Without the
-    script (full page loads, no JS) nothing is posted and every item is expanded.
+    script (no JS) nothing is posted, so this returns an empty list.
     """
     try:
         collapsed = {int(i) for i in post.get(f"{name}__collapsed", "").split(",") if i}

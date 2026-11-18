@@ -24,6 +24,12 @@
   persist each section's expanded state in browser local storage, so it is
   retained across page loads.
 {% endcomponent %}
+{% component "plos_text_box" %}
+  An accordion with only one section shows that section's content on its own,
+  without the accordion or its heading. Pass
+  <code>unwrap_single_section=False</code> to keep a single section in an
+  accordion.
+{% endcomponent %}
 
 <hr />
 
@@ -96,5 +102,65 @@
   {% component "plos_accordion_section" heading="Open me, then reload the page, I'll stay open" %}
     {% component "plos_text_box" %}Trust me.{% endcomponent %}
   {% endcomponent %}
+  {% component "plos_accordion_section" heading="Leave me closed, I'll stay closed" %}
+    {% component "plos_text_box" %}Each section's state is saved separately.{% endcomponent %}
+  {% endcomponent %}
 {% endcomponent %}
+
+<hr />
+
+{% component "plos_heading" level=2 css_class="govuk-heading-m" %}When there is only one section{% endcomponent %}
+{% component "plos_text_box" %}
+  By default, if there is only section (eg. one author, one patent etc.), the accordion shows that
+  section's content on its own (without a visible accordion). Once there are
+  two or more sections, the accordion appears.
+{% endcomponent %}
+
+{% component "plos_heading" level=3 css_class="govuk-heading-s" %}One section: shown without the accordion{% endcomponent %}
+{% component "plos_accordion" field_id="patents-one" %}
+  {% component "plos_accordion_section" heading="Patent 1" expanded=True %}
+    {% component "plos_text_input" label="Patent number" name="one_patent_0" field_id="one_patent_0" %}{% endcomponent %}
+  {% endcomponent %}
+{% endcomponent %}
+
+{% component "plos_heading" level=3 css_class="govuk-heading-s" %}Two sections: shown as an accordion{% endcomponent %}
+{% component "plos_accordion" field_id="patents-two" %}
+  {% component "plos_accordion_section" heading="Patent 1" expanded=True %}
+    {% component "plos_text_input" label="Patent number" name="two_patent_0" field_id="two_patent_0" %}{% endcomponent %}
+  {% endcomponent %}
+  {% component "plos_accordion_section" heading="Patent 2" %}
+    {% component "plos_text_input" label="Patent number" name="two_patent_1" field_id="two_patent_1" %}{% endcomponent %}
+  {% endcomponent %}
+{% endcomponent %}
+
+{% component "plos_text_box" %}
+  Both examples come from the same template, looping over a list of patents:
+{% endcomponent %}
+<code class="ds-code-block">{% verbatim %}{% component "plos_accordion" field_id="patents" %}
+  {% for patent in patents %}
+    {% component "plos_accordion_section"
+      heading="Patent {{ forloop.counter }}"
+      expanded=forloop.first
+    %}
+      ...
+    {% endcomponent %}
+  {% endfor %}
+{% endcomponent %}{% endverbatim %}</code>
+
+{% component "plos_heading" level=3 css_class="govuk-heading-s" %}Keeping a single section in an accordion{% endcomponent %}
+{% component "plos_text_box" %}
+  If a single section should stay collapsible (for example, optional guidance
+  people can open if they need it), pass
+  <code>unwrap_single_section=False</code>.
+{% endcomponent %}
+{% component "plos_accordion" field_id="guidance-kept" unwrap_single_section=False %}
+  {% component "plos_accordion_section" heading="What you must declare" %}
+    {% component "plos_text_box" %}Declare any financial relationships that could be perceived as influencing your research.{% endcomponent %}
+  {% endcomponent %}
+{% endcomponent %}
+<code class="ds-code-block">{% verbatim %}{% component "plos_accordion" field_id="guidance" unwrap_single_section=False %}
+  {% component "plos_accordion_section" heading="What you must declare" %}
+    ...
+  {% endcomponent %}
+{% endcomponent %}{% endverbatim %}</code>
 {% endblock ds_content %}

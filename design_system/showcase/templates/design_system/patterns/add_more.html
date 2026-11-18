@@ -9,7 +9,9 @@
 
   {% component "plos_text_box" %}
     <code>plos_add_more</code> shows a list of repeating items, one accordion
-    section per item, that people can add to and delete from. It works without
+    section per item, that people can add to and delete from. A single item is
+    shown on its own, without an accordion. When the page loads with more than
+    one item, only the first is expanded. It works without
     JavaScript. Without HTMX, the add and delete buttons submit the form and the
     page reloads. With HTMX, the same buttons post the form to
     <code>htmx_url</code> (usually the page's own URL) and replace only the
@@ -344,7 +346,7 @@ def patents_page(request):
       </tr>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell"><code>collapsed</code></td>
-        <td class="govuk-table__cell">Indexes of items to render collapsed, from <code>collapsed_after_add_or_delete</code>.</td>
+        <td class="govuk-table__cell">Indexes of items to render collapsed after an add or delete, from <code>collapsed_after_add_or_delete</code>.</td>
         <td class="govuk-table__cell">None</td>
       </tr>
       <tr class="govuk-table__row">

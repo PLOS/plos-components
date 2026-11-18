@@ -41,7 +41,8 @@ class _AccordionImpl(PLOSBaseComponent):
         *,
         sections: list[AccordionSectionEntry],
         field_id: str | None = None,
-        remember_expanded: bool = False
+        remember_expanded: bool = False,
+        unwrap_single_section: bool = True,
     ):
         sections_with_index = [
             {
@@ -52,7 +53,12 @@ class _AccordionImpl(PLOSBaseComponent):
             }
             for i, section in enumerate(sections)
         ]
-        return {"field_id": field_id, "sections": sections_with_index, "remember_expanded": remember_expanded}
+        return {
+            "field_id": field_id,
+            "sections": sections_with_index,
+            "remember_expanded": remember_expanded,
+            "unwrapped": unwrap_single_section and len(sections) == 1,
+        }
 
 
 @register("plos_accordion")
@@ -74,6 +80,10 @@ class Accordion(PLOSBaseComponent):
                                   local storage within the browser. Note that `expanded` can still be
                                   set on individual sections, which controls the original open/closed
                                   state on page load.
+        unwrap_single_section (bool, optional, defaults to True): When there is exactly one
+                                  section, render that section's content on its own, without the
+                                  accordion or its heading. Set to False to keep a single section
+                                  in an accordion.
     """
 
     template: t.django_html = """
@@ -83,9 +93,16 @@ class Accordion(PLOSBaseComponent):
     {% endprovide %}
     """
 
-    def get_context_data(self, /, *, field_id: str | None = None, remember_expanded: bool = False):  # noqa: D102
+    def get_context_data(  # noqa: D102
+        self, /, *, field_id: str | None = None, remember_expanded: bool = False, unwrap_single_section: bool = True
+    ):
         # sections is internal state populated by child AccordionSection components via on_render_after
-        return {"field_id": field_id, "sections": [], "remember_expanded": remember_expanded}
+        return {
+            "field_id": field_id,
+            "sections": [],
+            "remember_expanded": remember_expanded,
+            "unwrap_single_section": unwrap_single_section,
+        }
 
     def on_render_after(self, context, template, rendered) -> str:  # noqa: D102
         return _AccordionImpl.render(
@@ -93,6 +110,7 @@ class Accordion(PLOSBaseComponent):
                 "field_id": context["field_id"],
                 "sections": context["sections"],
                 "remember_expanded": context["remember_expanded"],
+                "unwrap_single_section": context["unwrap_single_section"],
             },
             render_dependencies=False,
         )
