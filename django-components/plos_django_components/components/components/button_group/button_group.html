@@ -1,4 +1,4 @@
 <div {% if field_id %}id="{{ field_id }}"{% endif %}
-        class="govuk-button-group">
+        class="govuk-button-group{% if css_class %} {{ css_class }}{% endif %}">
     {% slot "default" default %}{% endslot %}
 </div>
