@@ -11,7 +11,7 @@
     When <code>entries</code> is empty the component renders nothing.
   {% endcomponent %}
 
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  {% component "plos_section_break" / %}
 
   {% component "plos_heading" level=2 %}Example{% endcomponent %}
 
@@ -36,7 +36,7 @@
     errors=email_errors
   %}{% endcomponent %}
 
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  {% component "plos_section_break" / %}
 
   {% component "plos_heading" level=2 %}Custom title{% endcomponent %}
 
@@ -46,7 +46,7 @@
 
   {% component "plos_error_summary" entries=custom_title_entries title="Three errors prevented your submission" %}{% endcomponent %}
 
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  {% component "plos_section_break" / %}
 
   {% component "plos_heading" level=2 %}Usage{% endcomponent %}
 

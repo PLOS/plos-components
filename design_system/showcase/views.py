@@ -25,6 +25,7 @@ COMPONENTS = {
     "file-upload-improved",
     "panel",
     "panel-summary",
+    "section-break",
     "radios",
     "checkboxes",
     "banner",

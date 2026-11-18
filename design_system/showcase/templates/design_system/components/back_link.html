@@ -10,13 +10,13 @@
     above the main content area to let users return to the previous page.
   {% endcomponent %}
 
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  {% component "plos_section_break" / %}
 
   {% component "plos_heading" level=2 %}Example{% endcomponent %}
 
   {% component "plos_back_link" href="#" %}{% endcomponent %}
 
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  {% component "plos_section_break" / %}
 
   {% component "plos_heading" level=2 %}Custom text{% endcomponent %}
 
@@ -26,7 +26,7 @@
 
   {% component "plos_back_link" href="#" text="Go back" %}{% endcomponent %}
 
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  {% component "plos_section_break" / %}
 
   {% component "plos_heading" level=2 %}Usage{% endcomponent %}
 
